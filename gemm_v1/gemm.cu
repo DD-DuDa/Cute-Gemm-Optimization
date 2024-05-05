@@ -56,14 +56,17 @@ __global__ void gemm_cute_v1(const T *Aptr, const T *Bptr, T *Cptr, int m, int n
 
     //     PRINT("gA", gA.shape())     
     //     PRINT("tAgA", tAgA.shape())
+    //     print(layout<0>(tAgA));
     //     PRINT("tArA", tArA.shape()) 
 
     //     PRINT("gB", gB.shape())     
     //     PRINT("tBgB", tBgB.shape()) 
+    //     print(layout<0>(tBgB));
     //     PRINT("tBrB", tBrB.shape()) 
 
     //     PRINT("gC", gC.shape())     
-    //     PRINT("tCgC", tCgC.shape()) 
+    //     PRINT("tCgC", tCgC.shape())
+    //     print(layout<0>(tCgC)); 
     //     PRINT("tCrC", tCrC.shape()) 
 
     // }
@@ -82,6 +85,7 @@ __global__ void gemm_cute_v1(const T *Aptr, const T *Bptr, T *Cptr, int m, int n
     cute::copy(tCrC, tCgC); 
 }
 
+
 template <typename T>
 void gemm_v1(T *a, T *b, T *c, int m, int n, int k) {
 
@@ -89,10 +93,13 @@ void gemm_v1(T *a, T *b, T *c, int m, int n, int k) {
     using mma_traits = MMA_Traits<mma_op>;
     using mma_atom = MMA_Atom<mma_traits>;
 
+    // using MMA = decltype(make_tiled_mma(SM80_16x8x16_F16F16F16F16_TN{},
+    //                                         Layout<Shape<_2, _4>,
+    //                                         Stride<_4,_1>>{})
+    //                                     ); 
+
     using MMA = decltype(make_tiled_mma(SM80_16x8x16_F16F16F16F16_TN{},
-                                            Layout<Shape<_2, _4>,
-                                            Stride<_4,_1>>{})
-                                        ); 
+                        Layout<Shape<_1, _1, _1>>{}));           // Tiler
 
     // TiledMMA mma1 = make_tiled_mma(mma_atom{},
     //                             Layout<Shape<_1,_1,_1>,S>{});    
@@ -221,7 +228,7 @@ int main() {
 
     printf("\nalgo = Cute_HGEMM_V1\n");
 
-    const int M = 1024, N = 1024, K = 1024;
+    const int M = 256, N = 256, K = 256;
     float max_error = testF16F16GemmMaxError<T>(
         gemm_v1, M, N, K);
     printf("Max Error = %f\n", max_error);

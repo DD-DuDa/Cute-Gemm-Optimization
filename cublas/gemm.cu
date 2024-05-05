@@ -13,20 +13,24 @@ inline cublasStatus_t
 gemm(cublasHandle_t handle,
      cublasOperation_t transA, cublasOperation_t transB,
      int m, int n, int k,
-     const float* alpha,
+     const half* alpha,
      const half* A, int ldA,
      const half* B, int ldB,
-     const float* beta,
+     const half* beta,
      half* C, int ldC)
 {
-  return cublasGemmEx(handle, transA, transB,
-                      m, n, k,
-                      reinterpret_cast<const float*>(alpha),
-                      reinterpret_cast<const __half*>(A), CUDA_R_16F, ldA,
-                      reinterpret_cast<const __half*>(B), CUDA_R_16F, ldB,
-                      reinterpret_cast<const float*>(beta),
-                      reinterpret_cast<      __half*>(C), CUDA_R_16F, ldC,
-                      CUBLAS_COMPUTE_32F, CUBLAS_GEMM_DEFAULT_TENSOR_OP);
+    // return cublasGemmEx(handle, transA, transB,
+    //                   m, n, k,
+    //                   reinterpret_cast<const __half*>(alpha),
+    //                   reinterpret_cast<const __half*>(A), CUDA_R_16F, ldA,
+    //                   reinterpret_cast<const __half*>(B), CUDA_R_16F, ldB,
+    //                   reinterpret_cast<const __half*>(beta),
+    //                   reinterpret_cast<      __half*>(C), CUDA_R_16F, ldC,
+    //                   CUBLAS_COMPUTE_32F, CUBLAS_GEMM_DEFAULT_TENSOR_OP);
+
+    return cublasHgemm(handle, transA, transB, m, n, k,
+        alpha, (half *)B, ldB, (half *)A, ldA,
+        beta, (half *)C, ldC);
 }
 
 float testF16F16GemmPerformance(int M, int N, int K, int repeat) {
@@ -34,8 +38,8 @@ float testF16F16GemmPerformance(int M, int N, int K, int repeat) {
     size_t size_b = K * N * sizeof(half);
     size_t size_c = M * N * sizeof(half);
 
-    float alpha = 1.0;
-    float beta = 0.0;
+    half alpha = 1.f;
+    half beta = 0.f;
 
     half *d_a, *d_b;
     half *d_c;
@@ -53,14 +57,14 @@ float testF16F16GemmPerformance(int M, int N, int K, int repeat) {
     // warmup
     for (int i = 0; i < 10; ++i)
     {
-        gemm(handle, CUBLAS_OP_T, CUBLAS_OP_N, M, N, K, &alpha, d_a, K, d_b, K, &beta, d_c, M);
+        gemm(handle, CUBLAS_OP_T, CUBLAS_OP_N, M, N, K, &alpha, d_a, K, d_b, K, &beta, d_c, N);
     }
     cudaDeviceSynchronize();
 
     cudaEventRecord(start);
 
     for (int i = 0; i < repeat; i++) {
-        gemm(handle, CUBLAS_OP_T, CUBLAS_OP_N, M, N, K, &alpha, d_a, K, d_b, K, &beta, d_c, M);
+        gemm(handle, CUBLAS_OP_T, CUBLAS_OP_N, M, N, K, &alpha, d_a, K, d_b, K, &beta, d_c, N);
     }
 
     cudaEventRecord(end);

@@ -5,4 +5,4 @@
 *.cubin
 *.fatbin
 
-**/gemm
+# **/gemm

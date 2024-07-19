@@ -1,0 +1,3 @@
+[submodule "flashdecoding/src/cutlass"]
+	path = flashdecoding/src/cutlass
+	url = https://github.com/NVIDIA/cutlass.git

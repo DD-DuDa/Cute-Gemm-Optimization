@@ -1,0 +1,1 @@
+/usr/bin/g++ @CMakeFiles/test_kernel.dir/objects1.rsp -o test_kernel @CMakeFiles/test_kernel.dir/linkLibs.rsp -L"/usr/local/cuda/targets/x86_64-linux/lib/stubs" -L"/usr/local/cuda/targets/x86_64-linux/lib"

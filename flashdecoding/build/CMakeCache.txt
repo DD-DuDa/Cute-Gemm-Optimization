@@ -22,13 +22,13 @@ CMAKE_AR:FILEPATH=/usr/bin/ar
 
 //Choose the type of build, options are: None Debug Release RelWithDebInfo
 // MinSizeRel ...
-CMAKE_BUILD_TYPE:STRING=
+CMAKE_BUILD_TYPE:STRING=Debug
 
 //Enable/Disable color output during build.
 CMAKE_COLOR_MAKEFILE:BOOL=ON
 
-//CUDA architectures
-CMAKE_CUDA_ARCHITECTURES:STRING=52
+//No help, variable specified on the command line.
+CMAKE_CUDA_ARCHITECTURES:UNINITIALIZED=80
 
 //CUDA compiler
 CMAKE_CUDA_COMPILER:FILEPATH=/usr/local/cuda/bin/nvcc

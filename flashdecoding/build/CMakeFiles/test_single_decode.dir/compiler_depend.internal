@@ -3,6 +3,7 @@
 
 CMakeFiles/test_single_decode.dir/src/test_single_decode.cu.o
  /home/v-dayoudu/learning/Cute-Gemm-Optimization/flashdecoding/src/test_single_decode.cu
+ /home/v-dayoudu/learning/Cute-Gemm-Optimization/flashdecoding/src/block_info.h
  /home/v-dayoudu/learning/Cute-Gemm-Optimization/flashdecoding/src/cpu_reference.h
  /home/v-dayoudu/learning/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cute/algorithm/axpby.hpp
  /home/v-dayoudu/learning/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cute/algorithm/clear.hpp

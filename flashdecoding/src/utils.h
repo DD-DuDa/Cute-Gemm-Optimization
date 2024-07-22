@@ -30,6 +30,16 @@
 #include <sstream>
 #include <stdexcept>
 
+#define CUDA_CHECK(call)                                                    \
+    {                                                                       \
+        cudaError_t err = call;                                             \
+        if (err != cudaSuccess) {                                           \
+            fprintf(stderr, "CUDA error in line %d of file %s: %s\n",       \
+                    __LINE__, __FILE__, cudaGetErrorString(err));           \
+            exit(EXIT_FAILURE);                                             \
+        }                                                                   \
+    }
+  
 namespace utils {
 
 template <typename T>

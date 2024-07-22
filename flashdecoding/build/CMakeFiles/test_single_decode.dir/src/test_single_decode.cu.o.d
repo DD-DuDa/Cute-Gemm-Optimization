@@ -1811,4 +1811,7 @@ CMakeFiles/test_single_decode.dir/src/test_single_decode.cu.o : /home/v-dayoudu/
     /home/v-dayoudu/learning/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cutlass/tensor_coord.h \
     /home/v-dayoudu/learning/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cutlass/layout/vector.h \
     /home/v-dayoudu/learning/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cutlass/layout/tensor_op_multiplicand_sm70.h \
-    /home/v-dayoudu/learning/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cutlass/layout/tensor_op_multiplicand_sm75.h
+    /home/v-dayoudu/learning/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cutlass/layout/tensor_op_multiplicand_sm75.h \
+    /home/v-dayoudu/learning/Cute-Gemm-Optimization/flashdecoding/src/block_info.h \
+    /home/v-dayoudu/learning/Cute-Gemm-Optimization/flashdecoding/src/softmax.h \
+    /home/v-dayoudu/learning/Cute-Gemm-Optimization/flashdecoding/src/philox.cuh

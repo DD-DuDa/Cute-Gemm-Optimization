@@ -6,5 +6,5 @@ CUDA_DEFINES =
 
 CUDA_INCLUDES = --options-file CMakeFiles/test_single_decode.dir/includes_CUDA.rsp
 
-CUDA_FLAGS =  --expt-relaxed-constexpr -g -G -g "--generate-code=arch=compute_80,code=[compute_80,sm_80]" -maxrregcount=255 -gencode arch=compute_80,code=sm_80 -w
+CUDA_FLAGS =  "--generate-code=arch=compute_80,code=[compute_80,sm_80]" -maxrregcount=255 -gencode arch=compute_80,code=sm_80 -w
 

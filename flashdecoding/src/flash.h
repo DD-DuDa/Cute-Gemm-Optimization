@@ -51,11 +51,3 @@ struct Flash_fwd_params : public Qkv_params {
     // For split-KV version
     int num_splits;  
 };
-
-// /*Function*/
-// template <typename T>
-// int mha_fwd_kvcache(T *q, T *kcache, T *vcache, T *out,
-//                     int batch_size, int seq_len, int num_heads, int head_dim,
-//                     float softmax_scale,
-//                     int num_splits
-//                     );

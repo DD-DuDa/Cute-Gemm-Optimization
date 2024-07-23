@@ -101,6 +101,7 @@ CMakeFiles/test_single_decode.dir/src/test_single_decode.cu.o: /home/v-dayoudu/l
   /home/v-dayoudu/learning/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cutlass/layout/tensor_op_multiplicand_sm75.h \
   /home/v-dayoudu/learning/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cutlass/layout/vector.h \
   /home/v-dayoudu/learning/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cutlass/matrix_coord.h \
+  /home/v-dayoudu/learning/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cutlass/numeric_conversion.h \
   /home/v-dayoudu/learning/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cutlass/numeric_size.h \
   /home/v-dayoudu/learning/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cutlass/numeric_types.h \
   /home/v-dayoudu/learning/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cutlass/pitch_linear_coord.h \
@@ -108,10 +109,15 @@ CMakeFiles/test_single_decode.dir/src/test_single_decode.cu.o: /home/v-dayoudu/l
   /home/v-dayoudu/learning/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cutlass/real.h \
   /home/v-dayoudu/learning/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cutlass/tensor_coord.h \
   /home/v-dayoudu/learning/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cutlass/tfloat32.h \
+  /home/v-dayoudu/learning/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cutlass/transform/thread/unary_op.h \
   /home/v-dayoudu/learning/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cutlass/uint128.h \
   /home/v-dayoudu/learning/Cute-Gemm-Optimization/flashdecoding/src/decode.cuh \
   /home/v-dayoudu/learning/Cute-Gemm-Optimization/flashdecoding/src/flash.h \
   /home/v-dayoudu/learning/Cute-Gemm-Optimization/flashdecoding/src/kernel_traits.h \
+  /home/v-dayoudu/learning/Cute-Gemm-Optimization/flashdecoding/src/mask.h \
+  /home/v-dayoudu/learning/Cute-Gemm-Optimization/flashdecoding/src/philox.cuh \
+  /home/v-dayoudu/learning/Cute-Gemm-Optimization/flashdecoding/src/softmax.h \
+  /home/v-dayoudu/learning/Cute-Gemm-Optimization/flashdecoding/src/static_switch.h \
   /home/v-dayoudu/learning/Cute-Gemm-Optimization/flashdecoding/src/utils.h \
   /usr/include/alloca.h \
   /usr/include/asm-generic/errno-base.h \
@@ -215,6 +221,7 @@ CMakeFiles/test_single_decode.dir/src/test_single_decode.cu.o: /home/v-dayoudu/l
   /usr/include/c++/11/cassert \
   /usr/include/c++/11/cctype \
   /usr/include/c++/11/cerrno \
+  /usr/include/c++/11/cfenv \
   /usr/include/c++/11/cfloat \
   /usr/include/c++/11/chrono \
   /usr/include/c++/11/cinttypes \
@@ -240,6 +247,7 @@ CMakeFiles/test_single_decode.dir/src/test_single_decode.cu.o: /home/v-dayoudu/l
   /usr/include/c++/11/ext/numeric_traits.h \
   /usr/include/c++/11/ext/string_conversions.h \
   /usr/include/c++/11/ext/type_traits.h \
+  /usr/include/c++/11/fenv.h \
   /usr/include/c++/11/functional \
   /usr/include/c++/11/initializer_list \
   /usr/include/c++/11/iomanip \
@@ -295,6 +303,7 @@ CMakeFiles/test_single_decode.dir/src/test_single_decode.cu.o: /home/v-dayoudu/l
   /usr/include/errno.h \
   /usr/include/features-time64.h \
   /usr/include/features.h \
+  /usr/include/fenv.h \
   /usr/include/inttypes.h \
   /usr/include/libintl.h \
   /usr/include/limits.h \
@@ -320,6 +329,7 @@ CMakeFiles/test_single_decode.dir/src/test_single_decode.cu.o: /home/v-dayoudu/l
   /usr/include/x86_64-linux-gnu/bits/endian.h \
   /usr/include/x86_64-linux-gnu/bits/endianness.h \
   /usr/include/x86_64-linux-gnu/bits/errno.h \
+  /usr/include/x86_64-linux-gnu/bits/fenv.h \
   /usr/include/x86_64-linux-gnu/bits/floatn-common.h \
   /usr/include/x86_64-linux-gnu/bits/floatn.h \
   /usr/include/x86_64-linux-gnu/bits/flt-eval-method.h \
@@ -2508,9 +2518,17 @@ CMakeFiles/test_single_decode.dir/src/test_single_decode.cu.o: /home/v-dayoudu/l
 
 /usr/local/cuda/targets/x86_64-linux/include/cuda/std/detail/libcxx/include/__type_traits/is_trivially_constructible.h:
 
-/usr/include/x86_64-linux-gnu/bits/long-double.h:
+/usr/local/cuda/targets/x86_64-linux/include/cuda/std/detail/libcxx/include/__type_traits/is_constant_evaluated.h:
 
-/usr/include/c++/11/bits/std_mutex.h:
+/usr/local/cuda/targets/x86_64-linux/include/cuda/std/detail/libcxx/include/__memory/voidify.h:
+
+/usr/local/cuda/targets/x86_64-linux/include/cuda/std/detail/libcxx/include/__iterator/wrap_iter.h:
+
+/usr/local/cuda/targets/x86_64-linux/include/cuda/std/detail/libcxx/include/__type_traits/is_unsigned.h:
+
+/usr/local/cuda/targets/x86_64-linux/include/cuda/std/detail/libcxx/include/__iterator/size.h:
+
+/usr/local/cuda/targets/x86_64-linux/include/cuda/std/detail/libcxx/include/__iterator/ostream_iterator.h:
 
 /usr/include/x86_64-linux-gnu/bits/libc-header-start.h:
 
@@ -2537,10 +2555,6 @@ CMakeFiles/test_single_decode.dir/src/test_single_decode.cu.o: /home/v-dayoudu/l
 /usr/local/cuda/targets/x86_64-linux/include/thrust/detail/tuple_transform.h:
 
 /usr/local/cuda/targets/x86_64-linux/include/cuda/std/detail/libcxx/include/__tuple_dir/tuple_types.h:
-
-/home/v-dayoudu/learning/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cutlass/numeric_types.h:
-
-/usr/include/x86_64-linux-gnu/asm/errno.h:
 
 /usr/local/cuda/targets/x86_64-linux/include/thrust/system/cuda/config.h:
 
@@ -2602,12 +2616,6 @@ CMakeFiles/test_single_decode.dir/src/test_single_decode.cu.o: /home/v-dayoudu/l
 
 /usr/include/c++/11/utility:
 
-/usr/include/x86_64-linux-gnu/bits/posix1_lim.h:
-
-/usr/local/cuda/targets/x86_64-linux/include/thrust/detail/config/forceinline.h:
-
-/home/v-dayoudu/learning/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cutlass/numeric_size.h:
-
 /usr/include/c++/11/tuple:
 
 /usr/local/cuda/targets/x86_64-linux/include/thrust/system/cpp/detail/reduce.h:
@@ -2628,8 +2636,6 @@ CMakeFiles/test_single_decode.dir/src/test_single_decode.cu.o: /home/v-dayoudu/l
 
 /usr/local/cuda/targets/x86_64-linux/include/cuda/std/detail/libcxx/include/__concepts/convertible_to.h:
 
-/usr/include/c++/11/version:
-
 /usr/local/cuda/targets/x86_64-linux/include/thrust/detail/reverse.inl:
 
 /usr/include/c++/11/bits/atomic_base.h:
@@ -2637,8 +2643,6 @@ CMakeFiles/test_single_decode.dir/src/test_single_decode.cu.o: /home/v-dayoudu/l
 /usr/include/c++/11/tr1/gamma.tcc:
 
 /usr/include/c++/11/cstdlib:
-
-/home/v-dayoudu/learning/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cutlass/array_subbyte.h:
 
 /usr/local/cuda/targets/x86_64-linux/include/thrust/system/detail/sequential/stable_primitive_sort.inl:
 
@@ -2649,6 +2653,12 @@ CMakeFiles/test_single_decode.dir/src/test_single_decode.cu.o: /home/v-dayoudu/l
 /usr/include/c++/11/bits/streambuf_iterator.h:
 
 /usr/local/cuda/targets/x86_64-linux/include/cub/config.cuh:
+
+/home/v-dayoudu/learning/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cutlass/array_subbyte.h:
+
+/usr/include/x86_64-linux-gnu/bits/fenv.h:
+
+/usr/local/cuda/targets/x86_64-linux/include/crt/math_functions.hpp:
 
 /usr/include/string.h:
 
@@ -2700,6 +2710,10 @@ CMakeFiles/test_single_decode.dir/src/test_single_decode.cu.o: /home/v-dayoudu/l
 
 /usr/include/c++/11/new:
 
+/usr/local/cuda/targets/x86_64-linux/include/cuda/std/detail/libcxx/include/__iterator/ostreambuf_iterator.h:
+
+/usr/include/x86_64-linux-gnu/bits/stdint-intn.h:
+
 /usr/local/cuda/targets/x86_64-linux/include/thrust/detail/allocator_aware_execution_policy.h:
 
 /usr/include/x86_64-linux-gnu/bits/pthread_stack_min-dynamic.h:
@@ -2714,15 +2728,7 @@ CMakeFiles/test_single_decode.dir/src/test_single_decode.cu.o: /home/v-dayoudu/l
 
 /home/v-dayoudu/learning/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cute/numeric/arithmetic_tuple.hpp:
 
-/usr/include/c++/11/iostream:
-
-/usr/local/cuda/targets/x86_64-linux/include/thrust/system/detail/sequential/stable_merge_sort.h:
-
-/usr/include/c++/11/array:
-
-/usr/include/x86_64-linux-gnu/bits/mathcalls.h:
-
-/usr/include/c++/11/bits/shared_ptr_atomic.h:
+/usr/include/fenv.h:
 
 /usr/include/c++/11/ext/alloc_traits.h:
 
@@ -2773,8 +2779,6 @@ CMakeFiles/test_single_decode.dir/src/test_single_decode.cu.o: /home/v-dayoudu/l
 /usr/include/c++/11/cstdint:
 
 /usr/include/c++/11/cmath:
-
-/usr/include/c++/11/cfloat:
 
 /usr/include/c++/11/cerrno:
 
@@ -2850,7 +2854,13 @@ CMakeFiles/test_single_decode.dir/src/test_single_decode.cu.o: /home/v-dayoudu/l
 
 /home/v-dayoudu/learning/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cute/arch/mma.hpp:
 
+/usr/include/c++/11/bits/std_mutex.h:
+
 /usr/include/c++/11/bits/shared_ptr_base.h:
+
+/usr/include/c++/11/bits/shared_ptr_atomic.h:
+
+/usr/include/x86_64-linux-gnu/bits/mathcalls.h:
 
 /usr/local/cuda/targets/x86_64-linux/include/cuda/std/detail/libcxx/include/__type_traits/is_trivially_assignable.h:
 
@@ -2871,8 +2881,6 @@ CMakeFiles/test_single_decode.dir/src/test_single_decode.cu.o: /home/v-dayoudu/l
 /usr/local/cuda/targets/x86_64-linux/include/cub/device/dispatch/dispatch_select_if.cuh:
 
 /usr/local/cuda/targets/x86_64-linux/include/cub/detail/detect_cuda_runtime.cuh:
-
-/usr/include/x86_64-linux-gnu/bits/locale.h:
 
 /usr/include/c++/11/bits/stl_raw_storage_iter.h:
 
@@ -2898,6 +2906,28 @@ CMakeFiles/test_single_decode.dir/src/test_single_decode.cu.o: /home/v-dayoudu/l
 
 /usr/local/cuda/targets/x86_64-linux/include/cuda/std/detail/libcxx/include/__type_traits/is_reference.h:
 
+/usr/local/cuda/targets/x86_64-linux/include/cuda/std/detail/libcxx/include/__functional/mem_fun_ref.h:
+
+/usr/include/c++/11/bits/node_handle.h:
+
+/usr/include/c++/11/bits/nested_exception.h:
+
+/usr/include/c++/11/bits/move.h:
+
+/usr/local/cuda/targets/x86_64-linux/include/cuda/std/detail/libcxx/include/__type_traits/type_identity.h:
+
+/usr/local/cuda/targets/x86_64-linux/include/cub/warp/specializations/warp_scan_shfl.cuh:
+
+/usr/local/cuda/targets/x86_64-linux/include/thrust/iterator/detail/is_iterator_category.h:
+
+/usr/local/cuda/targets/x86_64-linux/include/thrust/detail/mismatch.inl:
+
+/usr/include/c++/11/bits/memoryfwd.h:
+
+/usr/include/c++/11/cfenv:
+
+/usr/local/cuda/targets/x86_64-linux/include/cuda/std/detail/libcxx/include/__type_traits/is_volatile.h:
+
 /usr/include/c++/11/cwchar:
 
 /usr/local/cuda/targets/x86_64-linux/include/thrust/system/cuda/detail/transform.h:
@@ -2911,6 +2941,10 @@ CMakeFiles/test_single_decode.dir/src/test_single_decode.cu.o: /home/v-dayoudu/l
 /usr/include/endian.h:
 
 /usr/include/assert.h:
+
+/usr/include/c++/11/bits/ostream.tcc:
+
+/usr/include/c++/11/cstdio:
 
 /usr/local/cuda/targets/x86_64-linux/include/thrust/system/detail/generic/find.h:
 
@@ -2944,15 +2978,21 @@ CMakeFiles/test_single_decode.dir/src/test_single_decode.cu.o: /home/v-dayoudu/l
 
 /home/v-dayoudu/learning/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cute/numeric/numeric_types.hpp:
 
-/usr/include/x86_64-linux-gnu/bits/local_lim.h:
-
 /home/v-dayoudu/learning/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cute/algorithm/cooperative_copy.hpp:
 
 /usr/local/cuda/targets/x86_64-linux/include/cuda/std/detail/libcxx/include/__assert:
 
 /home/v-dayoudu/learning/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cute/numeric/integral_ratio.hpp:
 
+/usr/include/c++/11/version:
+
+/home/v-dayoudu/learning/Cute-Gemm-Optimization/flashdecoding/src/softmax.h:
+
 /home/v-dayoudu/learning/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cute/numeric/int.hpp:
+
+/usr/local/cuda/targets/x86_64-linux/include/texture_indirect_functions.h:
+
+/home/v-dayoudu/learning/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cute/pointer.hpp:
 
 /home/v-dayoudu/learning/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cutlass/layout/matrix.h:
 
@@ -2961,8 +3001,6 @@ CMakeFiles/test_single_decode.dir/src/test_single_decode.cu.o: /home/v-dayoudu/l
 /home/v-dayoudu/learning/Cute-Gemm-Optimization/flashdecoding/src/flash.h:
 
 /usr/local/cuda/targets/x86_64-linux/include/cuda/std/detail/libcxx/include/__utility/exchange.h:
-
-/usr/local/cuda/targets/x86_64-linux/include/cuda/std/detail/libcxx/include/__type_traits/is_volatile.h:
 
 /usr/include/ctype.h:
 
@@ -2978,17 +3016,13 @@ CMakeFiles/test_single_decode.dir/src/test_single_decode.cu.o: /home/v-dayoudu/l
 
 /home/v-dayoudu/learning/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cutlass/float8.h:
 
-/usr/include/c++/11/cstdio:
-
-/usr/include/c++/11/bits/ostream.tcc:
-
-/usr/local/cuda/targets/x86_64-linux/include/cuda/std/detail/libcxx/include/__functional/mem_fun_ref.h:
-
 /usr/local/cuda/targets/x86_64-linux/include/thrust/detail/contiguous_storage.inl:
 
 /usr/local/cuda/targets/x86_64-linux/include/cuda/std/functional:
 
 /home/v-dayoudu/learning/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cute/container/array_subbyte.hpp:
+
+/home/v-dayoudu/learning/Cute-Gemm-Optimization/flashdecoding/src/philox.cuh:
 
 /usr/include/c++/11/bits/basic_string.tcc:
 
@@ -3006,12 +3040,6 @@ CMakeFiles/test_single_decode.dir/src/test_single_decode.cu.o: /home/v-dayoudu/l
 
 /usr/include/c++/11/bits/stl_heap.h:
 
-/usr/local/cuda/targets/x86_64-linux/include/cuda/std/detail/libcxx/include/__type_traits/is_allocator.h:
-
-/usr/include/stdlib.h:
-
-/home/v-dayoudu/learning/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cute/atom/mma_traits_sm90_gmma.hpp:
-
 /home/v-dayoudu/learning/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cute/stride.hpp:
 
 /usr/local/cuda/targets/x86_64-linux/include/cuda/std/detail/libcxx/include/climits:
@@ -3024,11 +3052,21 @@ CMakeFiles/test_single_decode.dir/src/test_single_decode.cu.o: /home/v-dayoudu/l
 
 /usr/local/cuda/targets/x86_64-linux/include/cuda/std/detail/libcxx/include/__type_traits/is_nothrow_move_assignable.h:
 
-/usr/include/c++/11/bits/node_handle.h:
+/usr/local/cuda/targets/x86_64-linux/include/thrust/system/detail/sequential/stable_merge_sort.h:
+
+/usr/include/c++/11/array:
+
+/usr/include/c++/11/iostream:
+
+/home/v-dayoudu/learning/Cute-Gemm-Optimization/flashdecoding/src/static_switch.h:
 
 /usr/local/cuda/targets/x86_64-linux/include/cuda/std/detail/libcxx/include/__cuda/cstdint_prelude.h:
 
 /usr/include/c++/11/functional:
+
+/usr/include/c++/11/fenv.h:
+
+/home/v-dayoudu/learning/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cute/atom/mma_traits_sm80.hpp:
 
 /home/v-dayoudu/learning/Cute-Gemm-Optimization/flashdecoding/src/utils.h:
 
@@ -3078,18 +3116,6 @@ CMakeFiles/test_single_decode.dir/src/test_single_decode.cu.o: /home/v-dayoudu/l
 
 /usr/local/cuda/targets/x86_64-linux/include/cub/util_ptx.cuh:
 
-/usr/local/cuda/targets/x86_64-linux/include/thrust/system/detail/sequential/partition.h:
-
-/usr/include/x86_64-linux-gnu/bits/mathcalls-helper-functions.h:
-
-/usr/local/cuda/targets/x86_64-linux/include/thrust/system/detail/generic/copy.inl:
-
-/home/v-dayoudu/learning/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cute/atom/mma_traits_sm61.hpp:
-
-/home/v-dayoudu/learning/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cute/algorithm/copy.hpp:
-
-/usr/local/cuda/targets/x86_64-linux/include/cuda/std/detail/libcxx/include/__type_traits/enable_if.h:
-
 /usr/include/x86_64-linux-gnu/bits/types/struct_timeval.h:
 
 /usr/include/c++/11/bits/stl_numeric.h:
@@ -3119,6 +3145,12 @@ CMakeFiles/test_single_decode.dir/src/test_single_decode.cu.o: /home/v-dayoudu/l
 /usr/include/locale.h:
 
 /usr/local/cuda/targets/x86_64-linux/include/cub/agent/agent_scan.cuh:
+
+/usr/local/cuda/targets/x86_64-linux/include/thrust/system/detail/sequential/adjacent_difference.h:
+
+/home/v-dayoudu/learning/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cutlass/tensor_coord.h:
+
+/usr/local/cuda/targets/x86_64-linux/include/cuda/std/detail/libcxx/include/__concepts/copyable.h:
 
 /usr/local/cuda/targets/x86_64-linux/include/thrust/system/detail/error_category.inl:
 
@@ -3196,13 +3228,21 @@ CMakeFiles/test_single_decode.dir/src/test_single_decode.cu.o: /home/v-dayoudu/l
 
 /usr/include/c++/11/bits/stl_pair.h:
 
-/home/v-dayoudu/learning/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cute/atom/mma_traits_sm80.hpp:
-
 /home/v-dayoudu/learning/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cute/atom/mma_traits_sm90.hpp:
 
 /home/v-dayoudu/learning/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cute/algorithm/gemm.hpp:
 
-/usr/include/x86_64-linux-gnu/bits/posix2_lim.h:
+/usr/local/cuda/targets/x86_64-linux/include/cuda/std/detail/libcxx/include/__type_traits/is_allocator.h:
+
+/home/v-dayoudu/learning/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cute/atom/mma_traits_sm90_gmma.hpp:
+
+/usr/include/stdlib.h:
+
+/usr/include/x86_64-linux-gnu/asm/errno.h:
+
+/home/v-dayoudu/learning/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cutlass/numeric_types.h:
+
+/usr/include/x86_64-linux-gnu/bits/long-double.h:
 
 /usr/local/cuda/targets/x86_64-linux/include/thrust/detail/type_traits/result_of_adaptable_function.h:
 
@@ -3215,8 +3255,6 @@ CMakeFiles/test_single_decode.dir/src/test_single_decode.cu.o: /home/v-dayoudu/l
 /usr/local/cuda/targets/x86_64-linux/include/thrust/system/cuda/detail/guarded_driver_types.h:
 
 /home/v-dayoudu/learning/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cute/arch/copy_sm90_desc.hpp:
-
-/home/v-dayoudu/learning/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cute/atom/copy_traits_sm90_tma.hpp:
 
 /usr/local/cuda/targets/x86_64-linux/include/sm_35_intrinsics.h:
 
@@ -3286,6 +3324,10 @@ CMakeFiles/test_single_decode.dir/src/test_single_decode.cu.o: /home/v-dayoudu/l
 
 /usr/include/c++/11/limits:
 
+/usr/local/cuda/targets/x86_64-linux/include/cuda/std/detail/libcxx/include/__iterator/reverse_access.h:
+
+/usr/local/cuda/targets/x86_64-linux/include/cuda/std/detail/libcxx/include/__utility/forward.h:
+
 /usr/include/c++/11/cinttypes:
 
 /usr/local/cuda/targets/x86_64-linux/include/cub/iterator/cache_modified_input_iterator.cuh:
@@ -3293,12 +3335,6 @@ CMakeFiles/test_single_decode.dir/src/test_single_decode.cu.o: /home/v-dayoudu/l
 /usr/local/cuda/targets/x86_64-linux/include/cuda_fp16.hpp:
 
 /home/v-dayoudu/learning/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cute/algorithm/prefer.hpp:
-
-/usr/local/cuda/targets/x86_64-linux/include/thrust/iterator/detail/is_iterator_category.h:
-
-/usr/local/cuda/targets/x86_64-linux/include/thrust/detail/mismatch.inl:
-
-/usr/include/c++/11/bits/memoryfwd.h:
 
 /home/v-dayoudu/learning/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cute/numeric/math.hpp:
 
@@ -3318,13 +3354,21 @@ CMakeFiles/test_single_decode.dir/src/test_single_decode.cu.o: /home/v-dayoudu/l
 
 /home/v-dayoudu/learning/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cute/arch/mma_sm80.hpp:
 
-/usr/local/cuda/targets/x86_64-linux/include/thrust/random/detail/xor_combine_engine_max.h:
-
-/home/v-dayoudu/learning/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cute/atom/copy_traits_sm80.hpp:
-
 /usr/include/c++/11/ios:
 
 /usr/local/cuda/targets/x86_64-linux/include/cuda/std/detail/__pragma_pop:
+
+/usr/local/cuda/targets/x86_64-linux/include/thrust/system/detail/generic/copy.inl:
+
+/home/v-dayoudu/learning/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cute/atom/mma_traits_sm61.hpp:
+
+/usr/local/cuda/targets/x86_64-linux/include/thrust/system/detail/sequential/partition.h:
+
+/usr/include/x86_64-linux-gnu/bits/mathcalls-helper-functions.h:
+
+/home/v-dayoudu/learning/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cute/algorithm/copy.hpp:
+
+/usr/local/cuda/targets/x86_64-linux/include/cuda/std/detail/libcxx/include/__type_traits/enable_if.h:
 
 /home/v-dayoudu/learning/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cute/container/array_aligned.hpp:
 
@@ -3348,6 +3392,10 @@ CMakeFiles/test_single_decode.dir/src/test_single_decode.cu.o: /home/v-dayoudu/l
 
 /home/v-dayoudu/learning/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cute/pointer_swizzle.hpp:
 
+/home/v-dayoudu/learning/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cute/atom/copy_traits_sm90_tma.hpp:
+
+/home/v-dayoudu/learning/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cutlass/numeric_conversion.h:
+
 /home/v-dayoudu/learning/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cute/tensor_predicate.hpp:
 
 /usr/local/cuda/targets/x86_64-linux/include/cuda/std/detail/libcxx/include/__type_traits/is_base_of.h:
@@ -3363,8 +3411,6 @@ CMakeFiles/test_single_decode.dir/src/test_single_decode.cu.o: /home/v-dayoudu/l
 /usr/include/x86_64-linux-gnu/bits/types/timer_t.h:
 
 /home/v-dayoudu/learning/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cutlass/functional.h:
-
-/usr/include/c++/11/bits/nested_exception.h:
 
 /usr/include/c++/11/istream:
 
@@ -3408,11 +3454,21 @@ CMakeFiles/test_single_decode.dir/src/test_single_decode.cu.o: /home/v-dayoudu/l
 
 /usr/include/c++/11/bits/align.h:
 
+/usr/local/cuda/targets/x86_64-linux/include/thrust/detail/config/forceinline.h:
+
+/home/v-dayoudu/learning/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cutlass/numeric_size.h:
+
+/usr/include/x86_64-linux-gnu/bits/posix1_lim.h:
+
 /usr/local/cuda/targets/x86_64-linux/include/thrust/system/cuda/detail/extrema.h:
 
 /home/v-dayoudu/learning/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cute/arch/copy_sm75.hpp:
 
 /home/v-dayoudu/learning/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cutlass/layout/vector.h:
+
+/usr/local/cuda/targets/x86_64-linux/include/thrust/random/detail/xor_combine_engine_max.h:
+
+/home/v-dayoudu/learning/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cute/atom/copy_traits_sm80.hpp:
 
 /usr/local/cuda/targets/x86_64-linux/include/thrust/detail/execute_with_dependencies.h:
 
@@ -3429,12 +3485,6 @@ CMakeFiles/test_single_decode.dir/src/test_single_decode.cu.o: /home/v-dayoudu/l
 /usr/include/x86_64-linux-gnu/c++/11/bits/gthr-default.h:
 
 /usr/include/c++/11/bits/parse_numbers.h:
-
-/usr/local/cuda/targets/x86_64-linux/include/thrust/system/detail/sequential/adjacent_difference.h:
-
-/usr/local/cuda/targets/x86_64-linux/include/cuda/std/detail/libcxx/include/__concepts/copyable.h:
-
-/home/v-dayoudu/learning/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cutlass/tensor_coord.h:
 
 /usr/local/cuda/targets/x86_64-linux/include/thrust/detail/temporary_array.inl:
 
@@ -3462,9 +3512,25 @@ CMakeFiles/test_single_decode.dir/src/test_single_decode.cu.o: /home/v-dayoudu/l
 
 /usr/local/cuda/targets/x86_64-linux/include/cuda/std/detail/libcxx/include/__type_traits/is_signed.h:
 
+/usr/include/c++/11/cfloat:
+
+/home/v-dayoudu/learning/Cute-Gemm-Optimization/flashdecoding/src/mask.h:
+
+/usr/local/cuda/targets/x86_64-linux/include/thrust/system/detail/generic/uninitialized_fill.inl:
+
+/usr/local/cuda/targets/x86_64-linux/include/cuda/std/detail/libcxx/include/__type_traits/is_trivially_copy_assignable.h:
+
+/usr/local/cuda/targets/x86_64-linux/include/cuda/std/detail/libcxx/include/cstdlib:
+
 /usr/local/cuda/targets/x86_64-linux/include/thrust/system/cuda/detail/swap_ranges.h:
 
 /usr/include/c++/11/bits/locale_conv.h:
+
+/usr/local/cuda/targets/x86_64-linux/include/thrust/detail/allocator/fill_construct_range.inl:
+
+/usr/local/cuda/targets/x86_64-linux/include/cuda/std/detail/libcxx/include/__iterator/move_iterator.h:
+
+/home/v-dayoudu/learning/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cute/algorithm/axpby.hpp:
 
 /usr/local/cuda/targets/x86_64-linux/include/cub/block/block_exchange.cuh:
 
@@ -3618,15 +3684,11 @@ CMakeFiles/test_single_decode.dir/src/test_single_decode.cu.o: /home/v-dayoudu/l
 
 /usr/local/cuda/targets/x86_64-linux/include/cuda/std/detail/libcxx/include/__fwd/array.h:
 
-/usr/local/cuda/targets/x86_64-linux/include/texture_indirect_functions.h:
+/usr/include/x86_64-linux-gnu/bits/local_lim.h:
 
-/home/v-dayoudu/learning/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cute/pointer.hpp:
+/usr/include/x86_64-linux-gnu/bits/locale.h:
 
-/usr/include/c++/11/bits/move.h:
-
-/usr/local/cuda/targets/x86_64-linux/include/cuda/std/detail/libcxx/include/__type_traits/type_identity.h:
-
-/usr/local/cuda/targets/x86_64-linux/include/cub/warp/specializations/warp_scan_shfl.cuh:
+/usr/include/x86_64-linux-gnu/bits/posix2_lim.h:
 
 /usr/include/x86_64-linux-gnu/bits/pthreadtypes.h:
 
@@ -3744,10 +3806,6 @@ CMakeFiles/test_single_decode.dir/src/test_single_decode.cu.o: /home/v-dayoudu/l
 
 /usr/include/x86_64-linux-gnu/bits/typesizes.h:
 
-/usr/local/cuda/targets/x86_64-linux/include/cuda/std/detail/libcxx/include/__utility/forward.h:
-
-/usr/local/cuda/targets/x86_64-linux/include/cuda/std/detail/libcxx/include/__iterator/reverse_access.h:
-
 /usr/local/cuda/targets/x86_64-linux/include/thrust/system/cuda/detail/core/agent_launcher.h:
 
 /usr/local/cuda/targets/x86_64-linux/include/thrust/detail/contiguous_storage.h:
@@ -3856,8 +3914,6 @@ CMakeFiles/test_single_decode.dir/src/test_single_decode.cu.o: /home/v-dayoudu/l
 
 /usr/local/cuda/targets/x86_64-linux/include/crt/host_defines.h:
 
-/usr/local/cuda/targets/x86_64-linux/include/crt/math_functions.hpp:
-
 /home/v-dayoudu/learning/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cute/atom/mma_atom.hpp:
 
 /usr/local/cuda/targets/x86_64-linux/include/crt/sm_70_rt.hpp:
@@ -3879,8 +3935,6 @@ CMakeFiles/test_single_decode.dir/src/test_single_decode.cu.o: /home/v-dayoudu/l
 /usr/local/cuda/targets/x86_64-linux/include/thrust/system/error_code.h:
 
 /usr/local/cuda/targets/x86_64-linux/include/cuda/std/detail/libcxx/include/__type_traits/is_void.h:
-
-/usr/local/cuda/targets/x86_64-linux/include/cuda/std/detail/libcxx/include/__iterator/wrap_iter.h:
 
 /home/v-dayoudu/learning/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cute/atom/copy_atom.hpp:
 
@@ -4318,12 +4372,6 @@ CMakeFiles/test_single_decode.dir/src/test_single_decode.cu.o: /home/v-dayoudu/l
 
 /usr/local/cuda/targets/x86_64-linux/include/cuda/std/detail/libcxx/include/__iterator/advance.h:
 
-/usr/local/cuda/targets/x86_64-linux/include/thrust/system/detail/generic/uninitialized_fill.inl:
-
-/usr/local/cuda/targets/x86_64-linux/include/cuda/std/detail/libcxx/include/__type_traits/is_trivially_copy_assignable.h:
-
-/usr/local/cuda/targets/x86_64-linux/include/cuda/std/detail/libcxx/include/cstdlib:
-
 /usr/local/cuda/targets/x86_64-linux/include/cuda/std/detail/libcxx/include/initializer_list:
 
 /usr/local/cuda/targets/x86_64-linux/include/device_atomic_functions.h:
@@ -4340,24 +4388,6 @@ CMakeFiles/test_single_decode.dir/src/test_single_decode.cu.o: /home/v-dayoudu/l
 
 /usr/local/cuda/targets/x86_64-linux/include/cuda/std/detail/libcxx/include/__iterator/front_insert_iterator.h:
 
+/home/v-dayoudu/learning/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cutlass/transform/thread/unary_op.h:
+
 /usr/local/cuda/targets/x86_64-linux/include/cuda/std/detail/libcxx/include/__iterator/insert_iterator.h:
-
-/usr/local/cuda/targets/x86_64-linux/include/thrust/detail/allocator/fill_construct_range.inl:
-
-/home/v-dayoudu/learning/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cute/algorithm/axpby.hpp:
-
-/usr/local/cuda/targets/x86_64-linux/include/cuda/std/detail/libcxx/include/__iterator/move_iterator.h:
-
-/usr/local/cuda/targets/x86_64-linux/include/cuda/std/detail/libcxx/include/__iterator/ostream_iterator.h:
-
-/usr/include/x86_64-linux-gnu/bits/stdint-intn.h:
-
-/usr/local/cuda/targets/x86_64-linux/include/cuda/std/detail/libcxx/include/__iterator/ostreambuf_iterator.h:
-
-/usr/local/cuda/targets/x86_64-linux/include/cuda/std/detail/libcxx/include/__type_traits/is_unsigned.h:
-
-/usr/local/cuda/targets/x86_64-linux/include/cuda/std/detail/libcxx/include/__iterator/size.h:
-
-/usr/local/cuda/targets/x86_64-linux/include/cuda/std/detail/libcxx/include/__memory/voidify.h:
-
-/usr/local/cuda/targets/x86_64-linux/include/cuda/std/detail/libcxx/include/__type_traits/is_constant_evaluated.h:

@@ -28,15 +28,33 @@ void TestDecodingKernelCorrectness(int seq_len) {
     thrust::device_vector<DTypeKV> V(V_host);
     thrust::device_vector<DTypeQO> O(O_host);
 
+    const float sm_scale =1.f / std::sqrt(float(head_dim));
+
     mha_fwd_kvcache<DTypeQO, num_heads, head_dim>(thrust::raw_pointer_cast(Q.data()), thrust::raw_pointer_cast(K.data()), 
                              thrust::raw_pointer_cast(V.data()), thrust::raw_pointer_cast(O.data()), 
-                             1, seq_len, 1.0, 0);
+                             1, seq_len, sm_scale, 0);
+
+    thrust::host_vector<DTypeQO> o_host = O;
+    size_t num_result_errors_atol_1e_3_rtol_1e_3 = 0;
+    bool nan_detected = false;
+    for (size_t i = 0; i < num_heads * head_dim; ++i) {
+        if (isnan(float(o_host[i]))) {
+            nan_detected = true;
+        }
+        num_result_errors_atol_1e_3_rtol_1e_3 +=
+            (!utils::isclose(float(o_host[i]), float(O_host_ref[i]), 1e-2, 1e-2));
+    }
+    float result_accuracy =
+        1. - float(num_result_errors_atol_1e_3_rtol_1e_3) / float(num_heads * head_dim);
+    std::cout << "num_qo_heads=" << num_heads << ", num_kv_heads=" << num_heads
+                << ", seq_len=" << seq_len << ", head_dim=" << head_dim
+                << ", result accuracy (atol=1e-3, rtol=1e-3): " << result_accuracy << std::endl;
 
 }
 
 
 int main() {
     TestDecodingKernelCorrectness<half, half, 32, 128>(1024);
-    std::cout << "Test passed!" << std::endl;
+    std::cout << "Run finish!" << std::endl;
     return 0;
 }

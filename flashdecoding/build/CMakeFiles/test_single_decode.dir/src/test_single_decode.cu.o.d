@@ -279,8 +279,6 @@ CMakeFiles/test_single_decode.dir/src/test_single_decode.cu.o : /home/v-dayoudu/
     /home/v-dayoudu/learning/Cute-Gemm-Optimization/flashdecoding/src/utils.h \
     /usr/local/cuda/bin/../targets/x86_64-linux/include/cuda_bf16.h \
     /usr/local/cuda/bin/../targets/x86_64-linux/include/cuda_bf16.hpp \
-    /usr/local/cuda/bin/../targets/x86_64-linux/include/cuda_fp8.h \
-    /usr/local/cuda/bin/../targets/x86_64-linux/include/cuda_fp8.hpp \
     /usr/local/cuda/bin/../targets/x86_64-linux/include/thrust/device_vector.h \
     /usr/local/cuda/bin/../targets/x86_64-linux/include/thrust/detail/config.h \
     /usr/local/cuda/bin/../targets/x86_64-linux/include/thrust/version.h \
@@ -1680,18 +1678,6 @@ CMakeFiles/test_single_decode.dir/src/test_single_decode.cu.o : /home/v-dayoudu/
     /usr/local/cuda/bin/../targets/x86_64-linux/include/thrust/random/detail/normal_distribution_base.h \
     /usr/local/cuda/bin/../targets/x86_64-linux/include/thrust/random/detail/normal_distribution.inl \
     /usr/local/cuda/bin/../targets/x86_64-linux/include/math_constants.h \
-    /usr/include/c++/11/random \
-    /usr/include/c++/11/bits/random.h \
-    /usr/include/x86_64-linux-gnu/c++/11/bits/opt_random.h \
-    /usr/include/c++/11/bits/random.tcc \
-    /usr/include/c++/11/numeric \
-    /usr/include/c++/11/bits/stl_numeric.h \
-    /usr/include/c++/11/pstl/glue_numeric_defs.h \
-    /usr/include/c++/11/sstream \
-    /usr/include/c++/11/bits/sstream.tcc \
-    /home/v-dayoudu/learning/Cute-Gemm-Optimization/flashdecoding/src/decode.cuh \
-    /home/v-dayoudu/learning/Cute-Gemm-Optimization/flashdecoding/src/flash.h \
-    /home/v-dayoudu/learning/Cute-Gemm-Optimization/flashdecoding/src/kernel_traits.h \
     /home/v-dayoudu/learning/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cute/tensor.hpp \
     /home/v-dayoudu/learning/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cute/config.hpp \
     /usr/include/c++/11/iomanip \
@@ -1704,6 +1690,8 @@ CMakeFiles/test_single_decode.dir/src/test_single_decode.cu.o : /home/v-dayoudu/
     /usr/include/c++/11/bits/locale_facets_nonio.tcc \
     /usr/include/c++/11/bits/locale_conv.h \
     /usr/include/c++/11/bits/quoted_string.h \
+    /usr/include/c++/11/sstream \
+    /usr/include/c++/11/bits/sstream.tcc \
     /home/v-dayoudu/learning/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cute/util/type_traits.hpp \
     /home/v-dayoudu/learning/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cute/numeric/numeric_types.hpp \
     /home/v-dayoudu/learning/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cutlass/numeric_types.h \
@@ -1716,6 +1704,8 @@ CMakeFiles/test_single_decode.dir/src/test_single_decode.cu.o : /home/v-dayoudu/
     /home/v-dayoudu/learning/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cutlass/integer_subbyte.h \
     /home/v-dayoudu/learning/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cutlass/half.h \
     /home/v-dayoudu/learning/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cutlass/float8.h \
+    /usr/local/cuda/bin/../targets/x86_64-linux/include/cuda_fp8.h \
+    /usr/local/cuda/bin/../targets/x86_64-linux/include/cuda_fp8.hpp \
     /home/v-dayoudu/learning/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cutlass/bfloat16.h \
     /home/v-dayoudu/learning/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cutlass/tfloat32.h \
     /home/v-dayoudu/learning/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cutlass/uint128.h \
@@ -1802,6 +1792,22 @@ CMakeFiles/test_single_decode.dir/src/test_single_decode.cu.o : /home/v-dayoudu/
     /home/v-dayoudu/learning/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cute/algorithm/gemm.hpp \
     /home/v-dayoudu/learning/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cute/algorithm/cooperative_copy.hpp \
     /home/v-dayoudu/learning/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cute/algorithm/cooperative_gemm.hpp \
+    /home/v-dayoudu/learning/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cutlass/numeric_conversion.h \
+    /usr/include/c++/11/cfenv \
+    /usr/include/c++/11/fenv.h \
+    /usr/include/fenv.h \
+    /usr/include/x86_64-linux-gnu/bits/fenv.h \
+    /home/v-dayoudu/learning/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cutlass/transform/thread/unary_op.h \
+    /usr/include/c++/11/random \
+    /usr/include/c++/11/bits/random.h \
+    /usr/include/x86_64-linux-gnu/c++/11/bits/opt_random.h \
+    /usr/include/c++/11/bits/random.tcc \
+    /usr/include/c++/11/numeric \
+    /usr/include/c++/11/bits/stl_numeric.h \
+    /usr/include/c++/11/pstl/glue_numeric_defs.h \
+    /home/v-dayoudu/learning/Cute-Gemm-Optimization/flashdecoding/src/decode.cuh \
+    /home/v-dayoudu/learning/Cute-Gemm-Optimization/flashdecoding/src/flash.h \
+    /home/v-dayoudu/learning/Cute-Gemm-Optimization/flashdecoding/src/kernel_traits.h \
     /home/v-dayoudu/learning/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cutlass/layout/layout.h \
     /home/v-dayoudu/learning/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cutlass/matrix_coord.h \
     /home/v-dayoudu/learning/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cutlass/layout/matrix.h \
@@ -1814,4 +1820,6 @@ CMakeFiles/test_single_decode.dir/src/test_single_decode.cu.o : /home/v-dayoudu/
     /home/v-dayoudu/learning/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cutlass/layout/tensor_op_multiplicand_sm75.h \
     /home/v-dayoudu/learning/Cute-Gemm-Optimization/flashdecoding/src/block_info.h \
     /home/v-dayoudu/learning/Cute-Gemm-Optimization/flashdecoding/src/softmax.h \
-    /home/v-dayoudu/learning/Cute-Gemm-Optimization/flashdecoding/src/philox.cuh
+    /home/v-dayoudu/learning/Cute-Gemm-Optimization/flashdecoding/src/philox.cuh \
+    /home/v-dayoudu/learning/Cute-Gemm-Optimization/flashdecoding/src/mask.h \
+    /home/v-dayoudu/learning/Cute-Gemm-Optimization/flashdecoding/src/static_switch.h

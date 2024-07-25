@@ -15,12 +15,18 @@ void TestDecodingKernelCorrectness(int seq_len) {
     std::vector<DTypeQO> O_host(num_heads * head_dim);
     std::vector<DTypeQO> O_host_ref;
 
-    utils::vec_normal_(Q_host, 0, 1, 0);
+    utils::vec_normal_(Q_host, 0, 1, 1);
     utils::vec_normal_(K_host, 0, 1, 1);
     utils::vec_normal_(V_host, 0, 1, 2);
     utils::vec_zero_(O_host);
     
     O_host_ref = cpu_reference::single_mha<DTypeQO, DTypeKV, DTypeQO>(Q_host, K_host, V_host, 1, seq_len, num_heads, head_dim);
+
+    std::cout << "O_host_ref" << std::endl;
+    for (int i = 0; i < head_dim; ++i) {
+        std::cout << O_host_ref[i] << " ";
+    }
+    std::cout << std::endl;
 
     /* CUDA Device */
     thrust::device_vector<DTypeQO> Q(Q_host);
@@ -31,10 +37,17 @@ void TestDecodingKernelCorrectness(int seq_len) {
     const float sm_scale =1.f / std::sqrt(float(head_dim));
 
     mha_fwd_kvcache<DTypeQO, num_heads, head_dim>(thrust::raw_pointer_cast(Q.data()), thrust::raw_pointer_cast(K.data()), 
-                             thrust::raw_pointer_cast(V.data()), thrust::raw_pointer_cast(O.data()), 
+                             thrust::raw_pointer_cast(V.data()), thrust::raw_pointer_cast(O.data()),
                              1, seq_len, sm_scale, 0);
-
+    
     thrust::host_vector<DTypeQO> o_host = O;
+
+    std::cout << "O_host" << std::endl;
+    for (int i = 0; i < head_dim; ++i) {
+        std::cout << o_host[i] << " ";
+    }
+    std::cout << std::endl;
+
     size_t num_result_errors_atol_1e_3_rtol_1e_3 = 0;
     bool nan_detected = false;
     for (size_t i = 0; i < num_heads * head_dim; ++i) {
@@ -54,7 +67,7 @@ void TestDecodingKernelCorrectness(int seq_len) {
 
 
 int main() {
-    TestDecodingKernelCorrectness<half, half, 32, 128>(1024);
+    TestDecodingKernelCorrectness<cutlass::half_t, cutlass::half_t, 32, 128>(1024);
     std::cout << "Run finish!" << std::endl;
     return 0;
 }

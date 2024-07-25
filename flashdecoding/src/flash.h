@@ -2,6 +2,8 @@
 
 #include <cuda.h>
 #include <vector>
+#include <thrust/device_vector.h>
+#include <thrust/host_vector.h>
 
 struct Qkv_params {
     using index_t = int64_t;
@@ -31,6 +33,7 @@ struct Flash_fwd_params : public Qkv_params {
 
     // The O matrix (output).
     void * __restrict__ o_ptr;
+    thrust::device_vector<float> out_accum;
     void * __restrict__ oaccum_ptr;
 
     // The stride between rows of O.
@@ -43,6 +46,12 @@ struct Flash_fwd_params : public Qkv_params {
     int seqlen_q;
     int seqlen_k;
     int d;
+
+    // The pointer to the softmax sum.
+    thrust::device_vector<float> softmax_lse;
+    void * __restrict__ softmax_lse_ptr;
+    thrust::device_vector<float> softmax_lse_accum;
+    void * __restrict__ softmax_lseaccum_ptr;
 
     // The scaling factors for the kernel.
     float scale_softmax;

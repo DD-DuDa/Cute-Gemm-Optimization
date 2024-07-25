@@ -1,0 +1,6 @@
+CompileFlags:
+  Add: [--cuda-gpu-arch=sm_80]
+  Remove:
+    - -forward-unknown-to-host-compiler
+    - --generate-code*
+    - -expt-relaxed-constexpr

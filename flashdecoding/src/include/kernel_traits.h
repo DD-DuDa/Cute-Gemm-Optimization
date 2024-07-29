@@ -1,3 +1,7 @@
+/******************************************************************************
+ * Copyright (c) 2024, Tri Dao.
+ ******************************************************************************/
+
 #pragma once
 
 #include "cute/tensor.hpp"
@@ -10,20 +14,39 @@ using namespace cute;
 
 template<int kHeadDim_, int kBlockM_, int kBlockN_, int kNWarps_, typename elem_type=cutlass::half_t>
 struct Flash_kernel_traits {
+
+#if defined(__CUDA_ARCH__) &&  __CUDA_ARCH__ >= 800
     using Element = elem_type;
     static constexpr bool Has_cp_async = true;
+#else
+    using Element = cutlass::half_t;
+    static constexpr bool Has_cp_async = false;
+#endif
 
     using ElementAccum = float;
-    using index_t = uint32_t;
+    using index_t = int64_t;
 
-    using MMA_Atom_Arch = MMA_Atom<SM80_16x8x16_F32F16F16F32_TN>;
+#if defined(__CUDA_ARCH__) &&  __CUDA_ARCH__ >= 800
+    using MMA_Atom_Arch = std::conditional_t<
+        std::is_same_v<elem_type, cutlass::half_t>,
+        MMA_Atom<SM80_16x8x16_F32F16F16F32_TN>,
+        MMA_Atom<SM80_16x8x16_F32BF16BF16F32_TN>
+    >;
+#else
+    using MMA_Atom_Arch = MMA_Atom<SM75_16x8x8_F32F16F16F32_TN>;
+#endif
 
+#if defined(__CUDA_ARCH__) &&  __CUDA_ARCH__ >= 750
     using SmemCopyAtom = Copy_Atom<SM75_U32x4_LDSM_N, elem_type>;
     using SmemCopyAtomTransposed = Copy_Atom<SM75_U16x8_LDSM_T, elem_type>;
+#else
+    using SmemCopyAtom = Copy_Atom<DefaultCopy, elem_type>;
+    using SmemCopyAtomTransposed = Copy_Atom<DefaultCopy, elem_type>;
+#endif
 };
 
 // If Share_Q_K_smem is true, that forces Is_Q_in_regs to be true
-template<int kHeadDim_, int kBlockM_, int kBlockN_, int kNWarps_, typename elem_type=cutlass::half_t,
+template<int kHeadDim_, int kBlockM_, int kBlockN_, int kNWarps_, bool Is_Q_in_regs_=false, bool Share_Q_K_smem_=false, typename elem_type=cutlass::half_t,
          typename Base=Flash_kernel_traits<kHeadDim_, kBlockM_, kBlockN_, kNWarps_, elem_type> >
 struct Flash_fwd_kernel_traits : public Base {
     using Element = typename Base::Element;
@@ -33,6 +56,9 @@ struct Flash_fwd_kernel_traits : public Base {
     using SmemCopyAtom = typename Base::SmemCopyAtom;
     using SmemCopyAtomTransposed = typename Base::SmemCopyAtomTransposed;
 
+    static constexpr bool Share_Q_K_smem = Share_Q_K_smem_;
+    static constexpr bool Is_Q_in_regs = Is_Q_in_regs_ || Share_Q_K_smem;
+
     // The number of threads.
     static constexpr int kNWarps = kNWarps_;
     static constexpr int kNThreads = kNWarps * 32;
@@ -40,7 +66,6 @@ struct Flash_fwd_kernel_traits : public Base {
     static constexpr int kBlockM = kBlockM_;
     static constexpr int kBlockN = kBlockN_;
     static constexpr int kHeadDim = kHeadDim_;
-
     static_assert(kHeadDim % 32 == 0);
     static constexpr int kBlockKSmem = kHeadDim % 64 == 0 ? 64 : 32;
     static constexpr int kBlockKGmem = kHeadDim % 128 == 0 ? 128 : (kHeadDim % 64 == 0 ? 64 : 32);
@@ -81,7 +106,7 @@ struct Flash_fwd_kernel_traits : public Base {
 
     static constexpr int kSmemQSize = size(SmemLayoutQ{}) * sizeof(Element);
     static constexpr int kSmemKVSize = size(SmemLayoutKV{}) * 2 * sizeof(Element);
-    static constexpr int kSmemSize = kSmemQSize + kSmemKVSize;
+    static constexpr int kSmemSize = Share_Q_K_smem ? std::max(kSmemQSize, kSmemKVSize) : kSmemQSize + kSmemKVSize;
 
     static constexpr int kGmemElemsPerLoad = sizeof(cute::uint128_t) / sizeof(Element);
     static_assert(kHeadDim % kGmemElemsPerLoad == 0, "kHeadDim must be a multiple of kGmemElemsPerLoad");
@@ -122,4 +147,15 @@ struct Flash_fwd_kernel_traits : public Base {
         make_tiled_copy(Copy_Atom<DefaultCopy, ElementAccum>{},
                         GmemLayoutAtomOaccum{},
                         Layout<Shape < _1, _4>>{}));  // Val layout, 4 vals per store
+    using GmemLayoutAtomRotcossin = GmemLayoutAtom;
+    using GmemTiledCopyRotcossin = decltype(
+        make_tiled_copy(Copy_Atom<UniversalCopy<uint64_t>, Element>{},
+                        GmemLayoutAtomRotcossin{},
+                        Layout<Shape < _1, _4>>{}));  // Val layout, 4 vals per load
+    using GmemTiledCopyRotcossinCont = decltype(
+        make_tiled_copy(Copy_Atom<DefaultCopy, Element>{},
+                        GmemLayoutAtomRotcossin{},
+                        Layout<Shape < _1, _8>>{}));  // Val layout, 8 vals per load
 };
+
+////////////////////////////////////////////////////////////////////////////////////////////////////

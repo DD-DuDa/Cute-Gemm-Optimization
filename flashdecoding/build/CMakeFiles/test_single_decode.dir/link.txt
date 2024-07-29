@@ -1,1 +1,0 @@
-/usr/bin/g++ @CMakeFiles/test_single_decode.dir/objects1.rsp -o test_single_decode @CMakeFiles/test_single_decode.dir/linkLibs.rsp -L"/usr/local/cuda/targets/x86_64-linux/lib/stubs" -L"/usr/local/cuda/targets/x86_64-linux/lib"

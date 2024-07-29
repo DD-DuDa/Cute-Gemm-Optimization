@@ -1,60 +1,68 @@
-#include <iostream>
-#include <cuda_fp16.h> // for __half (if using CUDA's half type)
-#include "cpu_reference.h"
-#include "utils.h"
-#include "decode.cuh"
+#include "flash_api.h"
+#include <cstdio>
 
-template <typename DTypeQO, typename DTypeKV, int num_heads, int head_dim>
-void TestDecodingKernelCorrectness(int seq_len) {
-    // shape of Q: (1, 1, num_heads, head_dim)
-    // shape of KV: (1, seq_len, num_heads, head_dim)
-
-    std::vector<DTypeQO> Q_host(num_heads * head_dim);
-    std::vector<DTypeKV> K_host(seq_len * num_heads * head_dim);
-    std::vector<DTypeKV> V_host(seq_len * num_heads * head_dim);
-    std::vector<DTypeQO> O_host(num_heads * head_dim);
-    std::vector<DTypeQO> O_host_ref;
-
-    utils::vec_normal_(Q_host, 0, 1, 0);
-    utils::vec_normal_(K_host, 0, 1, 1);
-    utils::vec_normal_(V_host, 0, 1, 2);
-    utils::vec_zero_(O_host);
-    
-    O_host_ref = cpu_reference::single_mha<DTypeQO, DTypeKV, DTypeQO>(Q_host, K_host, V_host, 1, seq_len, num_heads, head_dim);
-
-    /* CUDA Device */
-    thrust::device_vector<DTypeQO> Q(Q_host);
-    thrust::device_vector<DTypeKV> K(K_host);
-    thrust::device_vector<DTypeKV> V(V_host);
-    thrust::device_vector<DTypeQO> O(O_host);
-
-    const float sm_scale =1.f / std::sqrt(float(head_dim));
-
-    mha_fwd_kvcache<DTypeQO, num_heads, head_dim>(thrust::raw_pointer_cast(Q.data()), thrust::raw_pointer_cast(K.data()), 
-                             thrust::raw_pointer_cast(V.data()), thrust::raw_pointer_cast(O.data()), 
-                             1, seq_len, sm_scale, 0);
-
-    thrust::host_vector<DTypeQO> o_host = O;
-    size_t num_result_errors_atol_1e_3_rtol_1e_3 = 0;
-    bool nan_detected = false;
-    for (size_t i = 0; i < num_heads * head_dim; ++i) {
-        if (isnan(float(o_host[i]))) {
-            nan_detected = true;
+template <typename T, typename U>
+bool all_close(T *A, U *B, int total_size, float tolerance = 1e-2) {
+    for (int i = 0; i < total_size; i++) {
+        if (fabs(A[i] - B[i]) > tolerance) {
+            printf("A[%d] = %f, B[%d] = %f\n", i, A[i], i, (float)B[i]);
+            return false;
         }
-        num_result_errors_atol_1e_3_rtol_1e_3 +=
-            (!utils::isclose(float(o_host[i]), float(O_host_ref[i]), 1e-2, 1e-2));
     }
-    float result_accuracy =
-        1. - float(num_result_errors_atol_1e_3_rtol_1e_3) / float(num_heads * head_dim);
-    std::cout << "num_qo_heads=" << num_heads << ", num_kv_heads=" << num_heads
-                << ", seq_len=" << seq_len << ", head_dim=" << head_dim
-                << ", result accuracy (atol=1e-3, rtol=1e-3): " << result_accuracy << std::endl;
-
+    return true;
 }
 
+torch::Tensor single_mha(torch::Tensor& q, torch::Tensor& k, torch::Tensor& v, int head_dim) {
+    const float sm_scale = 1.f / std::sqrt(float(head_dim));
+    auto scaled_q = q * sm_scale;
+    auto scores = torch::einsum("bthd,bshd->bhts", {scaled_q, k});
+    auto attention = torch::softmax(scores, -1).to(v.dtype());
+    auto output = torch::einsum("bhts,bshd->bthd", {attention, v});
+    return output;
+}
+
+template <int num_heads, int head_dim>
+void TestDecodingKernelCorrectness(int seqlen_kv) {
+    const int bs = 1;
+    const int seqlen_q = 1;
+
+    torch::Tensor Q_host = torch::randn({bs, seqlen_q, num_heads, head_dim}, torch::dtype(torch::kHalf));
+    torch::Tensor K_host = torch::randn({bs, seqlen_kv, num_heads, head_dim}, torch::dtype(torch::kHalf));
+    torch::Tensor V_host = torch::randn({bs, seqlen_kv, num_heads, head_dim}, torch::dtype(torch::kHalf));
+
+    torch::Tensor Q_device = Q_host.to(torch::kCUDA);
+    torch::Tensor K_device = K_host.to(torch::kCUDA);
+    torch::Tensor V_device = V_host.to(torch::kCUDA);
+
+    c10::optional<const at::Tensor> none = c10::nullopt;
+    c10::optional<at::Tensor> none1 = c10::nullopt;
+
+    // mha_fwd_kvcache
+    const float sm_scale = 1 / std::sqrt(float(head_dim));
+    torch::Tensor out = mha_fwd_kvcache(Q_device, K_device, V_device, sm_scale);
+    torch::Tensor out_cpu = out.to(torch::kCPU);
+
+    // CPU reference
+    torch::Tensor out_ref = single_mha(Q_host, K_host, V_host, head_dim);
+
+    // Compute the difference
+    torch::Tensor diff = out_cpu - out_ref;
+    float mean_absolute_error = diff.abs().mean().item<float>();
+    float mean_squared_error = diff.pow(2).mean().item<float>();
+
+    printf("num_heads: %d seqlen_kv: %d head_dim: %d \n", num_heads, seqlen_kv, head_dim);
+    if (mean_absolute_error < 2e-2 && mean_squared_error < 2e-2) {
+        printf("test pass ! \n");
+    } else {
+        printf("test fail ! \n");
+    }
+        
+}
 
 int main() {
-    TestDecodingKernelCorrectness<half, half, 32, 128>(1024);
-    std::cout << "Run finish!" << std::endl;
+    const int num_heads = 32;
+    const int head_dim = 128;
+    const int seqlen_kv = 1024;
+    TestDecodingKernelCorrectness<num_heads, head_dim>(seqlen_kv);
     return 0;
 }

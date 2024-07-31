@@ -138,8 +138,8 @@ __forceinline__ __device__ void gemm(Tensor0 &acc, Tensor1 &tCrA, Tensor2 &tCrB,
                             Tensor4 const& tCsB, TiledMma tiled_mma,
                             TiledCopyA smem_tiled_copy_A, TiledCopyB smem_tiled_copy_B,
                             ThrCopyA smem_thr_copy_A, ThrCopyB smem_thr_copy_B) {
-    CUTE_STATIC_ASSERT_V(size<1>(tCrA) == size<1>(acc));                     // MMA_M
-    CUTE_STATIC_ASSERT_V(size<1>(tCrB) == size<2>(acc));                     // MMA_N
+    CUTE_STATIC_ASSERT_V(size<1>(tCrA) == size<1>(acc));                      // MMA_M
+    CUTE_STATIC_ASSERT_V(size<1>(tCrB) == size<2>(acc));                      // MMA_N
     CUTE_STATIC_ASSERT_V(size<2>(tCrA) == size<2>(tCrB));                     // MMA_K
     Tensor tCrA_copy_view = smem_thr_copy_A.retile_D(tCrA);
     CUTE_STATIC_ASSERT_V(size<1>(tCsA) == size<1>(tCrA_copy_view));            // M
@@ -319,43 +319,6 @@ __forceinline__ __device__ void copy(TiledCopy tiled_copy, Tensor<Engine0, Layou
             cute::clear(D(_, m, _));
         }
     }
-    // TD [2023-04-13]: Strange that the code below can cause race condition.
-    // I think it's because the copies are under an if statement.
-    // if (Is_even_K) {
-    //     #pragma unroll
-    //     for (int m = 0; m < size<1>(S); ++m) {
-    //         if (Is_even_MN || get<0>(identity_MN(0, m, 0)) < max_MN) {
-    //             copy(tiled_copy, S(_, m, _), D(_, m, _));
-    //         } else if (Clear_OOB_MN) {
-    //             clear(D(_, m, _));
-    //         }
-    //     }
-    // } else {  // It's slightly faster in this case if iterate over K first
-    //     #pragma unroll
-    //     for (int k = 0; k < size<2>(S); ++k) {
-    //         if (predicate_K(k)) {
-    //             #pragma unroll
-    //             for (int m = 0; m < size<1>(S); ++m) {
-    //                 if (Is_even_MN || get<0>(identity_MN(0, m, 0)) < max_MN) {
-    //                     copy(tiled_copy, S(_, m, k), D(_, m, k));
-    //                 } else if (Clear_OOB_MN) {
-    //                     clear(D(_, m, k));
-    //                 }
-    //             }
-    //         } else if (Clear_OOB_K) {  // There's no case where !Clear_OOB_K && Clear_OOB_MN
-    //             if (Clear_OOB_MN || Is_even_MN) {
-    //                 clear(D(_, _, k));
-    //             } else {
-    //                 #pragma unroll
-    //                 for (int m = 0; m < size<1>(S); ++m) {
-    //                     if (!(Is_even_MN || get<0>(identity_MN(0, m, 0)) < max_MN)) {
-    //                         clear(D(_, m, k));
-    //                     }
-    //                 }
-    //             }
-    //         }
-    //     }
-    // }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////

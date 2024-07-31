@@ -1,0 +1,1 @@
+-I"/home/v-dayoudu/learning/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include" -isystem "/home/v-dayoudu/downloads/libtorch/include" -isystem "/home/v-dayoudu/downloads/libtorch/include/torch/csrc/api/include" -isystem /usr/local/cuda/include

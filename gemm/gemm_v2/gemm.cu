@@ -92,27 +92,17 @@ __global__ void gemm_shm_v2(const T *Aptr, const T *Bptr, T *Dptr, int m, int n,
     auto tCrB_view = s2r_thr_copy_b.retile_D(tCrB); // (CPY, CPY_N, CPY_K)
 
 
-//   if (threadIdx.x == 0 && blockIdx.x == 0 && blockIdx.y == 0)
-//   {
+    if (threadIdx.x == 0 && blockIdx.x == 0 && blockIdx.y == 0)
+    {
 
-//     PRINT("tCrA", tCrA.shape())   
-//     PRINT("tCrB", tCrB.shape())   
+        PRINT("sA", sA.shape())   
+        PRINT("tAsA", tAsA.shape())   
+        PRINT("tCrA_view", tCrA_view.shape())    
 
-//       PRINT("tAgA_copy", tAgA_copy.shape())     
-//       PRINT("tAsA_copy", tAsA_copy.shape())
-//       // print(layout<0>(tAgA));
-//       // PRINT("tArA", tArA.shape()) 
-//       PRINT("tBgB_copy", tBgB_copy.shape())     
-//       PRINT("tBsB_copy", tBsB_copy.shape())
-
-//       PRINT("tAsA", tAsA.shape())     
-//       PRINT("tCrA_view", tCrA_view.shape()) 
-//       // print(layout<0>(tBgB));
-//       // PRINT("tBrB", tBrB.shape()) 
-
-//       PRINT("tBsB", tBsB.shape())     
-//       PRINT("tCrB_view", tCrB_view.shape()) 
-//   }
+        PRINT("sB", sB.shape())
+        PRINT("tBsB", tBsB.shape())
+        PRINT("tCrB_view", tCrB_view.shape()) 
+    }
 
   // loop over k: i. load tile, ii. mma
   int ntile = k / BK;
@@ -329,35 +319,35 @@ int main() {
 
     printf("\nalgo = Cute_HGEMM_V2\n");
 
-    const int M = 256, N = 256, K = 256;
+    const int M = 1024, N = 1024, K = 1024;
     float max_error = testF16F16GemmMaxError<T>(
         gemm_v2, M, N, K);
     printf("Max Error = %f\n", max_error);
 
     // double this_sec = testF16F16GemmPerformance<T>(
     //     gemm_v2, 8192, 8192, 8192, inner_repeat);
-    for (int j = 0; j < test_num; j++) {
-        int M = M_list[j], N = N_list[j], K = K_list[j];
+    // for (int j = 0; j < test_num; j++) {
+    //     int M = M_list[j], N = N_list[j], K = K_list[j];
 
-        double max_sec = 0.0;
-        double min_sec = DBL_MAX;
-        double total_sec = 0.0;
+    //     double max_sec = 0.0;
+    //     double min_sec = DBL_MAX;
+    //     double total_sec = 0.0;
 
-        for (int k = 0; k < outer_repeat; k++) {
-            double this_sec = testF16F16GemmPerformance<T>(
-                gemm_v2, M, N, K, inner_repeat);
-            max_sec = max(max_sec, this_sec);
-            min_sec = min(min_sec, this_sec);
-            total_sec += this_sec;
-        }
+    //     for (int k = 0; k < outer_repeat; k++) {
+    //         double this_sec = testF16F16GemmPerformance<T>(
+    //             gemm_v2, M, N, K, inner_repeat);
+    //         max_sec = max(max_sec, this_sec);
+    //         min_sec = min(min_sec, this_sec);
+    //         total_sec += this_sec;
+    //     }
 
-        double avg_sec = total_sec / outer_repeat;
-        double avg_Gflops = ((double)M) * N * K * 2 / 1024 / 1024 / 1024 / avg_sec;
+    //     double avg_sec = total_sec / outer_repeat;
+    //     double avg_Gflops = ((double)M) * N * K * 2 / 1024 / 1024 / 1024 / avg_sec;
 
-        printf("M N K = %6d %6d %6d, ", M, N, K);
-        printf("Time = %12.8lf %12.8lf %12.8lf s, ", min_sec, avg_sec, max_sec);
-        printf("AVG Performance = %10.4lf Gflops\n", avg_Gflops);
-    }
+    //     printf("M N K = %6d %6d %6d, ", M, N, K);
+    //     printf("Time = %12.8lf %12.8lf %12.8lf s, ", min_sec, avg_sec, max_sec);
+    //     printf("AVG Performance = %10.4lf Gflops\n", avg_Gflops);
+    // }
 
     return 0;
 }

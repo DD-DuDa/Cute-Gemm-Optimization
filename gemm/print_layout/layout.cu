@@ -11,7 +11,11 @@ int main() {
     TiledMMA mma = make_tiled_mma(SM80_16x8x16_F32F16F16F32_TN{},
                                   Layout<Shape<_4, _1, _1>>{},
                                   Tile<Int<16 * 4>, _16, _16>{});           // Tiler
-    print_latex(mma);
+    // print_latex(mma);
+
+    auto tSsK_shape = make_shape(_1{},_8{},_8{});
+    print_latex(tSsK_shape);
+
 
     return 0;
 }

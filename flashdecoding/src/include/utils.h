@@ -22,6 +22,11 @@
 #include <cutlass/numeric_types.h>
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
+#define PRINT(name, content) \
+    print(name);             \
+    print(" : ");            \
+    print(content);          \
+    print("\n");
 
 namespace flash {
 
@@ -147,6 +152,17 @@ __forceinline__ __device__ void gemm(Tensor0 &acc, Tensor1 &tCrA, Tensor2 &tCrB,
     CUTE_STATIC_ASSERT_V(size<1>(tCsB) == size<1>(tCrB_copy_view));            // N
     if (!A_in_regs) { cute::copy(smem_tiled_copy_A, tCsA(_, _, _0{}), tCrA_copy_view(_, _, _0{})); }
     if (!B_in_regs) { cute::copy(smem_tiled_copy_B, tCsB(_, _, _0{}), tCrB_copy_view(_, _, _0{})); }
+    
+    if (threadIdx.x == 0 && blockIdx.x == 0 && blockIdx.y == 0 && blockIdx.z == 0) {
+        PRINT("tCsB", tCsB.shape())           // ((_2,_2),(_16)):((_1,_2),(_4))
+        print_tensor(tCsB(_, _, _0{}));
+        PRINT("tCrB_copy_view", tCrB_copy_view.shape())
+        print_tensor(tCrB_copy_view(_, _, _0{}));
+        PRINT("tCrB", tCrB.shape())
+        print_tensor(tCrB(_, _, _0{}));
+    }
+    
+
     #pragma unroll
     for (int i = 0; i < size<2>(tCrA); ++i) {
         if (i < size<2>(tCrA) - 1) {
@@ -155,6 +171,25 @@ __forceinline__ __device__ void gemm(Tensor0 &acc, Tensor1 &tCrA, Tensor2 &tCrB,
         }
         cute::gemm(tiled_mma, tCrA(_, _, i), tCrB(_, _, i), acc);
     }
+
+    // __syncthreads();
+    // if (threadIdx.x == 0 && blockIdx.x == 0 && blockIdx.y == 0 && blockIdx.z == 0) {
+        // printf("tCrA_copy_view :\n");
+        // print_tensor(tCrA_copy_view(_, _, _0{}));
+        // printf("\n");
+        // printf("tCrA :\n");
+        // print_tensor(tCrA(_, _, _0{}));
+        // printf("\n");
+        // printf("tCsB :\n");
+        // print_tensor(tCsB(_, _, _0{}));
+        // printf("tCrB_copy_view :\n");
+        // print_tensor(tCrB_copy_view(_, _, _0{}));
+        // printf("\n");
+        // printf("tCrB :\n");
+        // print_tensor(tCrB(_, _, _0{}));
+        // printf("tCrB :\n");
+        // print_tensor(tCrB(_, _, _0{}));
+    // }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -170,6 +205,24 @@ __forceinline__ __device__ void gemm_rs(Tensor0 &acc, Tensor1 &tCrA, Tensor2 &tC
     Tensor tCrB_copy_view = smem_thr_copy_B.retile_D(tCrB);
     CUTE_STATIC_ASSERT_V(size<1>(tCsB) == size<1>(tCrB_copy_view));            // N
     cute::copy(smem_tiled_copy_B, tCsB(_, _, _0{}), tCrB_copy_view(_, _, _0{}));
+
+    // __syncthreads();
+    // if (threadIdx.x == 0 && blockIdx.x == 0 && blockIdx.y == 0 && blockIdx.z == 0) {
+    //     // printf("tCrA_copy_view :\n");
+    //     // print_tensor(tCrA_copy_view(_, _, _0{}));
+    //     // printf("\n");
+    //     // printf("tCrA :\n");
+    //     // print_tensor(tCrA(_, _, _0{}));
+    //     // printf("\n");
+    //     printf("tCsB :\n");
+    //     print_tensor(tCsB(_, _, _0{}));
+    //     printf("tCrB_copy_view :\n");
+    //     print_tensor(tCrB_copy_view(_, _, _0{}));
+    //     printf("\n");
+    //     printf("tCrB :\n");
+    //     print_tensor(tCrB(_, _, _0{}));
+    // }
+
     #pragma unroll
     for (int i = 0; i < size<2>(tCrA); ++i) {
         if (i < size<2>(tCrA) - 1) {
@@ -177,6 +230,8 @@ __forceinline__ __device__ void gemm_rs(Tensor0 &acc, Tensor1 &tCrA, Tensor2 &tC
         }
         cute::gemm(tiled_mma, tCrA(_, _, i), tCrB(_, _, i), acc);
     }
+
+    
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////

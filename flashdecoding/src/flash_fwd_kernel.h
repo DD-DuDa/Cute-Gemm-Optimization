@@ -18,11 +18,7 @@
 #include "include/dropout.h"
 #include "include/rotary.h"
 
-#define PRINT(name, content) \
-    print(name);             \
-    print(" : ");            \
-    print(content);          \
-    print("\n");
+
 
 
 namespace flash {
@@ -569,18 +565,23 @@ inline __device__ void compute_attn_1rowblock_splitkv(const Params &params, cons
     // Shared memory tensors
     Tensor sQ = make_tensor(make_smem_ptr(reinterpret_cast<Element *>(smem_)),
                             typename Kernel_traits::SmemLayoutQ{});
-    Tensor sK = make_tensor(sQ.data() + size(sQ), typename Kernel_traits::SmemLayoutKV{});
+    Tensor sK = make_tensor(sQ.data() + size(sQ), typename Kernel_traits::SmemLayoutKV_i4{});
     Tensor sV = make_tensor(sK.data() + size(sK), typename Kernel_traits::SmemLayoutKV{});
     Tensor sVt = make_tensor(sV.data(), typename Kernel_traits::SmemLayoutVtransposed{});
     Tensor sVtNoSwizzle = make_tensor(sV.data().get(), typename Kernel_traits::SmemLayoutVtransposedNoSwizzle{});
 
     // Copy, global memory to shared memory
     typename Kernel_traits::GmemTiledCopyQKV gmem_tiled_copy_QKV;
+    typename Kernel_traits::GmemTiledCopyKV_i4 gmem_tiled_copy_KV_i4;
+
     auto gmem_thr_copy_QKV = gmem_tiled_copy_QKV.get_thread_slice(tidx);
     Tensor tQgQ = gmem_thr_copy_QKV.partition_S(gQ);
     Tensor tQsQ = gmem_thr_copy_QKV.partition_D(sQ);
-    Tensor tKgK = gmem_thr_copy_QKV.partition_S(gK);  // (KCPY, KCPY_N, KCPY_K)
-    Tensor tKsK = gmem_thr_copy_QKV.partition_D(sK);
+
+    auto gmem_thr_copy_KV_i4 = gmem_tiled_copy_KV_i4.get_thread_slice(tidx);
+    Tensor tKgK = gmem_thr_copy_KV_i4.partition_S(gK);  // (KCPY, KCPY_N, KCPY_K)
+    Tensor tKsK = gmem_thr_copy_KV_i4.partition_D(sK);
+
     Tensor tVgV = gmem_thr_copy_QKV.partition_S(gV);  // (VCPY, VCPY_N, VCPY_K)
     Tensor tVsV = gmem_thr_copy_QKV.partition_D(sV);
 
@@ -598,7 +599,7 @@ inline __device__ void compute_attn_1rowblock_splitkv(const Params &params, cons
     auto smem_thr_copy_Q = smem_tiled_copy_Q.get_thread_slice(tidx);
     Tensor tSsQ = smem_thr_copy_Q.partition_S(sQ);
 
-    auto smem_tiled_copy_K = make_tiled_copy_B(typename Kernel_traits::SmemCopyAtom{}, tiled_mma);
+    auto smem_tiled_copy_K = make_tiled_copy_B(typename Kernel_traits::SmemCopyAtom_i4{}, tiled_mma);
     auto smem_thr_copy_K = smem_tiled_copy_K.get_thread_slice(tidx);
     Tensor tSsK = smem_thr_copy_K.partition_S(sK);
 
@@ -614,6 +615,7 @@ inline __device__ void compute_attn_1rowblock_splitkv(const Params &params, cons
 
     // Repeat the partitioning with identity layouts
     Tensor tQcQ = gmem_thr_copy_QKV.partition_S(cQ);       // (ACPY,ACPY_M,ACPY_K) -> (blk_m,blk_k)
+    Tensor tKcK = gmem_thr_copy_KV_i4.partition_S(cKV);       // (BCPY,BCPY_N,BCPY_K) -> (blk_n,blk_k)
     Tensor tKVcKV = gmem_thr_copy_QKV.partition_S(cKV);   // (BCPY,BCPY_N,BCPY_K) -> (blk_n,blk_k)
 
     // Allocate predicate tensors for k
@@ -638,9 +640,10 @@ inline __device__ void compute_attn_1rowblock_splitkv(const Params &params, cons
 
     int n_block = n_block_max - 1;
     // We don't need to clear the sK smem tiles since we'll mask out the scores anyway.
-    flash::copy<Is_even_MN, Is_even_K>(gmem_tiled_copy_QKV, tKgK, tKsK, tKVcKV, tKVpKV,
+    flash::copy<Is_even_MN, Is_even_K>(gmem_tiled_copy_KV_i4, tKgK, tKsK, tKcK, tKVpKV,
                                        binfo.actual_seqlen_k - n_block * kBlockN);
     cute::cp_async_fence();
+
 
     clear(acc_o);
 
@@ -648,14 +651,33 @@ inline __device__ void compute_attn_1rowblock_splitkv(const Params &params, cons
     const float alibi_slope = !Has_alibi ? 0.0f : reinterpret_cast<float *>(params.alibi_slopes_ptr)[bidb * params.alibi_slopes_batch_stride + bidh] / params.scale_softmax;
     flash::Mask<Is_causal, Is_local, Has_alibi> mask(binfo.actual_seqlen_k, binfo.actual_seqlen_q, params.window_size_left, params.window_size_right, alibi_slope);
 
-    // For performance reason, we separate out two kinds of iterations:
-    // those that need masking on S, and those that don't.
-    // We need masking on S for the very last block when K and V has length not multiple of kBlockN.
-    // We also need masking on S if it's causal, for the last ceil_div(kBlockM, kBlockN) blocks.
-    // We will have at least 1 "masking" iteration.
+    if (threadIdx.x == 0 && blockIdx.x == 0 && blockIdx.y == 0 && blockIdx.z == 0) {
+        // Print ElementKV
+        // printf("ElementKV: %d \n", cute::sizeof_bits_v<ElementKV>);
+        printf("### Q tensors ###\n");
+        PRINT("gQ", gQ.shape())
+        PRINT("sQ", sQ.shape())
+        PRINT("tQgQ", tQgQ.shape())
+        PRINT("tQsQ", tQsQ.shape())
+        PRINT("tSrQ", tSrQ.shape())
+        PRINT("tSsQ", tSsQ.shape())
+        printf("### K tensors ###\n");
+        PRINT("gK", gK.shape())
+        PRINT("sK", sK.shape())
+        print_tensor(sK);
+        PRINT("tKgK", tKgK.shape())
+        PRINT("tKsK", tKsK.shape())
+        PRINT("tSrK", tSrK.shape())
+        PRINT("tSsK", tSsK.shape())
+        // PRINT("tSrK_i4_copy_view", tSrK_i4_copy_view.shape())
+        // printf("### V tensors ###\n");
+        // PRINT("gV", gV.shape())
+        // PRINT("sV", sV.shape())
+        // PRINT("tVgV", sVt.shape())
+        // PRINT("tVsV", tVsV.shape())
+    }
 
-    // If not even_N, then seqlen_k might end in the middle of a block. In that case we need to
-    // mask 2 blocks (e.g. when kBlockM == kBlockN), not just 1.
+
     constexpr int n_masking_steps = 1;
     #pragma unroll
     for (int masking_step = 0; masking_step < n_masking_steps; ++masking_step, --n_block) {
@@ -663,29 +685,6 @@ inline __device__ void compute_attn_1rowblock_splitkv(const Params &params, cons
         clear(acc_s);
         flash::cp_async_wait<0>();
         __syncthreads();
-
-        if (threadIdx.x == 0 && blockIdx.x == 0 && blockIdx.y == 0 && blockIdx.z == 0) {
-            printf("### Shared memory tensors ###\n");
-            PRINT("sQ", sQ.shape())
-            PRINT("sK", sK.shape())
-            PRINT("sV", sV.shape())
-            printf("### Copy, global memory to shared memory ###\n");
-            PRINT("tQgQ", tQgQ.shape())
-            PRINT("tQsQ", tQsQ.shape())
-            PRINT("tKgK", tKgK.shape())
-            PRINT("tKsK", tKsK.shape())
-            PRINT("tVgV", tVgV.shape())
-            PRINT("tVsV", tVsV.shape())
-            printf("### Register memory tensors ###\n");
-            PRINT("tSrQ", tSrQ.shape())
-            PRINT("tSrK", tSrK.shape())
-            PRINT("tOrVt", tOrVt.shape())
-            printf("### Predicates tensors ###\n");
-            PRINT("tQcQ", tQcQ.shape())
-            PRINT("tKVcKV", tKVcKV.shape())
-            printf("### acc_s: QK ###\n");
-            PRINT("acc_s", acc_s.shape())
-        }
 
         // Advance gV
         if (masking_step > 0) {
@@ -705,6 +704,13 @@ inline __device__ void compute_attn_1rowblock_splitkv(const Params &params, cons
             acc_s, tSrQ, tSrK, tSsQ, tSsK, tiled_mma, smem_tiled_copy_Q, smem_tiled_copy_K,
             smem_thr_copy_Q, smem_thr_copy_K
         );
+
+
+        // if (threadIdx.x == 0 && blockIdx.x == 0 && blockIdx.y == 0 && blockIdx.z == 0) {
+        //     printf("acc_s: \n");
+        //     print_tensor(acc_s);
+        // }
+
         // if (cute::thread0()) { print(acc_s); }
         if constexpr (Is_softcap){
             apply_softcap(acc_s, params.softcap);
@@ -731,11 +737,12 @@ inline __device__ void compute_attn_1rowblock_splitkv(const Params &params, cons
                 const int block_table_offset_next =(n_block - 1) * kBlockN - block_table_idx_next * params.page_block_size;
                 tKgK.data() = tKgK.data() + (block_table[block_table_idx_next] - block_table[block_table_idx_cur]) * params.k_batch_stride + (block_table_offset_next - block_table_offset_cur) * params.k_row_stride;
             }
-            flash::copy</*Is_even_MN=*/true, Is_even_K>(gmem_tiled_copy_QKV, tKgK, tKsK, tKVcKV, tKVpKV);
+            flash::copy</*Is_even_MN=*/true, Is_even_K>(gmem_tiled_copy_KV_i4, tKgK, tKsK, tKcK, tKVpKV);
             // This cp_async_fence needs to be in the if block, otherwise the synchronization
             // isn't right and we get race conditions.
             cute::cp_async_fence();
         }
+
 
         // We have key_padding_mask so we'll need to Check_inf
         masking_step == 0
@@ -798,7 +805,7 @@ inline __device__ void compute_attn_1rowblock_splitkv(const Params &params, cons
                 const int block_table_offset_next = (n_block - 1) * kBlockN - block_table_idx_next * params.page_block_size;
                 tKgK.data() = tKgK.data() + (block_table[block_table_idx_next] - block_table[block_table_idx_cur]) * params.k_batch_stride + (block_table_offset_next - block_table_offset_cur) * params.k_row_stride;
             }
-            flash::copy</*Is_even_MN=*/true, Is_even_K>(gmem_tiled_copy_QKV, tKgK, tKsK, tKVcKV, tKVpKV);
+            flash::copy</*Is_even_MN=*/true, Is_even_K>(gmem_tiled_copy_KV_i4, tKgK, tKsK, tKcK, tKVpKV);
             // This cp_async_fence needs to be in the if block, otherwise the synchronization
             // isn't right and we get race conditions.
             cute::cp_async_fence();
@@ -893,6 +900,11 @@ inline __device__ void compute_attn_1rowblock_splitkv(const Params &params, cons
     flash::copy<Is_even_MN, Is_even_K, /*Clear_OOB_MN=*/false, /*Clear_OOB_K=*/false>(
         gmem_tiled_copy_Oaccum, tOrOaccum, tOgOaccum, tOcO, tOpO, binfo.actual_seqlen_q - m_block * kBlockM
     );
+
+    // if (threadIdx.x == 0 && blockIdx.x == 0 && blockIdx.y == 0 && blockIdx.z == 0) {
+    //     printf("tOgOaccum: \n");
+    //     print_tensor(tOgOaccum(_,_,_0{}));
+    // }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////

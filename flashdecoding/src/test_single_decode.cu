@@ -26,16 +26,26 @@ void TestDecodingKernelCorrectness(int seqlen_kv) {
     const int bs = 1;
     const int seqlen_q = 1;
 
+    torch::manual_seed(42);
     torch::Tensor Q_host = torch::randn({bs, seqlen_q, num_heads, head_dim}, torch::dtype(torch::kHalf));
-    torch::Tensor K_host = torch::randn({bs, seqlen_kv, num_heads, head_dim}, torch::dtype(torch::kHalf));
+    // torch::Tensor K_host = torch::randn({bs, seqlen_kv, num_heads, head_dim}, torch::dtype(torch::kHalf));
+    torch::Tensor K_host = torch::randint(0, 7, {bs, seqlen_kv, num_heads, head_dim}, torch::dtype(torch::kInt8));
+    // torch::Tensor pattern = torch::arange(0, 7, torch::dtype(torch::kInt8));
+    // int64_t total_elements = bs * seqlen_kv * num_heads * head_dim;
+    // torch::Tensor repeated_pattern = pattern.repeat({(total_elements + 6) / 7}).slice(0, 0, total_elements);
+    // torch::Tensor K_host = repeated_pattern.view({bs, seqlen_kv, num_heads, head_dim});
+    K_host = K_host.to(torch::kHalf);
     torch::Tensor V_host = torch::randn({bs, seqlen_kv, num_heads, head_dim}, torch::dtype(torch::kHalf));
+
+    std::cout << "K_host: " << std::endl;
+    for (int i = 0; i < 32; ++i) {
+        std::cout << K_host[0][0][0][i].item() << " ";
+    }
+    std::cout << std::endl;
 
     torch::Tensor Q_device = Q_host.to(torch::kCUDA);
     torch::Tensor K_device = K_host.to(torch::kCUDA);
     torch::Tensor V_device = V_host.to(torch::kCUDA);
-
-    c10::optional<const at::Tensor> none = c10::nullopt;
-    c10::optional<at::Tensor> none1 = c10::nullopt;
 
     // mha_fwd_kvcache
     const float sm_scale = 1 / std::sqrt(float(head_dim));

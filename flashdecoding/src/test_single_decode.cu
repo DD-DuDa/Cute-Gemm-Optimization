@@ -37,11 +37,11 @@ void TestDecodingKernelCorrectness(int seqlen_kv) {
     K_host = K_host.to(torch::kHalf);
     torch::Tensor V_host = torch::randn({bs, seqlen_kv, num_heads, head_dim}, torch::dtype(torch::kHalf));
 
-    std::cout << "K_host: " << std::endl;
-    for (int i = 0; i < 32; ++i) {
-        std::cout << K_host[0][0][0][i].item() << " ";
-    }
-    std::cout << std::endl;
+    // std::cout << "K_host: " << std::endl;
+    // for (int i = 0; i < 32; ++i) {
+    //     std::cout << K_host[0][0][0][i].item() << " ";
+    // }
+    // std::cout << std::endl;
 
     torch::Tensor Q_device = Q_host.to(torch::kCUDA);
     torch::Tensor K_device = K_host.to(torch::kCUDA);

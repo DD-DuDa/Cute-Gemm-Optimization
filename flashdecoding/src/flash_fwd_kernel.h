@@ -664,7 +664,7 @@ inline __device__ void compute_attn_1rowblock_splitkv(const Params &params, cons
         printf("### K tensors ###\n");
         PRINT("gK", gK.shape())
         PRINT("sK", sK.shape())
-        print_tensor(sK);
+        // print_tensor(sK);
         PRINT("tKgK", tKgK.shape())
         PRINT("tKsK", tKsK.shape())
         PRINT("tSrK", tSrK.shape())

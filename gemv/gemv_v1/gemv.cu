@@ -43,16 +43,14 @@ __global__ void gemv_kernel(const T *Aptr, const T *Bptr, T *Cptr, int m, int n,
 
     const auto num_iters = size<2>(gC);
     for (int i = 0; i < num_iters; i++) {
-        auto c = gC(0,tid,i);
-        auto a = A(0,_);
-        auto b = gB(tid,_,i);
+        auto a = A(0, _);
+        auto b = gB(tid, _, i);
 
         float psum = 0.0;
         for (int j = 0; j < k; j++) {
             psum += (float)a(j) * (float)b(j);
         }
-        c = (T)psum;
-        gC(0,tid,i) = c;
+        gC(0, tid, i) = (T)psum;
     }
 
     // if (threadIdx.x == 0 && blockIdx.x == 0 && blockIdx.y == 0)
@@ -70,7 +68,6 @@ void gemv_v1(T *a, T *b, T *c, int m, int n, int k) {
     using thr_layout = decltype(make_layout(make_shape(Int<BN>{})));
 
     int numBlocks = (n + BN - 1) / BN;
-    printf("numBlocks = %d\n", numBlocks);
 
     gemv_kernel<T, thr_layout, BN><<<numBlocks, BN>>>(a, b, c, 1, n, k);
     
@@ -115,8 +112,6 @@ float testF16F16GemmMaxError(
 
     cpuGemv(h_a, h_b, h_c, M, N, K);
 
-    printf("gpu \n");
-
     cudaMemcpy(d_a, h_a, size_a, cudaMemcpyHostToDevice);
     cudaMemcpy(d_b, h_b, size_b, cudaMemcpyHostToDevice);
 
@@ -140,6 +135,45 @@ float testF16F16GemmMaxError(
 
 }
 
+template <typename T>
+float testF16F16GemvPerformance(
+    void (*gpuF16F16Gemv) (T *, T *, T *, int, int, int),
+    int M, int N, int K, int repeat) {
+
+    size_t size_a = M * K * sizeof(T);
+    size_t size_b = K * N * sizeof(T);
+    size_t size_c = M * N * sizeof(T);
+
+    T *d_a, *d_b;
+    T *d_c;
+    cudaMalloc(&d_a, size_a);
+    cudaMalloc(&d_b, size_b);
+    cudaMalloc(&d_c, size_c);
+
+    cudaEvent_t start, end;
+    cudaEventCreate(&start);
+    cudaEventCreate(&end);
+    cudaEventRecord(start);
+    for (int i = 0; i < repeat; i++) {
+        gpuF16F16Gemv(d_a, d_b, d_c, M, N, K);
+    }
+    cudaEventRecord(end);
+    cudaEventSynchronize(end);
+
+    float msec, sec;
+    cudaEventElapsedTime(&msec, start, end);
+    sec = msec / 1000.0 / repeat;
+
+    cudaFree(d_a);
+    cudaFree(d_b);
+    cudaFree(d_c);
+    cudaEventDestroy(start);
+    cudaEventDestroy(end);
+
+    return sec;
+}
+
+
 int main() {
 
     const int test_num = 64;
@@ -157,9 +191,32 @@ int main() {
 
     printf("\nalgo = Cute_HGEMV_V1\n");
 
-    const int M = 1, N = 256, K = 256;
+    const int M = 1, N = 1024, K = 1024;
     float max_error = testF16F16GemmMaxError<T>(
         gemv_v1, M, N, K);
     printf("Max Error = %f\n", max_error);
+
+    // for (int j = 0; j < test_num; j++) {
+    //     int M = M_list[j], N = N_list[j], K = K_list[j];
+
+    //     double max_sec = 0.0;
+    //     double min_sec = DBL_MAX;
+    //     double total_sec = 0.0;
+
+    //     for (int k = 0; k < outer_repeat; k++) {
+    //         double this_sec = testF16F16GemvPerformance<T>(
+    //             gemv_v1, M, N, K, inner_repeat);
+    //         max_sec = max(max_sec, this_sec);
+    //         min_sec = min(min_sec, this_sec);
+    //         total_sec += this_sec;
+    //     }
+
+    //     double avg_sec = total_sec / outer_repeat;
+    //     double avg_Gflops = ((double)M) * N * K * 2 / 1024 / 1024 / 1024 / avg_sec;
+
+    //     printf("M N K = %6d %6d %6d, ", M, N, K);
+    //     printf("Time = %12.8lf %12.8lf %12.8lf s, ", min_sec, avg_sec, max_sec);
+    //     printf("AVG Performance = %10.4lf Gflops\n", avg_Gflops);
+    // }
 
 }

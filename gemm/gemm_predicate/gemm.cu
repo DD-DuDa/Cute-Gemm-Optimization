@@ -66,7 +66,8 @@ __global__ void gemm_shm_v2(const T *Aptr, const T *Bptr, T *Dptr, int m, int n,
     gB = cute::domain_offset(make_coord(0, get<2>(residue_mnk), 0), gB);
 
     // shared memory
-    auto sA = make_tensor(make_smem_ptr(Ashm), SmemLayoutA{}); // (BM, BK)
+    auto sA = make_tensor(make_smem_ptr(Ashm),
+                            SmemLayoutA{}); // (BM, BK)
     auto sB = make_tensor(make_smem_ptr(Bshm), SmemLayoutB{}); // (BN, BK)
 
     // register, use tiled_mma to partition register A/B/C
@@ -82,32 +83,24 @@ __global__ void gemm_shm_v2(const T *Aptr, const T *Bptr, T *Dptr, int m, int n,
     // from global memory to shared memory
     G2SCopyA g2s_tiled_copy_a;
     auto g2s_thr_copy_a = g2s_tiled_copy_a.get_slice(idx);
-    auto tAgA = g2s_thr_copy_a.partition_S(gA); // (CPY, CPY_M, CPY_K, k)
-    auto tAsA = g2s_thr_copy_a.partition_D(sA); // (CPY, CPY_M, CPY_K)
+    auto tAgA_copy = g2s_thr_copy_a.partition_S(gA); // (CPY, CPY_M, CPY_K, k)
+    auto tAsA_copy = g2s_thr_copy_a.partition_D(sA); // (CPY, CPY_M, CPY_K)
 
     G2SCopyB g2s_tiled_copy_b;
     auto g2s_thr_copy_b = g2s_tiled_copy_b.get_slice(idx);
-    auto tBgB = g2s_thr_copy_b.partition_S(gB); // (CPY, CPY_N, CPY_K, k)
-    auto tBsB = g2s_thr_copy_b.partition_D(sB); // (CPY, CPY_N, CPY_K)
+    auto tBgB_copy = g2s_thr_copy_b.partition_S(gB); // (CPY, CPY_N, CPY_K, k)
+    auto tBsB_copy = g2s_thr_copy_b.partition_D(sB); // (CPY, CPY_N, CPY_K)
 
     // from shared memory to register, use tiled_mma to generate tiled_copy
     auto s2r_tiled_copy_a = make_tiled_copy_A(S2RCopyAtomA{}, tiled_mma);
     auto s2r_thr_copy_a = s2r_tiled_copy_a.get_slice(idx);
-    auto tCsA = s2r_thr_copy_a.partition_S(sA);     // (CPY, CPY_M, CPY_K)
+    auto tAsA = s2r_thr_copy_a.partition_S(sA);     // (CPY, CPY_M, CPY_K)
     auto tCrA_view = s2r_thr_copy_a.retile_D(tCrA); // (CPY, CPY_M, CPY_K)
 
     auto s2r_tiled_copy_b = make_tiled_copy_B(S2RCopyAtomB{}, tiled_mma);
     auto s2r_thr_copy_b = s2r_tiled_copy_b.get_slice(idx);
-    auto tCsB = s2r_thr_copy_b.partition_S(sB);     // (CPY, CPY_N, CPY_K)
+    auto tBsB = s2r_thr_copy_b.partition_S(sB);     // (CPY, CPY_N, CPY_K)
     auto tCrB_view = s2r_thr_copy_b.retile_D(tCrB); // (CPY, CPY_N, CPY_K)
-    
-    //
-    // PREDICATES
-    //
-
-    // Allocate predicate tensors for m and n
-    Tensor tApA = make_tensor<bool>(make_shape(size<1>(tAsA), size<2>(tAsA)), Stride<_1,_0>{});
-    Tensor tBpB = make_tensor<bool>(make_shape(size<1>(tBsB), size<2>(tBsB)), Stride<_1,_0>{});
 
     // Construct identity layout for sA and sB
     Tensor cA = make_identity_tensor(make_shape(size<0>(sA), size<1>(sA)));    // (BLK_M,BLK_K) -> (blk_m,blk_k)
@@ -117,89 +110,76 @@ __global__ void gemm_shm_v2(const T *Aptr, const T *Bptr, T *Dptr, int m, int n,
     Tensor tAcA = g2s_thr_copy_a.partition_S(cA);                             // (ACPY,ACPY_M,ACPY_K) -> (blk_m,blk_k)
     Tensor tBcB = g2s_thr_copy_b.partition_S(cB);                             // (BCPY,BCPY_N,BCPY_K) -> (blk_n,blk_k)
 
-    // Set predicates for m bounds
-    CUTLASS_PRAGMA_UNROLL
-    for (int m = 0; m < size<0>(tApA); ++m) {
-        tApA(m,0) = get<0>(tAcA(0,m,0)) < get<0>(residue_mnk);  // blk_m coord < residue_m
-    }
-    // Set predicates for n bounds
-    CUTLASS_PRAGMA_UNROLL
-    for (int n = 0; n < size<0>(tBpB); ++n) {
-        tBpB(n,0) = get<0>(tBcB(0,n,0)) < get<1>(residue_mnk);  // blk_n coord < residue_n
-    }
+    // Clear the smem tiles to account for predicated off loads
+    clear(tAsA_copy);
+    clear(tBsB_copy);
 
-    if (threadIdx.x == 0 && blockIdx.x == 0 && blockIdx.y == 9)
+    Tensor tAgAk = tAgA_copy(_,_,_,0);
+    CUTLASS_PRAGMA_UNROLL
+    for (int k = 0; k < size<2>(tAsA_copy); ++k) {
+        if (get<1>(tAcA(0,0,k)) >= -get<2>(residue_mnk)) {      // blk_k coord < residue_k (gA shifted)
+            cute::copy(g2s_tiled_copy_a, tAgAk(_,_,k), tAsA_copy(_,_,k));
+        }
+    }
+    Tensor tBgBk = tBgB_copy(_,_,_,0);
+    CUTLASS_PRAGMA_UNROLL
+    for (int k = 0; k < size<2>(tBsB_copy); ++k) {
+        if (get<1>(tBcB(0,0,k)) >= -get<2>(residue_mnk)) {      // blk_k coord < residue_k (gA shifted)
+            cute::copy(g2s_tiled_copy_b, tBgBk(_,_,k), tBsB_copy(_,_,k));
+        }
+    }
+    cp_async_fence();
+    cp_async_wait<0>();
+    __syncthreads();
+
+    if (threadIdx.x == 0 && blockIdx.x == 0 && blockIdx.y == 0)
     {
-        PRINT("gA", gA.layout()) 
-        PRINT("sA", sA.layout())
-        PRINT("AsA", tAsA.layout()) 
-        PRINT("tApA", tApA.layout())
-        print_tensor(tApA);
-        PRINT("tAcA", tAcA.layout())
-        PRINT("gB", gB.layout())     
-        PRINT("gD", gD.layout())     
-        printf("residue_mnk = (%d, %d, %d)\n", get<0>(residue_mnk), get<1>(residue_mnk), get<2>(residue_mnk));
+
+        PRINT("sA", sA.shape())   
+        PRINT("tAsA", tAsA.shape())   
+        PRINT("tCrA_view", tCrA_view.shape())    
+        // printf("size<2>(tAsA_copy):%d \n", size<2>(tAsA_copy));
+        PRINT("sB", sB.shape())
+        PRINT("tBsB", tBsB.shape())
+        PRINT("tCrB_view", tCrB_view.shape()) 
     }
 
-    // // Clear the rmem tiles to account for predicated off loads
-    // clear(tAsA);
-    // clear(tBsB);
+  // loop over k: i. load tile, ii. mma
+  int ntile = k / BK;
+#pragma unroll 1
+  for (int itile = 0; itile < ntile; ++itile)
+  {
+    if (itile >= 1) {
+        // copy  (CPY, CPY_M, CPY_K) , async
+        cute::copy(g2s_tiled_copy_a, tAgA_copy(_, _, _, itile),
+            tAsA_copy(_, _, _));
+        cute::copy(g2s_tiled_copy_b, tBgB_copy(_, _, _, itile),
+            tBsB_copy(_, _, _));
+        cp_async_fence();
 
-    // // Start async loads for 0th k-tile, where we take care of the k residue
+        cp_async_wait<0>();
+        __syncthreads();
+    }
+    
+    __syncthreads();
+    int nk = size<2>(tCrA);
+#pragma unroll
+    for (int ik = 0; ik < nk; ++ik)
+    {
+      // copy  (CPY, CPY_M), sync
+      cute::copy(s2r_tiled_copy_a, tAsA(_, _, ik),
+                 tCrA_view(_, _, ik));
+      // copy  (CPY, CPY_N)
+      cute::copy(s2r_tiled_copy_b, tBsB(_, _, ik),
+                 tCrB_view(_, _, ik));
+      // (MMA, MMA_M) x (MMA, MMA_N) => (MMA, MMA_M, MMA_N)
+      cute::gemm(tiled_mma, tCrD, tCrA(_, _, ik), tCrB(_, _, ik), tCrD);
+    } // for ik
+    
+  } // itile
 
-    // Tensor tAgAk = tAgA(_,_,_,0);
-    // CUTLASS_PRAGMA_UNROLL
-    // for (int k = 0; k < size<2>(tAsA); ++k) {
-    //     if (get<1>(tAcA(0,0,k)) >= -get<2>(residue_mnk)) {      // blk_k coord < residue_k (gA shifted)
-    //         cute::copy_if(g2s_tiled_copy_a, tApA(_,k), tAgAk(_,_,k), tAsA(_,_,k));
-    //     }
-    // }
-    // Tensor tBgBk = tBgB(_,_,_,0);
-    // CUTLASS_PRAGMA_UNROLL
-    // for (int k = 0; k < size<2>(tBsB); ++k) {
-    //     if (get<1>(tBcB(0,0,k)) >= -get<2>(residue_mnk)) {      // blk_k coord < residue_k (gB shifted)
-    //         cute::copy_if(g2s_tiled_copy_b, tBpB(_,k), tBgBk(_,_,k), tBsB(_,_,k));
-    //     }
-    // }
-    // cp_async_fence();
-    // cp_async_wait<0>();
-    // // Clear accumulators
-    // __syncthreads();
-
-    // // loop over k: i. load tile, ii. mma
-    // int ntile = k / BK;
-    // #pragma unroll 1
-    // for (int itile = 0; itile < ntile; ++itile)
-    // {
-    //     if (itile > 0) {
-    //         // copy  (CPY, CPY_M, CPY_K) , async
-    //         cute::copy_if(g2s_tiled_copy_a, tApA, tAgA(_, _, _, itile),
-    //                 tAsA(_, _, _));
-    //         cute::copy_if(g2s_tiled_copy_b, tBpB, tBgB(_, _, _, itile),
-    //                 tBsB(_, _, _));
-    //         cp_async_fence();
-    //     }
-        
-
-    //     cp_async_wait<0>();
-    //     __syncthreads();
-
-    //     int nk = size<2>(tCrA);
-    //     #pragma unroll
-    //     for (int ik = 0; ik < nk; ++ik)
-    //     {
-    //         // copy  (CPY, CPY_M), sync
-    //         cute::copy(s2r_tiled_copy_a, tCsA(_, _, ik), tCrA_view(_, _, ik));
-    //         // copy  (CPY, CPY_N)
-    //         cute::copy(s2r_tiled_copy_b, tCsB(_, _, ik), tCrB_view(_, _, ik));
-    //         // (MMA, MMA_M) x (MMA, MMA_N) => (MMA, MMA_M, MMA_N)
-    //         cute::gemm(tiled_mma, tCrD, tCrA(_, _, ik), tCrB(_, _, ik), tCrD);
-    //         __syncthreads();
-    //     } // for ik
-    // } // itile
-
-    // // register to global memory
-    // cute::copy(tCrD, tCgD);
+  // register to global memory
+  cute::copy(tCrD, tCgD);
 }
 
 template <typename T>
@@ -313,6 +293,11 @@ float testF16F16GemmMaxError(
 
     cudaMemcpy(h_d_c, d_c, size_c, cudaMemcpyDeviceToHost);
 
+    for (int i = 0; i < 10; ++i) {
+        printf("\n h_c : %f \n", (float)h_c[i]);
+        printf("\n h_d_c : %f \n", (float)h_d_c[i]);
+    }
+    
     float max_error = 0.0;
     for (int i = 0; i < M * N; i++) {
         float this_error = abs((float)h_d_c[i] - (float)h_c[i]);
@@ -383,7 +368,7 @@ int main() {
 
     printf("\nalgo = Cute_HGEMM_V2\n");
 
-    const int M = 1234, N = 1234, K = 1234;
+    const int M = 1024, N = 1024, K = 1025;
     float max_error = testF16F16GemmMaxError<T>(
         gemm_v2, M, N, K);
     printf("Max Error = %f\n", max_error);
@@ -415,4 +400,3 @@ int main() {
 
     return 0;
 }
-

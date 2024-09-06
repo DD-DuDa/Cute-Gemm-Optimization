@@ -1,2 +1,2 @@
 default:
-	nvcc -o layout layout.cu -arch=sm_80 -std=c++17 -I/home/v-dayoudu/learning/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include && CUDA_VISIBLE_DEVICES=0 ./layout
+	nvcc -o layout layout.cu -arch=sm_80 -std=c++17 -I../../flashdecoding/src/cutlass/include && CUDA_VISIBLE_DEVICES=0 ./layout

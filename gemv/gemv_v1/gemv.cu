@@ -24,26 +24,21 @@ void cpuGemv(T *a, T *b, T *c, int m, int n, int k) {
     }
 }
 
-
-
-
 template <typename T, typename ThrLayout, int BN>
-__global__ void gemv_kernel(const T *Aptr, const T *Bptr, T *Cptr, int m, int n, int k) {
+__global__ void gemv_kernel_v1(const T *Aptr, const T *Bptr, T *Cptr, int m, int n, int k) {
     int tid = threadIdx.x;
-    int n_idx = blockIdx.x * BN + threadIdx.x;
 
     Tensor A = make_tensor(make_gmem_ptr(Aptr), make_shape(1, k), make_stride(k, Int<1>{}));
     Tensor B = make_tensor(make_gmem_ptr(Bptr), make_shape(n, k), make_stride(k, Int<1>{}));
     Tensor C = make_tensor(make_gmem_ptr(Cptr), make_shape(1, n), make_stride(n, Int<1>{}));
 
-    int ix = blockIdx.x;
-
     Tensor gB = local_tile(B, make_tile(Int<BN>{}, k), make_coord(_, 0)); // (BN, k, num_tile_N)
     Tensor gC = local_tile(C, make_tile(Int<1>{}, Int<BN>{}), make_coord(0, _)); // (BM, BN) 
 
+    auto a = A(0, _);
     const auto num_iters = size<2>(gC);
     for (int i = 0; i < num_iters; i++) {
-        auto a = A(0, _);
+        
         auto b = gB(tid, _, i);
 
         float psum = 0.0;
@@ -65,11 +60,14 @@ template <typename T>
 void gemv_v1(T *a, T *b, T *c, int m, int n, int k) {
     // Launch the kernel
     constexpr int BN = 128;
-    using thr_layout = decltype(make_layout(make_shape(Int<BN>{})));
+    constexpr int BK = 128;
+    using thr_layout = decltype(make_layout(make_shape(Int<BN>{}, Int<1>{})));
 
-    int numBlocks = (n + BN - 1) / BN;
+    const int blocks_x = (n + BN - 1) / BN;
+    const int blocks_y = (k + BK - 1) / BK;
+    dim3 blocks(blocks_x, blocks_y);
 
-    gemv_kernel<T, thr_layout, BN><<<numBlocks, BN>>>(a, b, c, 1, n, k);
+    gemv_kernel_v1<T, thr_layout, BN><<<blocks, BN>>>(a, b, c, 1, n, k);
     
     // Check for any errors in kernel launch
     cudaError_t err = cudaGetLastError();
@@ -77,6 +75,93 @@ void gemv_v1(T *a, T *b, T *c, int m, int n, int k) {
         printf("CUDA error: %s\n", cudaGetErrorString(err));
     }
 }
+
+template <typename T, typename ThrLayout, int BN, int BK,
+          typename G2SCopyA>
+__global__ void gemv_kernel_v2(const T *Aptr, const T *Bptr, T *Cptr, int m, int n, int k) {
+    int tid = threadIdx.x;
+    int bix = blockIdx.x;
+    int biy = blockIdx.y;
+
+    Tensor A = make_tensor(make_gmem_ptr(Aptr), make_shape(1, k), make_stride(k, Int<1>{}));
+    Tensor B = make_tensor(make_gmem_ptr(Bptr), make_shape(n, k), make_stride(k, Int<1>{}));
+    Tensor C = make_tensor(make_gmem_ptr(Cptr), make_shape(1, n), make_stride(n, Int<1>{}));
+
+    Tensor gA = local_tile(A, make_tile(Int<1>{}, Int<BK>{}), make_coord(0, biy));      // (1, k)
+    Tensor gB = local_tile(B, make_tile(Int<BN>{}, Int<BK>{}), make_coord(bix, 0));     // (BN, k)
+    Tensor gC = local_tile(C, make_tile(Int<1>{}, Int<BN>{}), make_coord(0, bix));      // (1, BN) 
+
+    Tensor thr_tile_A = local_partition(gA, ThrLayout{}, threadIdx.x);   // (ThrValM, ThrValN)
+    Tensor tCrA = make_fragment_like(thr_tile_A);                 // (ThrValM, ThrValN)
+
+    Tensor tCrB = make_tensor_like(gB);                 // (ThrValM, ThrValN)
+
+    // Vector dimensions
+    Layout vec_layout = make_layout(make_shape(Int<1>{}, Int<8>{}));
+    using Atom = Copy_Atom<UniversalCopy<cute::uint128_t>, T>;
+    G2SCopyA g2r_tiled_copy_b;              
+
+    // Construct a Tensor corresponding to each thread's slice.
+    auto g2r_thr_copy_b = g2r_tiled_copy_b.get_thread_slice(threadIdx.x);
+    Tensor tBgB = g2r_thr_copy_b.partition_S(gB);                    // (CopyOp, CopyM, CopyN)
+    Tensor tCrB_copy = g2r_thr_copy_b.partition_D(tCrB);             // (CopyOp, CopyM, CopyN)
+
+    // copy A from GMEM to RMEM
+    copy(thr_tile_A, tCrA);
+
+    const int num_iters = size<2>(tBgB);
+    float psum = 0.0;
+    CUTE_UNROLL
+    for (int i = 0; i < num_iters; ++i) {        
+        copy(g2r_tiled_copy_b, tBgB(_, _, i), tCrB_copy(_, _, i));
+        CUTE_UNROLL
+        for (int j = i * 8; j < i * 8 + 8; ++j) {
+            psum += (float)tCrA(0, j) * (float)tCrB(tid, j);
+        }
+
+    }
+    gC(0, tid) = (T)psum;
+
+    if (threadIdx.x == 0 && blockIdx.x == 0 && blockIdx.y == 0)
+    {
+        PRINT("A", A.shape())
+        PRINT("gB", gB.shape())  
+        PRINT("gC", gC.shape())    
+        PRINT("thr_tile_A", thr_tile_A.shape())
+        PRINT("tCrA", tCrA.shape())
+        PRINT("tBgB", tBgB.shape())
+        PRINT("tCrB", tCrB.shape())
+        PRINT("tCrB_copy", tCrB_copy.shape())
+    }
+}
+
+template <typename T>
+void gemv_v2(T *a, T *b, T *c, int m, int n, int k) {
+    // Launch the kernel
+    constexpr int BN = 128;
+    constexpr int BK = 128;
+    using thr_layout = decltype(make_layout(make_shape(Int<BN>{}, Int<1>{}))); 
+
+    using g2r_copy_atom = Copy_Atom<UniversalCopy<cute::uint128_t>, T>;
+    using G2RCopyB =
+        decltype(make_tiled_copy(g2r_copy_atom{},
+                                 thr_layout{},
+                                 make_layout(make_shape(Int<1>{}, Int<8>{})))); // Val layout 1x8
+
+
+    const int blocks_x = (n + BN - 1) / BN;
+    const int blocks_y = (k + BK - 1) / BK;
+    dim3 blocks(blocks_x, blocks_y);
+
+    gemv_kernel_v2<T, thr_layout, BN, BK, G2RCopyB><<<blocks, BN>>>(a, b, c, 1, n, k);
+    
+    // Check for any errors in kernel launch
+    cudaError_t err = cudaGetLastError();
+    if (err != cudaSuccess) {
+        printf("CUDA error: %s\n", cudaGetErrorString(err));
+    }
+}
+
 
 
 template <typename T>
@@ -189,14 +274,14 @@ int main() {
 
     const int outer_repeat = 10, inner_repeat = 1;
 
-    printf("\nalgo = Cute_HGEMV_V1\n");
+    printf("\nalgo = Cute_HGEMV\n");
 
-    const int M = 1, N = 1024, K = 1024;
+    const int M = 1, N = 2560, K = 128;
     float max_error = testF16F16GemmMaxError<T>(
-        gemv_v1, M, N, K);
+        gemv_v2, M, N, K);
     printf("Max Error = %f\n", max_error);
 
-    // for (int j = 0; j < test_num; j++) {
+    // for (int j = 0; j < 10; j++) {
     //     int M = M_list[j], N = N_list[j], K = K_list[j];
 
     //     double max_sec = 0.0;
@@ -205,7 +290,7 @@ int main() {
 
     //     for (int k = 0; k < outer_repeat; k++) {
     //         double this_sec = testF16F16GemvPerformance<T>(
-    //             gemv_v1, M, N, K, inner_repeat);
+    //             gemv_v2, M, N, K, inner_repeat);
     //         max_sec = max(max_sec, this_sec);
     //         min_sec = min(min_sec, this_sec);
     //         total_sec += this_sec;

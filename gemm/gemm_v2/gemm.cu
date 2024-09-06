@@ -97,6 +97,7 @@ __global__ void gemm_shm_v2(const T *Aptr, const T *Bptr, T *Dptr, int m, int n,
 
         PRINT("sA", sA.shape())   
         PRINT("tAsA", tAsA.shape())   
+        PRINT("tCrA", tCrA.shape())
         PRINT("tCrA_view", tCrA_view.shape())    
 
         PRINT("sB", sB.shape())
@@ -155,7 +156,7 @@ void gemm_v2(T *a, T *b, T *c, int M, int N, int K) {
                                                make_shape(Int<BN>{}, Int<BK>{})));                    // (m,n) -> smem_idx
 
     // mma
-    using mma_op = SM80_16x8x16_F16F16F16F16_TN;
+    using mma_op = SM80_16x8x8_F16F16F16F16_TN;
     using mma_traits = MMA_Traits<mma_op>;
     using mma_atom = MMA_Atom<mma_traits>;
     static constexpr int kMmaEURepeatM = 2;
@@ -165,7 +166,7 @@ void gemm_v2(T *a, T *b, T *c, int M, int N, int K) {
     using mma_atom_shape = mma_traits::Shape_MNK;
     static constexpr int kMmaPM = 1 * kMmaEURepeatM * get<0>(mma_atom_shape{});
     static constexpr int kMmaPN = 2 * kMmaEURepeatN * get<1>(mma_atom_shape{});
-    static constexpr int kMmaPK = 2 * kMmaEURepeatK * get<2>(mma_atom_shape{});
+    static constexpr int kMmaPK = 1 * kMmaEURepeatK * get<2>(mma_atom_shape{});
     using MMA_EU_RepeatT = decltype(make_layout(make_shape(
         Int<kMmaEURepeatM>{}, Int<kMmaEURepeatN>{}, Int<kMmaEURepeatK>{})));
     using MMA_P_T = Tile<Int<kMmaPM>, Int<kMmaPN>, Int<kMmaPK>>;
@@ -185,9 +186,10 @@ void gemm_v2(T *a, T *b, T *c, int M, int N, int K) {
 
     // copy from shared memory to register
     // use mma tiled ,so no tiled here
-    using s2r_copy_op = SM75_U32x4_LDSM_N;
-    using s2r_copy_traits = Copy_Traits<s2r_copy_op>;
-    using s2r_copy_atom = Copy_Atom<s2r_copy_traits, T>;
+    // using s2r_copy_op = SM75_U32x4_LDSM_N;
+    // using s2r_copy_traits = Copy_Traits<s2r_copy_op>;
+    // using s2r_copy_atom = Copy_Atom<s2r_copy_traits, T>;
+    using s2r_copy_atom = Copy_Atom<cute::AutoVectorizingCopy, T>;
     using S2RCopyAtomA = s2r_copy_atom;
     using S2RCopyAtomB = s2r_copy_atom;
 

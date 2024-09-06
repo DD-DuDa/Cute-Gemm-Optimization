@@ -13,8 +13,12 @@ int main() {
                                   Tile<Int<16 * 4>, _16, _16>{});           // Tiler
     // print_latex(mma);
 
-    auto tSsK_shape = make_shape(_1{},_8{},_8{});
-    print_latex(tSsK_shape);
+    // auto tSsK_shape = make_shape(_1{},_8{},_8{});
+    // print_latex(tSsK_shape);
+
+    constexpr int tpb = 128;
+    auto thr_layout = make_layout(make_shape(Int<tpb>{}));
+    print_latex(thr_layout);
 
 
     return 0;

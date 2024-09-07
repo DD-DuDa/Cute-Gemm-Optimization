@@ -77,7 +77,7 @@ void gemv_v1(T *a, T *b, T *c, int m, int n, int k) {
 }
 
 template <typename T, typename ThrLayout, int BN, int BK,
-          typename G2SCopyA>
+          typename G2SCopyB>
 __global__ void gemv_kernel_v2(const T *Aptr, const T *Bptr, T *Cptr, int m, int n, int k) {
     int tid = threadIdx.x;
     int bix = blockIdx.x;
@@ -97,9 +97,7 @@ __global__ void gemv_kernel_v2(const T *Aptr, const T *Bptr, T *Cptr, int m, int
     Tensor tCrB = make_tensor_like(gB);                 // (ThrValM, ThrValN)
 
     // Vector dimensions
-    Layout vec_layout = make_layout(make_shape(Int<1>{}, Int<8>{}));
-    using Atom = Copy_Atom<UniversalCopy<cute::uint128_t>, T>;
-    G2SCopyA g2r_tiled_copy_b;              
+    G2SCopyB g2r_tiled_copy_b;              
 
     // Construct a Tensor corresponding to each thread's slice.
     auto g2r_thr_copy_b = g2r_tiled_copy_b.get_thread_slice(threadIdx.x);
@@ -122,17 +120,17 @@ __global__ void gemv_kernel_v2(const T *Aptr, const T *Bptr, T *Cptr, int m, int
     }
     gC(0, tid) = (T)psum;
 
-    if (threadIdx.x == 0 && blockIdx.x == 0 && blockIdx.y == 0)
-    {
-        PRINT("A", A.shape())
-        PRINT("gB", gB.shape())  
-        PRINT("gC", gC.shape())    
-        PRINT("thr_tile_A", thr_tile_A.shape())
-        PRINT("tCrA", tCrA.shape())
-        PRINT("tBgB", tBgB.shape())
-        PRINT("tCrB", tCrB.shape())
-        PRINT("tCrB_copy", tCrB_copy.shape())
-    }
+    // if (threadIdx.x == 0 && blockIdx.x == 0 && blockIdx.y == 0)
+    // {
+    //     PRINT("A", A.shape())
+    //     PRINT("gB", gB.shape())  
+    //     PRINT("gC", gC.shape())    
+    //     PRINT("thr_tile_A", thr_tile_A.shape())
+    //     PRINT("tCrA", tCrA.shape())
+    //     PRINT("tBgB", tBgB.shape())
+    //     PRINT("tCrB", tCrB.shape())
+    //     PRINT("tCrB_copy", tCrB_copy.shape())
+    // }
 }
 
 template <typename T>
@@ -162,6 +160,81 @@ void gemv_v2(T *a, T *b, T *c, int m, int n, int k) {
     }
 }
 
+template <unsigned int WarpSize>
+__device__ __forceinline__ float warpReduceSum(float sum) {
+    if (WarpSize >= 32)sum += __shfl_down_sync(0xffffffff, sum, 16); // 0-16, 1-17, 2-18, etc.
+    if (WarpSize >= 16)sum += __shfl_down_sync(0xffffffff, sum, 8);// 0-8, 1-9, 2-10, etc.
+    if (WarpSize >= 8)sum += __shfl_down_sync(0xffffffff, sum, 4);// 0-4, 1-5, 2-6, etc.
+    if (WarpSize >= 4)sum += __shfl_down_sync(0xffffffff, sum, 2);// 0-2, 1-3, 4-6, 5-7, etc.
+    if (WarpSize >= 2)sum += __shfl_down_sync(0xffffffff, sum, 1);// 0-1, 2-3, 4-5, etc.
+    return sum;
+}
+
+template <typename T>
+__global__ void gemv_kernel_v3(T *Aptr, T *Bptr, T *Cptr, int m, int n, int k) {
+    // Block index
+    int bx = blockIdx.x;
+    // Thread index
+    int tx = threadIdx.x;
+    int ty = threadIdx.y;
+
+    const int warp_size = 16;
+    int laneId = tx % warp_size;
+
+    // Tensor A = make_tensor(make_gmem_ptr(Aptr), make_shape(1, k), make_stride(k, Int<1>{}));
+    Tensor B = make_tensor(make_gmem_ptr(Bptr), make_shape(n, k), make_stride(k, Int<1>{}));
+    Tensor C = make_tensor(make_gmem_ptr(Cptr), make_shape(1, n), make_stride(n, Int<1>{}));
+
+    // Tensor gA = local_tile(A, make_tile(Int<1>{}, Int<128>{}), make_coord(0, 0)); 
+    Tensor gB = local_tile(B, make_tile(Int<4>{}, Int<128>{}), make_coord(bx, 0));     // (BN, k)
+    Tensor gC = local_tile(C, make_tile(Int<1>{}, Int<4>{}), make_coord(0, bx));      // (1, BN) 
+
+    float res = 0;
+    Bptr = &gB(ty, 0);
+
+    int current_col_vec = laneId;
+    float4 current_val= reinterpret_cast<float4 *>(Bptr)[current_col_vec];
+    float4 current_x = reinterpret_cast<float4 *>(Aptr)[current_col_vec];
+    const half2* vec_h1 = (half2*)&current_x.x;
+    const half2* vec_h2 = (half2*)&current_x.y;
+    const half2* vec_h3 = (half2*)&current_x.z;
+    const half2* vec_h4 = (half2*)&current_x.w;
+    const half2* mat_h1 = (half2*)&current_val.x;
+    const half2* mat_h2 = (half2*)&current_val.y;
+    const half2* mat_h3 = (half2*)&current_val.z;
+    const half2* mat_h4 = (half2*)&current_val.w;
+    res += static_cast<float>(vec_h1->x) * static_cast<float>(mat_h1->x);
+    res += static_cast<float>(vec_h1->y) * static_cast<float>(mat_h1->y);
+    res += static_cast<float>(vec_h2->x) * static_cast<float>(mat_h2->x);
+    res += static_cast<float>(vec_h2->y) * static_cast<float>(mat_h2->y);
+    res += static_cast<float>(vec_h3->x) * static_cast<float>(mat_h3->x);
+    res += static_cast<float>(vec_h3->y) * static_cast<float>(mat_h3->y);
+    res += static_cast<float>(vec_h4->x) * static_cast<float>(mat_h4->x);
+    res += static_cast<float>(vec_h4->y) * static_cast<float>(mat_h4->y);
+
+    res = warpReduceSum<warp_size>(res);
+
+    if(laneId == 0) gC(0, ty) = res;
+    // if (threadIdx.x == 0 && threadIdx.y == 0 && blockIdx.x == 0)
+    // {
+    //     // PRINT("gA", A.shape())
+    //     PRINT("gB", gB.shape())  
+    //     PRINT("gC", gC.shape())    
+    // }
+}
+
+template <typename T>
+void gemv_v3(T *a, T *b, T *c, int m, int n, int k) {
+    dim3 dimGrid(n / 4);
+    dim3 dimBlock(16, 8);
+    gemv_kernel_v3<T><<<dimGrid, dimBlock>>>(a, b, c, 1, n, k);
+    
+    // Check for any errors in kernel launch
+    cudaError_t err = cudaGetLastError();
+    if (err != cudaSuccess) {
+        printf("CUDA error: %s\n", cudaGetErrorString(err));
+    }
+}
 
 
 template <typename T>
@@ -190,10 +263,6 @@ float testF16F16GemmMaxError(
         h_a[i] = (T)(rand() / float(RAND_MAX));
     for (int i = 0; i < N * K; i++)
         h_b[i] = (T)(rand() / float(RAND_MAX));
-
-    // for (int ii = 0; ii < 10; ii++) {
-    //     printf("a = %f, b = %f\n", (float)h_a[ii], (float)h_b[ii]);
-    // }
 
     cpuGemv(h_a, h_b, h_c, M, N, K);
 
@@ -264,12 +333,10 @@ int main() {
     const int test_num = 64;
     int M_list[test_num];
     int N_list[test_num];
-    int K_list[test_num];
 
     for (int i = 0; i < test_num; i++) {
         M_list[i] = 1;
         N_list[i] = (i + 1) * 256;
-        K_list[i] = (i + 1) * 256;
     }
 
     const int outer_repeat = 10, inner_repeat = 1;
@@ -278,30 +345,31 @@ int main() {
 
     const int M = 1, N = 2560, K = 128;
     float max_error = testF16F16GemmMaxError<T>(
-        gemv_v2, M, N, K);
+        gemv_v3, M, N, K);
     printf("Max Error = %f\n", max_error);
 
-    // for (int j = 0; j < 10; j++) {
-    //     int M = M_list[j], N = N_list[j], K = K_list[j];
+    for (int j = 0; j < 10; j++) {
+        int M = M_list[j], N = N_list[j], K = 128;
 
-    //     double max_sec = 0.0;
-    //     double min_sec = DBL_MAX;
-    //     double total_sec = 0.0;
+        double max_sec = 0.0;
+        double min_sec = DBL_MAX;
+        double total_sec = 0.0;
 
-    //     for (int k = 0; k < outer_repeat; k++) {
-    //         double this_sec = testF16F16GemvPerformance<T>(
-    //             gemv_v2, M, N, K, inner_repeat);
-    //         max_sec = max(max_sec, this_sec);
-    //         min_sec = min(min_sec, this_sec);
-    //         total_sec += this_sec;
-    //     }
+        for (int k = 0; k < outer_repeat; k++) {
+            double this_sec = testF16F16GemvPerformance<T>(
+                gemv_v3, M, N, K, inner_repeat);
+            max_sec = max(max_sec, this_sec);
+            min_sec = min(min_sec, this_sec);
+            total_sec += this_sec;
+        }
 
-    //     double avg_sec = total_sec / outer_repeat;
-    //     double avg_Gflops = ((double)M) * N * K * 2 / 1024 / 1024 / 1024 / avg_sec;
+        double avg_sec = total_sec / outer_repeat;
+        double avg_Gflops = ((double)M) * N * K * 2 / 1000 / 1000 / 1000 / avg_sec;
 
-    //     printf("M N K = %6d %6d %6d, ", M, N, K);
-    //     printf("Time = %12.8lf %12.8lf %12.8lf s, ", min_sec, avg_sec, max_sec);
-    //     printf("AVG Performance = %10.4lf Gflops\n", avg_Gflops);
-    // }
+        double avg_msec = avg_sec * 1000;
+        printf("M N K = %6d %6d %6d, ", M, N, K);
+        printf("Time = %12.8lf ms, ", avg_msec);
+        printf("AVG Performance = %10.4lf Gflops\n", avg_Gflops);
+    }
 
 }

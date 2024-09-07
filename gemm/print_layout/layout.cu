@@ -4,7 +4,7 @@
 #include <cute/tensor.hpp>
 #include <float.h>
 
-using T = cute::half_t;
+using T = float;
 using namespace cute;
 
 int main() {
@@ -16,10 +16,17 @@ int main() {
     // auto tSsK_shape = make_shape(_1{},_8{},_8{});
     // print_latex(tSsK_shape);
 
-    constexpr int tpb = 128;
-    auto thr_layout = make_layout(make_shape(Int<tpb>{}));
-    print_latex(thr_layout);
+    // constexpr int tpb = 128;
+    // auto thr_layout = make_layout(make_shape(Int<tpb>{}));
+    // print_latex(thr_layout);
 
+    using g2r_copy_atom = Copy_Atom<UniversalCopy<cute::uint128_t>, T>;
+    auto G2RCopyB = make_tiled_copy(g2r_copy_atom{},
+                                 make_layout(make_shape(Int<4>{}, Int<32>{}), // Thr layout 32x4 k-major
+                                            make_stride(Int<32>{}, Int<1>{})),
+                                 make_layout(make_shape(Int<1>{}, Int<4>{}))); // Val layout 1x8
+
+    print_latex(G2RCopyB);
 
     return 0;
 }

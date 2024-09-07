@@ -186,8 +186,8 @@ __global__ void gemv_kernel_v3(T *Aptr, T *Bptr, T *Cptr, int m, int n, int k) {
     Tensor C = make_tensor(make_gmem_ptr(Cptr), make_shape(1, n), make_stride(n, Int<1>{}));
 
     // Tensor gA = local_tile(A, make_tile(Int<1>{}, Int<128>{}), make_coord(0, 0)); 
-    Tensor gB = local_tile(B, make_tile(Int<4>{}, Int<128>{}), make_coord(bx, 0));     // (BN, k)
-    Tensor gC = local_tile(C, make_tile(Int<1>{}, Int<4>{}), make_coord(0, bx));      // (1, BN) 
+    Tensor gB = local_tile(B, make_tile(Int<8>{}, Int<128>{}), make_coord(bx, 0));     // (BN, k)
+    Tensor gC = local_tile(C, make_tile(Int<1>{}, Int<8>{}), make_coord(0, bx));      // (1, BN) 
 
     float res = 0;
     Bptr = &gB(ty, 0);
@@ -225,7 +225,7 @@ __global__ void gemv_kernel_v3(T *Aptr, T *Bptr, T *Cptr, int m, int n, int k) {
 
 template <typename T>
 void gemv_v3(T *a, T *b, T *c, int m, int n, int k) {
-    dim3 dimGrid(n / 4);
+    dim3 dimGrid(n / 8);
     dim3 dimBlock(16, 8);
     gemv_kernel_v3<T><<<dimGrid, dimBlock>>>(a, b, c, 1, n, k);
     
@@ -343,12 +343,12 @@ int main() {
 
     printf("\nalgo = Cute_HGEMV\n");
 
-    const int M = 1, N = 2560, K = 128;
+    const int M = 1, N = 4096, K = 128;
     float max_error = testF16F16GemmMaxError<T>(
         gemv_v3, M, N, K);
     printf("Max Error = %f\n", max_error);
 
-    for (int j = 0; j < 10; j++) {
+    for (int j = 0; j < test_num; j++) {
         int M = M_list[j], N = N_list[j], K = 128;
 
         double max_sec = 0.0;

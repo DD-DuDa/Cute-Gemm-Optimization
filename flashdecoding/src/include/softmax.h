@@ -136,6 +136,10 @@ struct Softmax {
     __forceinline__ __device__ void softmax_rescale_o(Tensor0 &acc_s, Tensor1 &acc_o, float softmax_scale_log2) {
         // Reshape acc_s from (MMA=4, MMA_M, MMA_N) to (nrow=(2, MMA_M), ncol=(2, MMA_N))
         Tensor scores = make_tensor(acc_s.data(), flash::convert_layout_acc_rowcol(acc_s.layout()));
+        if (threadIdx.x == 0 && blockIdx.x == 0 && blockIdx.y == 0 && blockIdx.z == 0) {
+            PRINT("scores", scores.layout())
+            // print_tensor(scores);
+        }
         static_assert(decltype(size<0>(scores))::value == kNRows);
         if (Is_first) {
             flash::template reduce_max</*zero_init=*/true>(scores, row_max);

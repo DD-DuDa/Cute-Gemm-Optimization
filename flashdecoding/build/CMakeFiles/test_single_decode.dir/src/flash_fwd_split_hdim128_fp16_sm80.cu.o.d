@@ -1,4 +1,4 @@
-CMakeFiles/test_single_decode.dir/src/flash_fwd_split_hdim128_fp16_sm80.cu.o : /home/v-dayoudu/learning/Cute-Gemm-Optimization/flashdecoding/src/flash_fwd_split_hdim128_fp16_sm80.cu \
+CMakeFiles/test_single_decode.dir/src/flash_fwd_split_hdim128_fp16_sm80.cu.o : /home/v-dayoudu/Projects/Cute-Gemm-Optimization/flashdecoding/src/flash_fwd_split_hdim128_fp16_sm80.cu \
     /usr/include/stdc-predef.h \
     /usr/local/cuda/include/cuda_runtime.h \
     /usr/local/cuda/include/crt/host_config.h \
@@ -218,9 +218,9 @@ CMakeFiles/test_single_decode.dir/src/flash_fwd_split_hdim128_fp16_sm80.cu.o : /
     /usr/include/c++/11/bits/stl_heap.h \
     /usr/include/c++/11/bits/stl_tempbuf.h \
     /usr/include/c++/11/bits/uniform_int_dist.h \
-    /home/v-dayoudu/learning/Cute-Gemm-Optimization/flashdecoding/src/flash_fwd_launch_template.h \
-    /home/v-dayoudu/downloads/libtorch/include/ATen/cuda/CUDAContext.h \
-    /home/v-dayoudu/downloads/libtorch/include/ATen/cuda/CUDAContextLight.h \
+    /home/v-dayoudu/Projects/Cute-Gemm-Optimization/flashdecoding/src/flash_fwd_launch_template.h \
+    /home/v-dayoudu/Downloads/libtorch/include/ATen/cuda/CUDAContext.h \
+    /home/v-dayoudu/Downloads/libtorch/include/ATen/cuda/CUDAContextLight.h \
     /usr/include/c++/11/cstdint \
     /usr/lib/gcc/x86_64-linux-gnu/11/include/stdint.h \
     /usr/include/stdint.h \
@@ -241,7 +241,7 @@ CMakeFiles/test_single_decode.dir/src/flash_fwd_split_hdim128_fp16_sm80.cu.o : /
     /usr/local/cuda/include/cusolverDn.h \
     /usr/local/cuda/include/cusolver_common.h \
     /usr/include/inttypes.h \
-    /home/v-dayoudu/downloads/libtorch/include/c10/core/Allocator.h \
+    /home/v-dayoudu/Downloads/libtorch/include/c10/core/Allocator.h \
     /usr/include/c++/11/cstddef \
     /usr/include/c++/11/memory \
     /usr/include/c++/11/bits/stl_raw_storage_iter.h \
@@ -281,10 +281,10 @@ CMakeFiles/test_single_decode.dir/src/flash_fwd_split_hdim128_fp16_sm80.cu.o : /
     /usr/include/c++/11/backward/auto_ptr.h \
     /usr/include/c++/11/pstl/glue_memory_defs.h \
     /usr/include/c++/11/pstl/execution_defs.h \
-    /home/v-dayoudu/downloads/libtorch/include/c10/core/Device.h \
-    /home/v-dayoudu/downloads/libtorch/include/c10/core/DeviceType.h \
-    /home/v-dayoudu/downloads/libtorch/include/c10/macros/Export.h \
-    /home/v-dayoudu/downloads/libtorch/include/c10/macros/cmake_macros.h \
+    /home/v-dayoudu/Downloads/libtorch/include/c10/core/Device.h \
+    /home/v-dayoudu/Downloads/libtorch/include/c10/core/DeviceType.h \
+    /home/v-dayoudu/Downloads/libtorch/include/c10/macros/Export.h \
+    /home/v-dayoudu/Downloads/libtorch/include/c10/macros/cmake_macros.h \
     /usr/include/c++/11/ostream \
     /usr/include/c++/11/ios \
     /usr/include/c++/11/bits/char_traits.h \
@@ -331,15 +331,15 @@ CMakeFiles/test_single_decode.dir/src/flash_fwd_split_hdim128_fp16_sm80.cu.o : /
     /usr/include/c++/11/bits/locale_facets.tcc \
     /usr/include/c++/11/bits/basic_ios.tcc \
     /usr/include/c++/11/bits/ostream.tcc \
-    /home/v-dayoudu/downloads/libtorch/include/c10/util/Exception.h \
-    /home/v-dayoudu/downloads/libtorch/include/c10/macros/Macros.h \
+    /home/v-dayoudu/Downloads/libtorch/include/c10/util/Exception.h \
+    /home/v-dayoudu/Downloads/libtorch/include/c10/macros/Macros.h \
     /usr/include/c++/11/cassert \
-    /home/v-dayoudu/downloads/libtorch/include/c10/util/Backtrace.h \
-    /home/v-dayoudu/downloads/libtorch/include/c10/util/Lazy.h \
+    /home/v-dayoudu/Downloads/libtorch/include/c10/util/Backtrace.h \
+    /home/v-dayoudu/Downloads/libtorch/include/c10/util/Lazy.h \
     /usr/include/c++/11/atomic \
-    /home/v-dayoudu/downloads/libtorch/include/c10/util/StringUtil.h \
-    /home/v-dayoudu/downloads/libtorch/include/c10/util/string_utils.h \
-    /home/v-dayoudu/downloads/libtorch/include/c10/util/string_view.h \
+    /home/v-dayoudu/Downloads/libtorch/include/c10/util/StringUtil.h \
+    /home/v-dayoudu/Downloads/libtorch/include/c10/util/string_utils.h \
+    /home/v-dayoudu/Downloads/libtorch/include/c10/util/string_view.h \
     /usr/include/c++/11/algorithm \
     /usr/include/c++/11/pstl/glue_algorithm_defs.h \
     /usr/include/c++/11/cstring \
@@ -351,76 +351,76 @@ CMakeFiles/test_single_decode.dir/src/flash_fwd_split_hdim128_fp16_sm80.cu.o : /
     /usr/include/c++/11/bits/sstream.tcc \
     /usr/include/c++/11/variant \
     /usr/include/c++/11/bits/parse_numbers.h \
-    /home/v-dayoudu/downloads/libtorch/include/c10/util/ThreadLocalDebugInfo.h \
-    /home/v-dayoudu/downloads/libtorch/include/c10/util/UniqueVoidPtr.h \
-    /home/v-dayoudu/downloads/libtorch/include/c10/cuda/CUDAFunctions.h \
-    /home/v-dayoudu/downloads/libtorch/include/c10/core/impl/GPUTrace.h \
-    /home/v-dayoudu/downloads/libtorch/include/c10/core/impl/PyInterpreter.h \
-    /home/v-dayoudu/downloads/libtorch/include/c10/core/DispatchKeySet.h \
-    /home/v-dayoudu/downloads/libtorch/include/c10/core/DispatchKey.h \
-    /home/v-dayoudu/downloads/libtorch/include/c10/util/Metaprogramming.h \
-    /home/v-dayoudu/downloads/libtorch/include/c10/util/TypeList.h \
-    /home/v-dayoudu/downloads/libtorch/include/c10/util/TypeTraits.h \
-    /home/v-dayoudu/downloads/libtorch/include/c10/util/llvmMathExtras.h \
-    /home/v-dayoudu/downloads/libtorch/include/c10/util/bit_cast.h \
+    /home/v-dayoudu/Downloads/libtorch/include/c10/util/ThreadLocalDebugInfo.h \
+    /home/v-dayoudu/Downloads/libtorch/include/c10/util/UniqueVoidPtr.h \
+    /home/v-dayoudu/Downloads/libtorch/include/c10/cuda/CUDAFunctions.h \
+    /home/v-dayoudu/Downloads/libtorch/include/c10/core/impl/GPUTrace.h \
+    /home/v-dayoudu/Downloads/libtorch/include/c10/core/impl/PyInterpreter.h \
+    /home/v-dayoudu/Downloads/libtorch/include/c10/core/DispatchKeySet.h \
+    /home/v-dayoudu/Downloads/libtorch/include/c10/core/DispatchKey.h \
+    /home/v-dayoudu/Downloads/libtorch/include/c10/util/Metaprogramming.h \
+    /home/v-dayoudu/Downloads/libtorch/include/c10/util/TypeList.h \
+    /home/v-dayoudu/Downloads/libtorch/include/c10/util/TypeTraits.h \
+    /home/v-dayoudu/Downloads/libtorch/include/c10/util/llvmMathExtras.h \
+    /home/v-dayoudu/Downloads/libtorch/include/c10/util/bit_cast.h \
     /usr/include/c++/11/climits \
-    /home/v-dayoudu/downloads/libtorch/include/c10/core/Layout.h \
-    /home/v-dayoudu/downloads/libtorch/include/c10/core/Backend.h \
-    /home/v-dayoudu/downloads/libtorch/include/c10/core/MemoryFormat.h \
-    /home/v-dayoudu/downloads/libtorch/include/c10/util/ArrayRef.h \
-    /home/v-dayoudu/downloads/libtorch/include/c10/util/Deprecated.h \
-    /home/v-dayoudu/downloads/libtorch/include/c10/util/SmallVector.h \
-    /home/v-dayoudu/downloads/libtorch/include/c10/util/AlignOf.h \
-    /home/v-dayoudu/downloads/libtorch/include/c10/core/SymIntArrayRef.h \
-    /home/v-dayoudu/downloads/libtorch/include/c10/core/SymInt.h \
-    /home/v-dayoudu/downloads/libtorch/include/c10/core/SymBool.h \
-    /home/v-dayoudu/downloads/libtorch/include/c10/core/SymNodeImpl.h \
-    /home/v-dayoudu/downloads/libtorch/include/c10/util/Optional.h \
+    /home/v-dayoudu/Downloads/libtorch/include/c10/core/Layout.h \
+    /home/v-dayoudu/Downloads/libtorch/include/c10/core/Backend.h \
+    /home/v-dayoudu/Downloads/libtorch/include/c10/core/MemoryFormat.h \
+    /home/v-dayoudu/Downloads/libtorch/include/c10/util/ArrayRef.h \
+    /home/v-dayoudu/Downloads/libtorch/include/c10/util/Deprecated.h \
+    /home/v-dayoudu/Downloads/libtorch/include/c10/util/SmallVector.h \
+    /home/v-dayoudu/Downloads/libtorch/include/c10/util/AlignOf.h \
+    /home/v-dayoudu/Downloads/libtorch/include/c10/core/SymIntArrayRef.h \
+    /home/v-dayoudu/Downloads/libtorch/include/c10/core/SymInt.h \
+    /home/v-dayoudu/Downloads/libtorch/include/c10/core/SymBool.h \
+    /home/v-dayoudu/Downloads/libtorch/include/c10/core/SymNodeImpl.h \
+    /home/v-dayoudu/Downloads/libtorch/include/c10/util/Optional.h \
     /usr/include/c++/11/optional \
-    /home/v-dayoudu/downloads/libtorch/include/c10/util/intrusive_ptr.h \
-    /home/v-dayoudu/downloads/libtorch/include/c10/util/MaybeOwned.h \
+    /home/v-dayoudu/Downloads/libtorch/include/c10/util/intrusive_ptr.h \
+    /home/v-dayoudu/Downloads/libtorch/include/c10/util/MaybeOwned.h \
     /usr/include/c++/11/numeric \
     /usr/include/c++/11/bits/stl_numeric.h \
     /usr/include/c++/11/pstl/glue_numeric_defs.h \
-    /home/v-dayoudu/downloads/libtorch/include/c10/util/python_stub.h \
-    /home/v-dayoudu/downloads/libtorch/include/c10/cuda/CUDAException.h \
-    /home/v-dayoudu/downloads/libtorch/include/c10/cuda/CUDADeviceAssertionHost.h \
-    /home/v-dayoudu/downloads/libtorch/include/c10/cuda/CUDAMacros.h \
-    /home/v-dayoudu/downloads/libtorch/include/c10/cuda/impl/cuda_cmake_macros.h \
+    /home/v-dayoudu/Downloads/libtorch/include/c10/util/python_stub.h \
+    /home/v-dayoudu/Downloads/libtorch/include/c10/cuda/CUDAException.h \
+    /home/v-dayoudu/Downloads/libtorch/include/c10/cuda/CUDADeviceAssertionHost.h \
+    /home/v-dayoudu/Downloads/libtorch/include/c10/cuda/CUDAMacros.h \
+    /home/v-dayoudu/Downloads/libtorch/include/c10/cuda/impl/cuda_cmake_macros.h \
     /usr/include/c++/11/mutex \
     /usr/include/c++/11/chrono \
     /usr/include/c++/11/ratio \
     /usr/include/c++/11/ctime \
     /usr/include/c++/11/bits/std_mutex.h \
     /usr/include/c++/11/bits/unique_lock.h \
-    /home/v-dayoudu/downloads/libtorch/include/c10/cuda/CUDAMiscFunctions.h \
-    /home/v-dayoudu/downloads/libtorch/include/c10/util/irange.h \
-    /home/v-dayoudu/downloads/libtorch/include/c10/util/TypeSafeSignMath.h \
+    /home/v-dayoudu/Downloads/libtorch/include/c10/cuda/CUDAMiscFunctions.h \
+    /home/v-dayoudu/Downloads/libtorch/include/c10/util/irange.h \
+    /home/v-dayoudu/Downloads/libtorch/include/c10/util/TypeSafeSignMath.h \
     /usr/local/cuda/include/cuda.h \
-    /home/v-dayoudu/downloads/libtorch/include/ATen/Context.h \
-    /home/v-dayoudu/downloads/libtorch/include/ATen/BlasBackend.h \
-    /home/v-dayoudu/downloads/libtorch/include/ATen/CPUGeneratorImpl.h \
-    /home/v-dayoudu/downloads/libtorch/include/ATen/core/Generator.h \
+    /home/v-dayoudu/Downloads/libtorch/include/ATen/Context.h \
+    /home/v-dayoudu/Downloads/libtorch/include/ATen/BlasBackend.h \
+    /home/v-dayoudu/Downloads/libtorch/include/ATen/CPUGeneratorImpl.h \
+    /home/v-dayoudu/Downloads/libtorch/include/ATen/core/Generator.h \
     /usr/include/c++/11/deque \
     /usr/include/c++/11/bits/stl_deque.h \
     /usr/include/c++/11/bits/deque.tcc \
-    /home/v-dayoudu/downloads/libtorch/include/c10/core/GeneratorImpl.h \
-    /home/v-dayoudu/downloads/libtorch/include/c10/core/TensorImpl.h \
-    /home/v-dayoudu/downloads/libtorch/include/c10/core/InferenceMode.h \
-    /home/v-dayoudu/downloads/libtorch/include/c10/core/AutogradState.h \
-    /home/v-dayoudu/downloads/libtorch/include/c10/core/impl/LocalDispatchKeySet.h \
-    /home/v-dayoudu/downloads/libtorch/include/c10/core/ScalarType.h \
-    /home/v-dayoudu/downloads/libtorch/include/c10/util/BFloat16.h \
-    /home/v-dayoudu/downloads/libtorch/include/c10/util/BFloat16-inl.h \
-    /home/v-dayoudu/downloads/libtorch/include/c10/util/Float8_e4m3fn.h \
-    /home/v-dayoudu/downloads/libtorch/include/c10/util/floating_point_utils.h \
-    /home/v-dayoudu/downloads/libtorch/include/c10/util/Float8_e4m3fn-inl.h \
-    /home/v-dayoudu/downloads/libtorch/include/c10/util/Float8_e4m3fnuz.h \
-    /home/v-dayoudu/downloads/libtorch/include/c10/util/Float8_e4m3fnuz-inl.h \
-    /home/v-dayoudu/downloads/libtorch/include/c10/util/Float8_fnuz_cvt.h \
-    /home/v-dayoudu/downloads/libtorch/include/c10/util/Float8_e5m2.h \
-    /home/v-dayoudu/downloads/libtorch/include/c10/util/Half.h \
-    /home/v-dayoudu/downloads/libtorch/include/c10/util/complex.h \
+    /home/v-dayoudu/Downloads/libtorch/include/c10/core/GeneratorImpl.h \
+    /home/v-dayoudu/Downloads/libtorch/include/c10/core/TensorImpl.h \
+    /home/v-dayoudu/Downloads/libtorch/include/c10/core/InferenceMode.h \
+    /home/v-dayoudu/Downloads/libtorch/include/c10/core/AutogradState.h \
+    /home/v-dayoudu/Downloads/libtorch/include/c10/core/impl/LocalDispatchKeySet.h \
+    /home/v-dayoudu/Downloads/libtorch/include/c10/core/ScalarType.h \
+    /home/v-dayoudu/Downloads/libtorch/include/c10/util/BFloat16.h \
+    /home/v-dayoudu/Downloads/libtorch/include/c10/util/BFloat16-inl.h \
+    /home/v-dayoudu/Downloads/libtorch/include/c10/util/Float8_e4m3fn.h \
+    /home/v-dayoudu/Downloads/libtorch/include/c10/util/floating_point_utils.h \
+    /home/v-dayoudu/Downloads/libtorch/include/c10/util/Float8_e4m3fn-inl.h \
+    /home/v-dayoudu/Downloads/libtorch/include/c10/util/Float8_e4m3fnuz.h \
+    /home/v-dayoudu/Downloads/libtorch/include/c10/util/Float8_e4m3fnuz-inl.h \
+    /home/v-dayoudu/Downloads/libtorch/include/c10/util/Float8_fnuz_cvt.h \
+    /home/v-dayoudu/Downloads/libtorch/include/c10/util/Float8_e5m2.h \
+    /home/v-dayoudu/Downloads/libtorch/include/c10/util/Half.h \
+    /home/v-dayoudu/Downloads/libtorch/include/c10/util/complex.h \
     /usr/include/c++/11/complex \
     /usr/local/cuda/include/thrust/complex.h \
     /usr/local/cuda/include/thrust/detail/config.h \
@@ -999,70 +999,70 @@ CMakeFiles/test_single_decode.dir/src/flash_fwd_split_hdim128_fp16_sm80.cu.o : /
     /usr/local/cuda/include/thrust/detail/complex/catrig.h \
     /usr/local/cuda/include/thrust/detail/complex/catrigf.h \
     /usr/local/cuda/include/thrust/detail/complex/stream.h \
-    /home/v-dayoudu/downloads/libtorch/include/c10/util/complex_math.h \
-    /home/v-dayoudu/downloads/libtorch/include/c10/util/complex_utils.h \
-    /home/v-dayoudu/downloads/libtorch/include/c10/util/Half-inl.h \
-    /home/v-dayoudu/downloads/libtorch/include/c10/util/Float8_e5m2-inl.h \
-    /home/v-dayoudu/downloads/libtorch/include/c10/util/Float8_e5m2fnuz.h \
-    /home/v-dayoudu/downloads/libtorch/include/c10/util/Float8_e5m2fnuz-inl.h \
-    /home/v-dayoudu/downloads/libtorch/include/c10/util/bits.h \
-    /home/v-dayoudu/downloads/libtorch/include/c10/util/qint32.h \
-    /home/v-dayoudu/downloads/libtorch/include/c10/util/qint8.h \
-    /home/v-dayoudu/downloads/libtorch/include/c10/util/quint2x4.h \
-    /home/v-dayoudu/downloads/libtorch/include/c10/util/quint4x2.h \
-    /home/v-dayoudu/downloads/libtorch/include/c10/util/quint8.h \
-    /home/v-dayoudu/downloads/libtorch/include/c10/core/ScalarTypeToTypeMeta.h \
-    /home/v-dayoudu/downloads/libtorch/include/c10/util/typeid.h \
-    /home/v-dayoudu/downloads/libtorch/include/c10/util/IdWrapper.h \
-    /home/v-dayoudu/downloads/libtorch/include/c10/util/TypeIndex.h \
-    /home/v-dayoudu/downloads/libtorch/include/c10/util/ConstexprCrc.h \
-    /home/v-dayoudu/downloads/libtorch/include/c10/core/Storage.h \
-    /home/v-dayoudu/downloads/libtorch/include/c10/core/StorageImpl.h \
-    /home/v-dayoudu/downloads/libtorch/include/c10/core/impl/COW.h \
-    /home/v-dayoudu/downloads/libtorch/include/c10/core/impl/COWDeleter.h \
+    /home/v-dayoudu/Downloads/libtorch/include/c10/util/complex_math.h \
+    /home/v-dayoudu/Downloads/libtorch/include/c10/util/complex_utils.h \
+    /home/v-dayoudu/Downloads/libtorch/include/c10/util/Half-inl.h \
+    /home/v-dayoudu/Downloads/libtorch/include/c10/util/Float8_e5m2-inl.h \
+    /home/v-dayoudu/Downloads/libtorch/include/c10/util/Float8_e5m2fnuz.h \
+    /home/v-dayoudu/Downloads/libtorch/include/c10/util/Float8_e5m2fnuz-inl.h \
+    /home/v-dayoudu/Downloads/libtorch/include/c10/util/bits.h \
+    /home/v-dayoudu/Downloads/libtorch/include/c10/util/qint32.h \
+    /home/v-dayoudu/Downloads/libtorch/include/c10/util/qint8.h \
+    /home/v-dayoudu/Downloads/libtorch/include/c10/util/quint2x4.h \
+    /home/v-dayoudu/Downloads/libtorch/include/c10/util/quint4x2.h \
+    /home/v-dayoudu/Downloads/libtorch/include/c10/util/quint8.h \
+    /home/v-dayoudu/Downloads/libtorch/include/c10/core/ScalarTypeToTypeMeta.h \
+    /home/v-dayoudu/Downloads/libtorch/include/c10/util/typeid.h \
+    /home/v-dayoudu/Downloads/libtorch/include/c10/util/IdWrapper.h \
+    /home/v-dayoudu/Downloads/libtorch/include/c10/util/TypeIndex.h \
+    /home/v-dayoudu/Downloads/libtorch/include/c10/util/ConstexprCrc.h \
+    /home/v-dayoudu/Downloads/libtorch/include/c10/core/Storage.h \
+    /home/v-dayoudu/Downloads/libtorch/include/c10/core/StorageImpl.h \
+    /home/v-dayoudu/Downloads/libtorch/include/c10/core/impl/COW.h \
+    /home/v-dayoudu/Downloads/libtorch/include/c10/core/impl/COWDeleter.h \
     /usr/include/c++/11/shared_mutex \
-    /home/v-dayoudu/downloads/libtorch/include/c10/core/impl/PyObjectSlot.h \
-    /home/v-dayoudu/downloads/libtorch/include/c10/core/impl/HermeticPyObjectTLS.h \
-    /home/v-dayoudu/downloads/libtorch/include/c10/util/ExclusivelyOwned.h \
-    /home/v-dayoudu/downloads/libtorch/include/c10/core/SymbolicShapeMeta.h \
-    /home/v-dayoudu/downloads/libtorch/include/c10/util/DimVector.h \
-    /home/v-dayoudu/downloads/libtorch/include/c10/core/impl/SizesAndStrides.h \
-    /home/v-dayoudu/downloads/libtorch/include/c10/core/WrapDimMinimal.h \
-    /home/v-dayoudu/downloads/libtorch/include/c10/util/Flags.h \
-    /home/v-dayoudu/downloads/libtorch/include/c10/util/Registry.h \
-    /home/v-dayoudu/downloads/libtorch/include/c10/util/Type.h \
-    /home/v-dayoudu/downloads/libtorch/include/c10/util/accumulate.h \
-    /home/v-dayoudu/downloads/libtorch/include/c10/util/safe_numerics.h \
-    /home/v-dayoudu/downloads/libtorch/include/ATen/core/MT19937RNGEngine.h \
-    /home/v-dayoudu/downloads/libtorch/include/ATen/DeviceAccelerator.h \
-    /home/v-dayoudu/downloads/libtorch/include/ATen/detail/MTIAHooksInterface.h \
-    /home/v-dayoudu/downloads/libtorch/include/c10/core/Stream.h \
-    /home/v-dayoudu/downloads/libtorch/include/ATen/detail/AcceleratorHooksInterface.h \
-    /home/v-dayoudu/downloads/libtorch/include/ATen/LinalgBackend.h \
-    /home/v-dayoudu/downloads/libtorch/include/ATen/core/ATenGeneral.h \
-    /home/v-dayoudu/downloads/libtorch/include/ATen/core/DeprecatedTypeProperties.h \
-    /home/v-dayoudu/downloads/libtorch/include/c10/core/TensorOptions.h \
-    /home/v-dayoudu/downloads/libtorch/include/c10/core/DefaultDtype.h \
-    /home/v-dayoudu/downloads/libtorch/include/ATen/core/DeprecatedTypePropertiesRegistry.h \
-    /home/v-dayoudu/downloads/libtorch/include/ATen/core/LegacyTypeDispatch.h \
-    /home/v-dayoudu/downloads/libtorch/include/ATen/detail/CUDAHooksInterface.h \
-    /home/v-dayoudu/downloads/libtorch/include/ATen/detail/HIPHooksInterface.h \
-    /home/v-dayoudu/downloads/libtorch/include/ATen/detail/IPUHooksInterface.h \
-    /home/v-dayoudu/downloads/libtorch/include/ATen/detail/MAIAHooksInterface.h \
-    /home/v-dayoudu/downloads/libtorch/include/ATen/detail/MPSHooksInterface.h \
-    /home/v-dayoudu/downloads/libtorch/include/ATen/detail/PrivateUse1HooksInterface.h \
-    /home/v-dayoudu/downloads/libtorch/include/ATen/detail/XPUHooksInterface.h \
-    /home/v-dayoudu/downloads/libtorch/include/c10/core/QEngine.h \
-    /home/v-dayoudu/downloads/libtorch/include/c10/core/impl/DeviceGuardImplInterface.h \
-    /home/v-dayoudu/downloads/libtorch/include/c10/util/CallOnce.h \
-    /home/v-dayoudu/downloads/libtorch/include/c10/util/C++17.h \
-    /home/v-dayoudu/downloads/libtorch/include/c10/util/env.h \
-    /home/v-dayoudu/downloads/libtorch/include/c10/cuda/CUDAStream.h \
-    /home/v-dayoudu/downloads/libtorch/include/c10/core/DeviceGuard.h \
-    /home/v-dayoudu/downloads/libtorch/include/c10/core/impl/InlineDeviceGuard.h \
-    /home/v-dayoudu/downloads/libtorch/include/c10/core/impl/VirtualGuardImpl.h \
-    /home/v-dayoudu/downloads/libtorch/include/c10/util/Logging.h \
-    /home/v-dayoudu/downloads/libtorch/include/c10/util/logging_is_not_google_glog.h \
+    /home/v-dayoudu/Downloads/libtorch/include/c10/core/impl/PyObjectSlot.h \
+    /home/v-dayoudu/Downloads/libtorch/include/c10/core/impl/HermeticPyObjectTLS.h \
+    /home/v-dayoudu/Downloads/libtorch/include/c10/util/ExclusivelyOwned.h \
+    /home/v-dayoudu/Downloads/libtorch/include/c10/core/SymbolicShapeMeta.h \
+    /home/v-dayoudu/Downloads/libtorch/include/c10/util/DimVector.h \
+    /home/v-dayoudu/Downloads/libtorch/include/c10/core/impl/SizesAndStrides.h \
+    /home/v-dayoudu/Downloads/libtorch/include/c10/core/WrapDimMinimal.h \
+    /home/v-dayoudu/Downloads/libtorch/include/c10/util/Flags.h \
+    /home/v-dayoudu/Downloads/libtorch/include/c10/util/Registry.h \
+    /home/v-dayoudu/Downloads/libtorch/include/c10/util/Type.h \
+    /home/v-dayoudu/Downloads/libtorch/include/c10/util/accumulate.h \
+    /home/v-dayoudu/Downloads/libtorch/include/c10/util/safe_numerics.h \
+    /home/v-dayoudu/Downloads/libtorch/include/ATen/core/MT19937RNGEngine.h \
+    /home/v-dayoudu/Downloads/libtorch/include/ATen/DeviceAccelerator.h \
+    /home/v-dayoudu/Downloads/libtorch/include/ATen/detail/MTIAHooksInterface.h \
+    /home/v-dayoudu/Downloads/libtorch/include/c10/core/Stream.h \
+    /home/v-dayoudu/Downloads/libtorch/include/ATen/detail/AcceleratorHooksInterface.h \
+    /home/v-dayoudu/Downloads/libtorch/include/ATen/LinalgBackend.h \
+    /home/v-dayoudu/Downloads/libtorch/include/ATen/core/ATenGeneral.h \
+    /home/v-dayoudu/Downloads/libtorch/include/ATen/core/DeprecatedTypeProperties.h \
+    /home/v-dayoudu/Downloads/libtorch/include/c10/core/TensorOptions.h \
+    /home/v-dayoudu/Downloads/libtorch/include/c10/core/DefaultDtype.h \
+    /home/v-dayoudu/Downloads/libtorch/include/ATen/core/DeprecatedTypePropertiesRegistry.h \
+    /home/v-dayoudu/Downloads/libtorch/include/ATen/core/LegacyTypeDispatch.h \
+    /home/v-dayoudu/Downloads/libtorch/include/ATen/detail/CUDAHooksInterface.h \
+    /home/v-dayoudu/Downloads/libtorch/include/ATen/detail/HIPHooksInterface.h \
+    /home/v-dayoudu/Downloads/libtorch/include/ATen/detail/IPUHooksInterface.h \
+    /home/v-dayoudu/Downloads/libtorch/include/ATen/detail/MAIAHooksInterface.h \
+    /home/v-dayoudu/Downloads/libtorch/include/ATen/detail/MPSHooksInterface.h \
+    /home/v-dayoudu/Downloads/libtorch/include/ATen/detail/PrivateUse1HooksInterface.h \
+    /home/v-dayoudu/Downloads/libtorch/include/ATen/detail/XPUHooksInterface.h \
+    /home/v-dayoudu/Downloads/libtorch/include/c10/core/QEngine.h \
+    /home/v-dayoudu/Downloads/libtorch/include/c10/core/impl/DeviceGuardImplInterface.h \
+    /home/v-dayoudu/Downloads/libtorch/include/c10/util/CallOnce.h \
+    /home/v-dayoudu/Downloads/libtorch/include/c10/util/C++17.h \
+    /home/v-dayoudu/Downloads/libtorch/include/c10/util/env.h \
+    /home/v-dayoudu/Downloads/libtorch/include/c10/cuda/CUDAStream.h \
+    /home/v-dayoudu/Downloads/libtorch/include/c10/core/DeviceGuard.h \
+    /home/v-dayoudu/Downloads/libtorch/include/c10/core/impl/InlineDeviceGuard.h \
+    /home/v-dayoudu/Downloads/libtorch/include/c10/core/impl/VirtualGuardImpl.h \
+    /home/v-dayoudu/Downloads/libtorch/include/c10/util/Logging.h \
+    /home/v-dayoudu/Downloads/libtorch/include/c10/util/logging_is_not_google_glog.h \
     /usr/include/c++/11/iomanip \
     /usr/include/c++/11/locale \
     /usr/include/c++/11/bits/locale_facets_nonio.h \
@@ -1080,161 +1080,164 @@ CMakeFiles/test_single_decode.dir/src/flash_fwd_split_hdim128_fp16_sm80.cu.o : /
     /usr/include/c++/11/set \
     /usr/include/c++/11/bits/stl_set.h \
     /usr/include/c++/11/bits/stl_multiset.h \
-    /home/v-dayoudu/downloads/libtorch/include/ATen/cuda/Exceptions.h \
-    /home/v-dayoudu/learning/Cute-Gemm-Optimization/flashdecoding/src/include/static_switch.h \
-    /home/v-dayoudu/learning/Cute-Gemm-Optimization/flashdecoding/src/include/flash.h \
-    /home/v-dayoudu/downloads/libtorch/include/ATen/cuda/CUDAGeneratorImpl.h \
-    /home/v-dayoudu/downloads/libtorch/include/ATen/core/TensorBase.h \
-    /home/v-dayoudu/downloads/libtorch/include/c10/core/UndefinedTensorImpl.h \
-    /home/v-dayoudu/downloads/libtorch/include/c10/util/ExclusivelyOwnedTensorTraits.h \
-    /home/v-dayoudu/downloads/libtorch/include/ATen/core/NamedTensor.h \
-    /home/v-dayoudu/downloads/libtorch/include/ATen/core/Dimname.h \
-    /home/v-dayoudu/downloads/libtorch/include/ATen/core/symbol.h \
-    /home/v-dayoudu/downloads/libtorch/include/ATen/core/QuantizerBase.h \
-    /home/v-dayoudu/downloads/libtorch/include/c10/core/QScheme.h \
-    /home/v-dayoudu/downloads/libtorch/include/ATen/core/TensorAccessor.h \
-    /home/v-dayoudu/downloads/libtorch/include/ATen/StorageUtils.h \
-    /home/v-dayoudu/downloads/libtorch/include/ATen/cuda/PhiloxCudaState.h \
-    /home/v-dayoudu/downloads/libtorch/include/ATen/cuda/detail/PhiloxCudaStateRaw.cuh \
+    /home/v-dayoudu/Downloads/libtorch/include/ATen/cuda/Exceptions.h \
+    /home/v-dayoudu/Projects/Cute-Gemm-Optimization/flashdecoding/src/include/static_switch.h \
+    /home/v-dayoudu/Projects/Cute-Gemm-Optimization/flashdecoding/src/include/flash.h \
+    /home/v-dayoudu/Downloads/libtorch/include/ATen/cuda/CUDAGeneratorImpl.h \
+    /home/v-dayoudu/Downloads/libtorch/include/ATen/core/TensorBase.h \
+    /home/v-dayoudu/Downloads/libtorch/include/c10/core/UndefinedTensorImpl.h \
+    /home/v-dayoudu/Downloads/libtorch/include/c10/util/ExclusivelyOwnedTensorTraits.h \
+    /home/v-dayoudu/Downloads/libtorch/include/ATen/core/NamedTensor.h \
+    /home/v-dayoudu/Downloads/libtorch/include/ATen/core/Dimname.h \
+    /home/v-dayoudu/Downloads/libtorch/include/ATen/core/symbol.h \
+    /home/v-dayoudu/Downloads/libtorch/include/ATen/core/QuantizerBase.h \
+    /home/v-dayoudu/Downloads/libtorch/include/c10/core/QScheme.h \
+    /home/v-dayoudu/Downloads/libtorch/include/ATen/core/TensorAccessor.h \
+    /home/v-dayoudu/Downloads/libtorch/include/ATen/StorageUtils.h \
+    /home/v-dayoudu/Downloads/libtorch/include/ATen/cuda/PhiloxCudaState.h \
+    /home/v-dayoudu/Downloads/libtorch/include/ATen/cuda/detail/PhiloxCudaStateRaw.cuh \
     /usr/include/c++/11/unordered_set \
     /usr/include/c++/11/bits/unordered_set.h \
-    /home/v-dayoudu/downloads/libtorch/include/ATen/cuda/CUDAGraphsUtils.cuh \
-    /home/v-dayoudu/downloads/libtorch/include/ATen/cuda/CUDAEvent.h \
-    /home/v-dayoudu/downloads/libtorch/include/ATen/cuda/ATenCUDAGeneral.h \
-    /home/v-dayoudu/downloads/libtorch/include/c10/cuda/CUDAGuard.h \
-    /home/v-dayoudu/downloads/libtorch/include/c10/core/impl/InlineStreamGuard.h \
-    /home/v-dayoudu/downloads/libtorch/include/c10/cuda/impl/CUDAGuardImpl.h \
-    /home/v-dayoudu/downloads/libtorch/include/c10/cuda/CUDACachingAllocator.h \
-    /home/v-dayoudu/downloads/libtorch/include/c10/cuda/CUDAGraphsC10Utils.h \
+    /home/v-dayoudu/Downloads/libtorch/include/ATen/cuda/CUDAGraphsUtils.cuh \
+    /home/v-dayoudu/Downloads/libtorch/include/ATen/cuda/CUDAEvent.h \
+    /home/v-dayoudu/Downloads/libtorch/include/ATen/cuda/ATenCUDAGeneral.h \
+    /home/v-dayoudu/Downloads/libtorch/include/c10/cuda/CUDAGuard.h \
+    /home/v-dayoudu/Downloads/libtorch/include/c10/core/impl/InlineStreamGuard.h \
+    /home/v-dayoudu/Downloads/libtorch/include/c10/cuda/impl/CUDAGuardImpl.h \
+    /home/v-dayoudu/Downloads/libtorch/include/c10/cuda/CUDACachingAllocator.h \
+    /home/v-dayoudu/Downloads/libtorch/include/c10/cuda/CUDAGraphsC10Utils.h \
     /usr/include/c++/11/iostream \
-    /home/v-dayoudu/downloads/libtorch/include/c10/util/ApproximateClock.h \
-    /home/v-dayoudu/downloads/libtorch/include/ATen/cuda/PhiloxUtils.cuh \
-    /home/v-dayoudu/downloads/libtorch/include/ATen/cuda/detail/UnpackRaw.cuh \
-    /home/v-dayoudu/downloads/libtorch/include/ATen/cuda/detail/CUDAHooks.h \
-    /home/v-dayoudu/downloads/libtorch/include/ATen/Generator.h \
-    /home/v-dayoudu/downloads/libtorch/include/c10/core/StreamGuard.h \
-    /home/v-dayoudu/learning/Cute-Gemm-Optimization/flashdecoding/src/flash_fwd_kernel.h \
-    /home/v-dayoudu/learning/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cute/tensor.hpp \
-    /home/v-dayoudu/learning/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cute/tensor_impl.hpp \
-    /home/v-dayoudu/learning/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cute/config.hpp \
-    /home/v-dayoudu/learning/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cute/util/type_traits.hpp \
-    /home/v-dayoudu/learning/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cute/numeric/numeric_types.hpp \
-    /home/v-dayoudu/learning/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cutlass/numeric_types.h \
-    /home/v-dayoudu/learning/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cutlass/cutlass.h \
-    /home/v-dayoudu/learning/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cutlass/detail/helper_macros.hpp \
-    /home/v-dayoudu/learning/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cutlass/platform/platform.h \
-    /home/v-dayoudu/learning/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cutlass/numeric_size.h \
-    /home/v-dayoudu/learning/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cutlass/integer_subbyte.h \
-    /home/v-dayoudu/learning/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cutlass/half.h \
-    /home/v-dayoudu/learning/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cutlass/float8.h \
+    /home/v-dayoudu/Downloads/libtorch/include/c10/util/ApproximateClock.h \
+    /home/v-dayoudu/Downloads/libtorch/include/ATen/cuda/PhiloxUtils.cuh \
+    /home/v-dayoudu/Downloads/libtorch/include/ATen/cuda/detail/UnpackRaw.cuh \
+    /home/v-dayoudu/Downloads/libtorch/include/ATen/cuda/detail/CUDAHooks.h \
+    /home/v-dayoudu/Downloads/libtorch/include/ATen/Generator.h \
+    /home/v-dayoudu/Downloads/libtorch/include/c10/core/StreamGuard.h \
+    /home/v-dayoudu/Projects/Cute-Gemm-Optimization/flashdecoding/src/flash_fwd_kernel.h \
+    /home/v-dayoudu/Projects/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cute/tensor.hpp \
+    /home/v-dayoudu/Projects/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cute/tensor_impl.hpp \
+    /home/v-dayoudu/Projects/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cute/config.hpp \
+    /home/v-dayoudu/Projects/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cute/util/type_traits.hpp \
+    /home/v-dayoudu/Projects/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cute/numeric/numeric_types.hpp \
+    /home/v-dayoudu/Projects/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cutlass/numeric_types.h \
+    /home/v-dayoudu/Projects/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cutlass/cutlass.h \
+    /home/v-dayoudu/Projects/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cutlass/detail/helper_macros.hpp \
+    /home/v-dayoudu/Projects/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cutlass/platform/platform.h \
+    /home/v-dayoudu/Projects/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cutlass/numeric_size.h \
+    /home/v-dayoudu/Projects/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cutlass/integer_subbyte.h \
+    /home/v-dayoudu/Projects/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cutlass/half.h \
+    /home/v-dayoudu/Projects/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cutlass/float8.h \
     /usr/local/cuda/include/cuda_fp8.h \
     /usr/local/cuda/include/cuda_fp8.hpp \
-    /home/v-dayoudu/learning/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cutlass/bfloat16.h \
-    /home/v-dayoudu/learning/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cutlass/tfloat32.h \
-    /home/v-dayoudu/learning/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cutlass/uint128.h \
-    /home/v-dayoudu/learning/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cute/numeric/int.hpp \
-    /home/v-dayoudu/learning/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cute/numeric/real.hpp \
-    /home/v-dayoudu/learning/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cute/util/print.hpp \
-    /home/v-dayoudu/learning/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cute/util/debug.hpp \
-    /home/v-dayoudu/learning/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cute/numeric/integral_constant.hpp \
-    /home/v-dayoudu/learning/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cute/numeric/math.hpp \
-    /home/v-dayoudu/learning/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cutlass/fast_math.h \
-    /home/v-dayoudu/learning/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cutlass/array.h \
-    /home/v-dayoudu/learning/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cutlass/functional.h \
-    /home/v-dayoudu/learning/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cutlass/array_subbyte.h \
-    /home/v-dayoudu/learning/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cutlass/coord.h \
-    /home/v-dayoudu/learning/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cute/numeric/integer_sequence.hpp \
-    /home/v-dayoudu/learning/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cute/container/tuple.hpp \
-    /home/v-dayoudu/learning/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cute/container/cuda_types.hpp \
-    /home/v-dayoudu/learning/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cute/container/type_list.hpp \
-    /home/v-dayoudu/learning/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cute/container/array_aligned.hpp \
-    /home/v-dayoudu/learning/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cute/container/array.hpp \
-    /home/v-dayoudu/learning/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cute/container/alignment.hpp \
-    /home/v-dayoudu/learning/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cute/container/array_subbyte.hpp \
-    /home/v-dayoudu/learning/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cute/pointer.hpp \
-    /home/v-dayoudu/learning/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cute/pointer_base.hpp \
-    /home/v-dayoudu/learning/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cute/pointer_swizzle.hpp \
-    /home/v-dayoudu/learning/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cute/swizzle.hpp \
-    /home/v-dayoudu/learning/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cute/algorithm/tuple_algorithms.hpp \
-    /home/v-dayoudu/learning/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cute/algorithm/functional.hpp \
-    /home/v-dayoudu/learning/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cute/numeric/complex.hpp \
-    /home/v-dayoudu/learning/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cutlass/complex.h \
-    /home/v-dayoudu/learning/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cutlass/real.h \
-    /home/v-dayoudu/learning/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cute/layout.hpp \
-    /home/v-dayoudu/learning/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cute/underscore.hpp \
-    /home/v-dayoudu/learning/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cute/int_tuple.hpp \
-    /home/v-dayoudu/learning/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cute/stride.hpp \
-    /home/v-dayoudu/learning/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cute/numeric/arithmetic_tuple.hpp \
-    /home/v-dayoudu/learning/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cute/numeric/integral_ratio.hpp \
-    /home/v-dayoudu/learning/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cute/swizzle_layout.hpp \
-    /home/v-dayoudu/learning/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cute/layout_composed.hpp \
-    /home/v-dayoudu/learning/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cute/pointer_flagged.hpp \
-    /home/v-dayoudu/learning/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cute/arch/util.hpp \
-    /home/v-dayoudu/learning/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cute/algorithm/tensor_algorithms.hpp \
-    /home/v-dayoudu/learning/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cute/algorithm/fill.hpp \
-    /home/v-dayoudu/learning/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cute/algorithm/prefer.hpp \
-    /home/v-dayoudu/learning/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cute/algorithm/clear.hpp \
-    /home/v-dayoudu/learning/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cute/algorithm/copy.hpp \
-    /home/v-dayoudu/learning/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cute/tensor_predicate.hpp \
-    /home/v-dayoudu/learning/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cute/atom/copy_atom.hpp \
-    /home/v-dayoudu/learning/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cute/arch/copy.hpp \
-    /home/v-dayoudu/learning/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cute/atom/copy_traits.hpp \
-    /home/v-dayoudu/learning/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cute/atom/mma_atom.hpp \
-    /home/v-dayoudu/learning/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cute/arch/mma.hpp \
-    /home/v-dayoudu/learning/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cute/atom/mma_traits.hpp \
-    /home/v-dayoudu/learning/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cute/atom/mma_traits_sm61.hpp \
-    /home/v-dayoudu/learning/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cute/arch/mma_sm61.hpp \
-    /home/v-dayoudu/learning/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cute/atom/mma_traits_sm70.hpp \
-    /home/v-dayoudu/learning/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cute/arch/mma_sm70.hpp \
-    /home/v-dayoudu/learning/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cute/atom/mma_traits_sm75.hpp \
-    /home/v-dayoudu/learning/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cute/arch/mma_sm75.hpp \
-    /home/v-dayoudu/learning/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cute/atom/mma_traits_sm80.hpp \
-    /home/v-dayoudu/learning/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cute/arch/mma_sm80.hpp \
-    /home/v-dayoudu/learning/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cute/atom/mma_traits_sm90.hpp \
-    /home/v-dayoudu/learning/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cute/arch/mma_sm90.hpp \
-    /home/v-dayoudu/learning/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cute/arch/mma_sm90_desc.hpp \
-    /home/v-dayoudu/learning/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cute/arch/mma_sm90_gmma.hpp \
-    /home/v-dayoudu/learning/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cute/atom/mma_traits_sm90_gmma.hpp \
-    /home/v-dayoudu/learning/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cute/atom/copy_traits_sm50.hpp \
-    /home/v-dayoudu/learning/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cute/arch/copy_sm50.hpp \
-    /home/v-dayoudu/learning/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cute/atom/copy_traits_sm75.hpp \
-    /home/v-dayoudu/learning/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cute/arch/copy_sm75.hpp \
-    /home/v-dayoudu/learning/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cute/atom/copy_traits_sm80.hpp \
-    /home/v-dayoudu/learning/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cute/arch/copy_sm80.hpp \
-    /home/v-dayoudu/learning/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cute/atom/copy_traits_sm90.hpp \
-    /home/v-dayoudu/learning/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cute/arch/copy_sm90.hpp \
-    /home/v-dayoudu/learning/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cute/arch/copy_sm90_desc.hpp \
+    /home/v-dayoudu/Projects/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cutlass/bfloat16.h \
+    /home/v-dayoudu/Projects/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cutlass/tfloat32.h \
+    /home/v-dayoudu/Projects/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cutlass/uint128.h \
+    /home/v-dayoudu/Projects/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cute/numeric/int.hpp \
+    /home/v-dayoudu/Projects/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cute/numeric/real.hpp \
+    /home/v-dayoudu/Projects/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cute/util/print.hpp \
+    /home/v-dayoudu/Projects/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cute/util/debug.hpp \
+    /home/v-dayoudu/Projects/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cute/numeric/integral_constant.hpp \
+    /home/v-dayoudu/Projects/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cute/numeric/math.hpp \
+    /home/v-dayoudu/Projects/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cutlass/fast_math.h \
+    /home/v-dayoudu/Projects/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cutlass/array.h \
+    /home/v-dayoudu/Projects/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cutlass/functional.h \
+    /home/v-dayoudu/Projects/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cutlass/array_subbyte.h \
+    /home/v-dayoudu/Projects/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cutlass/coord.h \
+    /home/v-dayoudu/Projects/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cute/numeric/integer_sequence.hpp \
+    /home/v-dayoudu/Projects/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cute/container/tuple.hpp \
+    /home/v-dayoudu/Projects/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cute/container/cuda_types.hpp \
+    /home/v-dayoudu/Projects/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cute/container/type_list.hpp \
+    /home/v-dayoudu/Projects/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cute/container/array_aligned.hpp \
+    /home/v-dayoudu/Projects/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cute/container/array.hpp \
+    /home/v-dayoudu/Projects/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cute/container/alignment.hpp \
+    /home/v-dayoudu/Projects/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cute/container/array_subbyte.hpp \
+    /home/v-dayoudu/Projects/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cute/pointer.hpp \
+    /home/v-dayoudu/Projects/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cute/pointer_base.hpp \
+    /home/v-dayoudu/Projects/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cute/pointer_swizzle.hpp \
+    /home/v-dayoudu/Projects/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cute/swizzle.hpp \
+    /home/v-dayoudu/Projects/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cute/algorithm/tuple_algorithms.hpp \
+    /home/v-dayoudu/Projects/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cute/algorithm/functional.hpp \
+    /home/v-dayoudu/Projects/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cute/numeric/complex.hpp \
+    /home/v-dayoudu/Projects/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cutlass/complex.h \
+    /home/v-dayoudu/Projects/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cutlass/real.h \
+    /home/v-dayoudu/Projects/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cute/layout.hpp \
+    /home/v-dayoudu/Projects/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cute/underscore.hpp \
+    /home/v-dayoudu/Projects/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cute/int_tuple.hpp \
+    /home/v-dayoudu/Projects/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cute/stride.hpp \
+    /home/v-dayoudu/Projects/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cute/numeric/arithmetic_tuple.hpp \
+    /home/v-dayoudu/Projects/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cute/numeric/integral_ratio.hpp \
+    /home/v-dayoudu/Projects/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cute/swizzle_layout.hpp \
+    /home/v-dayoudu/Projects/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cute/layout_composed.hpp \
+    /home/v-dayoudu/Projects/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cute/pointer_flagged.hpp \
+    /home/v-dayoudu/Projects/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cute/arch/util.hpp \
+    /home/v-dayoudu/Projects/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cute/algorithm/tensor_algorithms.hpp \
+    /home/v-dayoudu/Projects/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cute/algorithm/fill.hpp \
+    /home/v-dayoudu/Projects/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cute/algorithm/prefer.hpp \
+    /home/v-dayoudu/Projects/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cute/algorithm/clear.hpp \
+    /home/v-dayoudu/Projects/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cute/algorithm/copy.hpp \
+    /home/v-dayoudu/Projects/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cute/tensor_predicate.hpp \
+    /home/v-dayoudu/Projects/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cute/atom/copy_atom.hpp \
+    /home/v-dayoudu/Projects/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cute/arch/copy.hpp \
+    /home/v-dayoudu/Projects/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cute/atom/copy_traits.hpp \
+    /home/v-dayoudu/Projects/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cute/atom/mma_atom.hpp \
+    /home/v-dayoudu/Projects/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cute/arch/mma.hpp \
+    /home/v-dayoudu/Projects/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cute/atom/mma_traits.hpp \
+    /home/v-dayoudu/Projects/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cute/atom/mma_traits_sm61.hpp \
+    /home/v-dayoudu/Projects/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cute/arch/mma_sm61.hpp \
+    /home/v-dayoudu/Projects/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cute/atom/mma_traits_sm70.hpp \
+    /home/v-dayoudu/Projects/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cute/arch/mma_sm70.hpp \
+    /home/v-dayoudu/Projects/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cute/atom/mma_traits_sm75.hpp \
+    /home/v-dayoudu/Projects/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cute/arch/mma_sm75.hpp \
+    /home/v-dayoudu/Projects/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cute/atom/mma_traits_sm80.hpp \
+    /home/v-dayoudu/Projects/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cute/arch/mma_sm80.hpp \
+    /home/v-dayoudu/Projects/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cute/atom/mma_traits_sm90.hpp \
+    /home/v-dayoudu/Projects/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cute/arch/mma_sm90.hpp \
+    /home/v-dayoudu/Projects/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cute/arch/mma_sm90_desc.hpp \
+    /home/v-dayoudu/Projects/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cute/arch/mma_sm90_gmma.hpp \
+    /home/v-dayoudu/Projects/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cute/atom/mma_traits_sm90_gmma.hpp \
+    /home/v-dayoudu/Projects/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cute/atom/copy_traits_sm50.hpp \
+    /home/v-dayoudu/Projects/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cute/arch/copy_sm50.hpp \
+    /home/v-dayoudu/Projects/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cute/atom/copy_traits_sm75.hpp \
+    /home/v-dayoudu/Projects/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cute/arch/copy_sm75.hpp \
+    /home/v-dayoudu/Projects/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cute/atom/copy_traits_sm80.hpp \
+    /home/v-dayoudu/Projects/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cute/arch/copy_sm80.hpp \
+    /home/v-dayoudu/Projects/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cute/atom/copy_traits_sm90.hpp \
+    /home/v-dayoudu/Projects/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cute/arch/copy_sm90.hpp \
+    /home/v-dayoudu/Projects/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cute/arch/copy_sm90_desc.hpp \
     /usr/include/c++/11/cinttypes \
-    /home/v-dayoudu/learning/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cute/container/bit_field.hpp \
-    /home/v-dayoudu/learning/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cute/arch/copy_sm90_tma.hpp \
-    /home/v-dayoudu/learning/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cute/atom/copy_traits_sm90_tma.hpp \
-    /home/v-dayoudu/learning/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cute/atom/copy_traits_sm90_tma_swizzle.hpp \
-    /home/v-dayoudu/learning/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cute/algorithm/prefetch.hpp \
-    /home/v-dayoudu/learning/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cute/algorithm/axpby.hpp \
-    /home/v-dayoudu/learning/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cute/algorithm/gemm.hpp \
-    /home/v-dayoudu/learning/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cute/algorithm/cooperative_copy.hpp \
-    /home/v-dayoudu/learning/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cute/algorithm/cooperative_gemm.hpp \
-    /home/v-dayoudu/learning/Cute-Gemm-Optimization/flashdecoding/src/include/block_info.h \
-    /home/v-dayoudu/learning/Cute-Gemm-Optimization/flashdecoding/src/include/kernel_traits.h \
-    /home/v-dayoudu/learning/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cutlass/layout/layout.h \
-    /home/v-dayoudu/learning/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cutlass/matrix_coord.h \
-    /home/v-dayoudu/learning/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cutlass/layout/matrix.h \
-    /home/v-dayoudu/learning/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cutlass/pitch_linear_coord.h \
-    /home/v-dayoudu/learning/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cutlass/layout/pitch_linear.h \
-    /home/v-dayoudu/learning/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cutlass/layout/tensor.h \
-    /home/v-dayoudu/learning/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cutlass/tensor_coord.h \
-    /home/v-dayoudu/learning/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cutlass/layout/vector.h \
-    /home/v-dayoudu/learning/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cutlass/layout/tensor_op_multiplicand_sm70.h \
-    /home/v-dayoudu/learning/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cutlass/layout/tensor_op_multiplicand_sm75.h \
-    /home/v-dayoudu/learning/Cute-Gemm-Optimization/flashdecoding/src/include/utils.h \
-    /home/v-dayoudu/learning/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cutlass/numeric_conversion.h \
+    /home/v-dayoudu/Projects/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cute/container/bit_field.hpp \
+    /home/v-dayoudu/Projects/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cute/arch/copy_sm90_tma.hpp \
+    /home/v-dayoudu/Projects/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cute/atom/copy_traits_sm90_tma.hpp \
+    /home/v-dayoudu/Projects/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cute/atom/copy_traits_sm90_tma_swizzle.hpp \
+    /home/v-dayoudu/Projects/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cute/algorithm/prefetch.hpp \
+    /home/v-dayoudu/Projects/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cutlass/cuda_host_adapter.hpp \
+    /home/v-dayoudu/Projects/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cutlass/trace.h \
+    /usr/local/cuda/include/cudaTypedefs.h \
+    /home/v-dayoudu/Projects/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cute/algorithm/axpby.hpp \
+    /home/v-dayoudu/Projects/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cute/algorithm/gemm.hpp \
+    /home/v-dayoudu/Projects/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cute/algorithm/cooperative_copy.hpp \
+    /home/v-dayoudu/Projects/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cute/algorithm/cooperative_gemm.hpp \
+    /home/v-dayoudu/Projects/Cute-Gemm-Optimization/flashdecoding/src/include/block_info.h \
+    /home/v-dayoudu/Projects/Cute-Gemm-Optimization/flashdecoding/src/include/kernel_traits.h \
+    /home/v-dayoudu/Projects/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cutlass/layout/layout.h \
+    /home/v-dayoudu/Projects/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cutlass/matrix_coord.h \
+    /home/v-dayoudu/Projects/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cutlass/layout/matrix.h \
+    /home/v-dayoudu/Projects/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cutlass/pitch_linear_coord.h \
+    /home/v-dayoudu/Projects/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cutlass/layout/pitch_linear.h \
+    /home/v-dayoudu/Projects/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cutlass/layout/tensor.h \
+    /home/v-dayoudu/Projects/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cutlass/tensor_coord.h \
+    /home/v-dayoudu/Projects/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cutlass/layout/vector.h \
+    /home/v-dayoudu/Projects/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cutlass/layout/tensor_op_multiplicand_sm70.h \
+    /home/v-dayoudu/Projects/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cutlass/layout/tensor_op_multiplicand_sm75.h \
+    /home/v-dayoudu/Projects/Cute-Gemm-Optimization/flashdecoding/src/include/utils.h \
+    /home/v-dayoudu/Projects/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cutlass/numeric_conversion.h \
     /usr/include/c++/11/cfenv \
     /usr/include/c++/11/fenv.h \
     /usr/include/fenv.h \
     /usr/include/x86_64-linux-gnu/bits/fenv.h \
-    /home/v-dayoudu/learning/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cutlass/transform/thread/unary_op.h \
-    /home/v-dayoudu/learning/Cute-Gemm-Optimization/flashdecoding/src/include/softmax.h \
-    /home/v-dayoudu/learning/Cute-Gemm-Optimization/flashdecoding/src/include/philox.cuh \
-    /home/v-dayoudu/learning/Cute-Gemm-Optimization/flashdecoding/src/include/mask.h \
-    /home/v-dayoudu/learning/Cute-Gemm-Optimization/flashdecoding/src/include/dropout.h \
-    /home/v-dayoudu/learning/Cute-Gemm-Optimization/flashdecoding/src/include/rotary.h
+    /home/v-dayoudu/Projects/Cute-Gemm-Optimization/flashdecoding/src/cutlass/include/cutlass/transform/thread/unary_op.h \
+    /home/v-dayoudu/Projects/Cute-Gemm-Optimization/flashdecoding/src/include/softmax.h \
+    /home/v-dayoudu/Projects/Cute-Gemm-Optimization/flashdecoding/src/include/philox.cuh \
+    /home/v-dayoudu/Projects/Cute-Gemm-Optimization/flashdecoding/src/include/mask.h \
+    /home/v-dayoudu/Projects/Cute-Gemm-Optimization/flashdecoding/src/include/dropout.h \
+    /home/v-dayoudu/Projects/Cute-Gemm-Optimization/flashdecoding/src/include/rotary.h

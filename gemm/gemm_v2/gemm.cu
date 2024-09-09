@@ -56,8 +56,9 @@ __global__ void gemm_shm_v2(const T *Aptr, const T *Bptr, T *Dptr, int m, int n,
 
     // shared memory
     auto sA = make_tensor(make_smem_ptr(Ashm),
-                            SmemLayoutA{}); // (BM, BK)
-    auto sB = make_tensor(make_smem_ptr(Bshm), SmemLayoutB{}); // (BN, BK)
+                            SmemLayoutA{}); // (kTileM, kTileK)
+    auto sB = make_tensor(make_smem_ptr(Bshm),
+                            SmemLayoutB{}); // (kTileN, kTileK)
 
     // register, use tiled_mma to partition register A/B/C
     TiledMMA tiled_mma;
@@ -80,6 +81,7 @@ __global__ void gemm_shm_v2(const T *Aptr, const T *Bptr, T *Dptr, int m, int n,
     auto tBgB_copy = g2s_thr_copy_b.partition_S(gB); // (CPY, CPY_N, CPY_K, k)
     auto tBsB_copy = g2s_thr_copy_b.partition_D(sB); // (CPY, CPY_N, CPY_K)
 
+    
     // from shared memory to register, use tiled_mma to generate tiled_copy
     auto s2r_tiled_copy_a = make_tiled_copy_A(S2RCopyAtomA{}, tiled_mma);
     auto s2r_thr_copy_a = s2r_tiled_copy_a.get_slice(idx);
@@ -92,51 +94,48 @@ __global__ void gemm_shm_v2(const T *Aptr, const T *Bptr, T *Dptr, int m, int n,
     auto tCrB_view = s2r_thr_copy_b.retile_D(tCrB); // (CPY, CPY_N, CPY_K)
 
 
+    // loop over k: i. load tile, ii. mma
+    int ntile = k / BK;
+    #pragma unroll 1
+    for (int itile = 0; itile < ntile; ++itile)
+    {
+        // copy  (CPY, CPY_M, CPY_K) , async
+        cute::copy(g2s_tiled_copy_a, tAgA_copy(_, _, _, itile),
+                tAsA_copy(_, _, _));
+        cute::copy(g2s_tiled_copy_b, tBgB_copy(_, _, _, itile),
+                tBsB_copy(_, _, _));
+        cp_async_fence();
+
+        cp_async_wait<0>();
+        __syncthreads();
+
+        int nk = size<2>(tCrA);
+    #pragma unroll
+        for (int ik = 0; ik < nk; ++ik)
+        {
+        // copy  (CPY, CPY_M), sync
+        cute::copy(s2r_tiled_copy_a, tAsA(_, _, ik),
+                    tCrA_view(_, _, ik));
+        // copy  (CPY, CPY_N)
+        cute::copy(s2r_tiled_copy_b, tBsB(_, _, ik),
+                    tCrB_view(_, _, ik));
+        // (MMA, MMA_M) x (MMA, MMA_N) => (MMA, MMA_M, MMA_N)
+        cute::gemm(tiled_mma, tCrD, tCrA(_, _, ik), tCrB(_, _, ik), tCrD);
+        } // for ik
+    } // itile
+
+    // register to global memory
+    cute::copy(tCrD, tCgD);
+
     if (threadIdx.x == 0 && blockIdx.x == 0 && blockIdx.y == 0)
     {
 
-        PRINT("sA", sA.shape())   
-        PRINT("tAsA", tAsA.shape())   
-        PRINT("tCrA", tCrA.shape())
-        PRINT("tCrA_view", tCrA_view.shape())    
+        PRINT("gA", gA.shape())     
+        PRINT("tAgA_copy", tAgA_copy.shape())
+        PRINT("tCrA", tCrA.shape()) 
+        PRINT("tCrA_view", tCrA_view.layout()) 
 
-        PRINT("sB", sB.shape())
-        PRINT("tBsB", tBsB.shape())
-        PRINT("tCrB_view", tCrB_view.shape()) 
     }
-
-  // loop over k: i. load tile, ii. mma
-  int ntile = k / BK;
-#pragma unroll 1
-  for (int itile = 0; itile < ntile; ++itile)
-  {
-    // copy  (CPY, CPY_M, CPY_K) , async
-    cute::copy(g2s_tiled_copy_a, tAgA_copy(_, _, _, itile),
-               tAsA_copy(_, _, _));
-    cute::copy(g2s_tiled_copy_b, tBgB_copy(_, _, _, itile),
-               tBsB_copy(_, _, _));
-    cp_async_fence();
-
-    cp_async_wait<0>();
-    __syncthreads();
-
-    int nk = size<2>(tCrA);
-#pragma unroll
-    for (int ik = 0; ik < nk; ++ik)
-    {
-      // copy  (CPY, CPY_M), sync
-      cute::copy(s2r_tiled_copy_a, tAsA(_, _, ik),
-                 tCrA_view(_, _, ik));
-      // copy  (CPY, CPY_N)
-      cute::copy(s2r_tiled_copy_b, tBsB(_, _, ik),
-                 tCrB_view(_, _, ik));
-      // (MMA, MMA_M) x (MMA, MMA_N) => (MMA, MMA_M, MMA_N)
-      cute::gemm(tiled_mma, tCrD, tCrA(_, _, ik), tCrB(_, _, ik), tCrD);
-    } // for ik
-  } // itile
-
-  // register to global memory
-  cute::copy(tCrD, tCgD);
 }
 
 template <typename T>
@@ -154,9 +153,9 @@ void gemm_v2(T *a, T *b, T *c, int M, int N, int K) {
                                                make_shape(Int<BM>{}, Int<BK>{})));
     using SmemLayoutB = decltype(tile_to_shape(SmemLayoutAtom{},
                                                make_shape(Int<BN>{}, Int<BK>{})));                    // (m,n) -> smem_idx
-
+    
     // mma
-    using mma_op = SM80_16x8x8_F16F16F16F16_TN;
+    using mma_op = SM80_16x8x16_F16F16F16F16_TN;
     using mma_traits = MMA_Traits<mma_op>;
     using mma_atom = MMA_Atom<mma_traits>;
     static constexpr int kMmaEURepeatM = 2;
@@ -166,7 +165,7 @@ void gemm_v2(T *a, T *b, T *c, int M, int N, int K) {
     using mma_atom_shape = mma_traits::Shape_MNK;
     static constexpr int kMmaPM = 1 * kMmaEURepeatM * get<0>(mma_atom_shape{});
     static constexpr int kMmaPN = 2 * kMmaEURepeatN * get<1>(mma_atom_shape{});
-    static constexpr int kMmaPK = 1 * kMmaEURepeatK * get<2>(mma_atom_shape{});
+    static constexpr int kMmaPK = 2 * kMmaEURepeatK * get<2>(mma_atom_shape{});
     using MMA_EU_RepeatT = decltype(make_layout(make_shape(
         Int<kMmaEURepeatM>{}, Int<kMmaEURepeatN>{}, Int<kMmaEURepeatK>{})));
     using MMA_P_T = Tile<Int<kMmaPM>, Int<kMmaPN>, Int<kMmaPK>>;
@@ -186,10 +185,9 @@ void gemm_v2(T *a, T *b, T *c, int M, int N, int K) {
 
     // copy from shared memory to register
     // use mma tiled ,so no tiled here
-    // using s2r_copy_op = SM75_U32x4_LDSM_N;
-    // using s2r_copy_traits = Copy_Traits<s2r_copy_op>;
-    // using s2r_copy_atom = Copy_Atom<s2r_copy_traits, T>;
-    using s2r_copy_atom = Copy_Atom<cute::AutoVectorizingCopy, T>;
+    using s2r_copy_op = SM75_U32x4_LDSM_N;
+    using s2r_copy_traits = Copy_Traits<s2r_copy_op>;
+    using s2r_copy_atom = Copy_Atom<s2r_copy_traits, T>;
     using S2RCopyAtomA = s2r_copy_atom;
     using S2RCopyAtomB = s2r_copy_atom;
 

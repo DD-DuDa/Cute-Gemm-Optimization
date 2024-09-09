@@ -173,9 +173,6 @@ char const* info_simulate = "INFO" ":" "simulate[" SIMULATE_ID "]";
 #  define PLATFORM_ID "Integrity"
 # endif
 
-# elif defined(_ADI_COMPILER)
-#  define PLATFORM_ID "ADSP"
-
 #else /* unknown platform */
 # define PLATFORM_ID
 
@@ -301,36 +298,6 @@ char const* info_simulate = "INFO" ":" "simulate[" SIMULATE_ID "]";
 #  define ARCHITECTURE_ID "TMS320C6x"
 
 # else /* unknown architecture */
-#  define ARCHITECTURE_ID ""
-# endif
-
-# elif defined(__ADSPSHARC__)
-#  define ARCHITECTURE_ID "SHARC"
-
-# elif defined(__ADSPBLACKFIN__)
-#  define ARCHITECTURE_ID "Blackfin"
-
-#elif defined(__TASKING__)
-
-# if defined(__CTC__) || defined(__CPTC__)
-#  define ARCHITECTURE_ID "TriCore"
-
-# elif defined(__CMCS__)
-#  define ARCHITECTURE_ID "MCS"
-
-# elif defined(__CARM__)
-#  define ARCHITECTURE_ID "ARM"
-
-# elif defined(__CARC__)
-#  define ARCHITECTURE_ID "ARC"
-
-# elif defined(__C51__)
-#  define ARCHITECTURE_ID "8051"
-
-# elif defined(__CPCP__)
-#  define ARCHITECTURE_ID "PCP"
-
-# else
 #  define ARCHITECTURE_ID ""
 # endif
 

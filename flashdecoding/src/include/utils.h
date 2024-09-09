@@ -153,16 +153,6 @@ __forceinline__ __device__ void gemm(Tensor0 &acc, Tensor1 &tCrA, Tensor2 &tCrB,
     if (!A_in_regs) { cute::copy(smem_tiled_copy_A, tCsA(_, _, _0{}), tCrA_copy_view(_, _, _0{})); }
     if (!B_in_regs) { cute::copy(smem_tiled_copy_B, tCsB(_, _, _0{}), tCrB_copy_view(_, _, _0{})); }
     
-    if (threadIdx.x == 0 && blockIdx.x == 0 && blockIdx.y == 0 && blockIdx.z == 0) {
-        PRINT("tCsB", tCsB.shape())           // ((_2,_2),(_16)):((_1,_2),(_4))
-        // print_tensor(tCsB(_, _, _0{}));
-        PRINT("tCrB_copy_view", tCrB_copy_view.shape())
-        // print_tensor(tCrB_copy_view(_, _, _0{}));
-        PRINT("tCrB", tCrB.shape())
-        // print_tensor(tCrB(_, _, _0{}));
-    }
-    
-
     #pragma unroll
     for (int i = 0; i < size<2>(tCrA); ++i) {
         if (i < size<2>(tCrA) - 1) {

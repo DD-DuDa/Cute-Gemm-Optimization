@@ -215,12 +215,13 @@ __global__ void gemv_kernel_v3(T *Aptr, T *Bptr, T *Cptr, int m, int n, int k) {
     res = warpReduceSum<warp_size>(res);
 
     if(laneId == 0) gC(0, ty) = res;
-    // if (threadIdx.x == 0 && threadIdx.y == 0 && blockIdx.x == 0)
-    // {
-    //     // PRINT("gA", A.shape())
-    //     PRINT("gB", gB.shape())  
-    //     PRINT("gC", gC.shape())    
-    // }
+    if (threadIdx.x == 0 && threadIdx.y == 0 && blockIdx.x == 0)
+    {
+        // PRINT("gA", A.shape())
+        PRINT("gB", gB.shape())  
+        PRINT("gC", gC.shape())    
+        print_tensor(gC(0, _));
+    }
 }
 
 template <typename T>
@@ -348,28 +349,28 @@ int main() {
         gemv_v3, M, N, K);
     printf("Max Error = %f\n", max_error);
 
-    for (int j = 0; j < test_num; j++) {
-        int M = M_list[j], N = N_list[j], K = 128;
+    // for (int j = 0; j < test_num; j++) {
+    //     int M = M_list[j], N = N_list[j], K = 128;
 
-        double max_sec = 0.0;
-        double min_sec = DBL_MAX;
-        double total_sec = 0.0;
+    //     double max_sec = 0.0;
+    //     double min_sec = DBL_MAX;
+    //     double total_sec = 0.0;
 
-        for (int k = 0; k < outer_repeat; k++) {
-            double this_sec = testF16F16GemvPerformance<T>(
-                gemv_v3, M, N, K, inner_repeat);
-            max_sec = max(max_sec, this_sec);
-            min_sec = min(min_sec, this_sec);
-            total_sec += this_sec;
-        }
+    //     for (int k = 0; k < outer_repeat; k++) {
+    //         double this_sec = testF16F16GemvPerformance<T>(
+    //             gemv_v3, M, N, K, inner_repeat);
+    //         max_sec = max(max_sec, this_sec);
+    //         min_sec = min(min_sec, this_sec);
+    //         total_sec += this_sec;
+    //     }
 
-        double avg_sec = total_sec / outer_repeat;
-        double avg_Gflops = ((double)M) * N * K * 2 / 1000 / 1000 / 1000 / avg_sec;
+    //     double avg_sec = total_sec / outer_repeat;
+    //     double avg_Gflops = ((double)M) * N * K * 2 / 1000 / 1000 / 1000 / avg_sec;
 
-        double avg_msec = avg_sec * 1000;
-        printf("M N K = %6d %6d %6d, ", M, N, K);
-        printf("Time = %12.8lf ms, ", avg_msec);
-        printf("AVG Performance = %10.4lf Gflops\n", avg_Gflops);
-    }
+    //     double avg_msec = avg_sec * 1000;
+    //     printf("M N K = %6d %6d %6d, ", M, N, K);
+    //     printf("Time = %12.8lf ms, ", avg_msec);
+    //     printf("AVG Performance = %10.4lf Gflops\n", avg_Gflops);
+    // }
 
 }

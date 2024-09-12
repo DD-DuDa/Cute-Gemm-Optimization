@@ -29,6 +29,15 @@ void TestDecodingKernelCorrectness(int seqlen_kv) {
     torch::manual_seed(42);
     torch::Tensor Q_host = torch::randn({bs, seqlen_q, num_heads, head_dim}, torch::dtype(torch::kHalf));
     torch::Tensor K_host = torch::randn({bs, seqlen_kv, num_heads, head_dim}, torch::dtype(torch::kHalf));
+    // #pragma unroll
+    // for (int i = 0; i < seqlen_kv; ++i) {
+    //     for (int j = 0; j < num_heads; ++j) {
+    //         for (int m = 0; m < head_dim; ++m) {
+    //             // Use .index({indices}) for indexing
+    //             K_host.index({0, i, j, m}) = static_cast<torch::Half>(m);
+    //         }
+    //     }
+    // }
     torch::Tensor V_host = torch::randn({bs, seqlen_kv, num_heads, head_dim}, torch::dtype(torch::kHalf));
 
     torch::Tensor Q_device = Q_host.to(torch::kCUDA);

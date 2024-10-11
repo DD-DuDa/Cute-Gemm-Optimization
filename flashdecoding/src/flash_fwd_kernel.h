@@ -201,29 +201,30 @@ inline __device__ void compute_attn_1rowblock_splitkv(const Params &params, cons
     const float alibi_slope = !Has_alibi ? 0.0f : reinterpret_cast<float *>(params.alibi_slopes_ptr)[bidb * params.alibi_slopes_batch_stride + bidh] / params.scale_softmax;
     flash::Mask<Is_causal, Is_local, Has_alibi> mask(binfo.actual_seqlen_k, binfo.actual_seqlen_q, params.window_size_left, params.window_size_right, alibi_slope);
 
-    // if (threadIdx.x == 0 && blockIdx.x == 0 && blockIdx.y == 0 && blockIdx.z == 0) {
-    //     // Print ElementKV
-    //     // printf("ElementKV: %d \n", cute::sizeof_bits_v<ElementKV>);
-    //     printf("### Q tensors ###\n");
-    //     PRINT("gQ", gQ.shape())
-    //     PRINT("sQ", sQ.shape())
-    //     PRINT("tQgQ", tQgQ.shape())
-    //     PRINT("tQsQ", tQsQ.shape())
-    //     PRINT("tSrQ", tSrQ.shape())
-    //     PRINT("tSsQ", tSsQ.shape())
-    //     printf("### K tensors ###\n");
-    //     PRINT("gK", gK.shape())
-    //     PRINT("sK", sK.shape())
-    //     PRINT("tKgK", tKgK.shape())
-    //     PRINT("tKsK", tKsK.shape())
-    //     PRINT("tSrK", tSrK.shape())
-    //     PRINT("tSsK", tSsK.shape())
-    //     // printf("### V tensors ###\n");
-    //     // PRINT("gV", gV.shape())
-    //     // PRINT("sV", sV.shape())
-    //     // PRINT("tVgV", sVt.shape())
-    //     // PRINT("tVsV", tVsV.shape())
-    // }
+    if (threadIdx.x == 0 && blockIdx.x == 0 && blockIdx.y == 0 && blockIdx.z == 0) {
+        // Print ElementKV
+        // printf("ElementKV: %d \n", cute::sizeof_bits_v<ElementKV>);
+        printf("### Q tensors ###\n");
+        PRINT("gQ", gQ.shape())
+        PRINT("sQ", sQ.shape())
+        PRINT("tQgQ", tQgQ.shape())
+        PRINT("tQsQ", tQsQ.shape())
+        PRINT("tSrQ", tSrQ.shape())
+        PRINT("tSsQ", tSsQ.shape())
+        printf("### K tensors ###\n");
+        PRINT("gK", gK.shape())
+        PRINT("sK", sK.shape())
+        PRINT("tKgK", tKgK.shape())
+        PRINT("tKsK", tKsK.shape())
+        PRINT("tSrK", tSrK.shape())
+        PRINT("tSsK", tSsK.shape())
+        printf("### V tensors ###\n");
+        PRINT("gV", gV.shape())
+        PRINT("sV", sV.shape())
+        PRINT("tVgV", sVt.shape())
+        PRINT("tVsV", tVsV.shape())
+        PRINT("tOrVt", tOrVt.shape())
+    }
 
 
     constexpr int n_masking_steps = 1;
@@ -258,20 +259,12 @@ inline __device__ void compute_attn_1rowblock_splitkv(const Params &params, cons
         //     print_tensor(acc_s);
         // }
 
-        // if (cute::thread0()) { print(acc_s); }
-        // if constexpr (Is_softcap){
-        //     apply_softcap(acc_s, params.softcap);
-        // }
-
-
         mask.template apply_mask<Is_causal, Is_even_MN>(
             acc_s, n_block * kBlockN, m_block * kBlockM + (tidx / 32) * 16 + (tidx % 32) / 4, kNWarps * 16
         );
 
         flash::cp_async_wait<0>();
         __syncthreads();
-        // if (tidx == 0 && blockIdx.y == 0 && blockIdx.z == 0) { print(tVsV); }
-        // __syncthreads();
 
         if (n_block > n_block_min) {
             // Advance gK
@@ -286,7 +279,6 @@ inline __device__ void compute_attn_1rowblock_splitkv(const Params &params, cons
         masking_step == 0
             ? softmax.template softmax_rescale_o</*Is_first=*/true,  /*Check_inf=*/Is_causal || Is_local || !Is_even_MN>(acc_s, acc_o, params.scale_softmax_log2)
             : softmax.template softmax_rescale_o</*Is_first=*/false, /*Check_inf=*/Is_causal || Is_local || !Is_even_MN>(acc_s, acc_o, params.scale_softmax_log2);
-        // if (cute::thread0()) { print(scores_max); print(scores_sum); print(scores); }
 
         // Convert acc_s from fp32 to fp16/bf16
         Tensor rP = flash::convert_type<Element>(acc_s);
@@ -310,15 +302,8 @@ inline __device__ void compute_attn_1rowblock_splitkv(const Params &params, cons
         flash::cp_async_wait<0>();
         __syncthreads();
         // Advance gV
-        if (block_table == nullptr) {
-            tVgV.data() = tVgV.data() + (-int(kBlockN * params.v_row_stride));
-        } else {
-            const int block_table_idx_cur = (n_block + 1) * kBlockN / params.page_block_size;
-            const int block_table_offset_cur = (n_block + 1) * kBlockN - block_table_idx_cur * params.page_block_size;
-            const int block_table_idx_next = n_block * kBlockN / params.page_block_size;
-            const int block_table_offset_next = n_block * kBlockN - block_table_idx_next * params.page_block_size;
-            tVgV.data() = tVgV.data() + (block_table[block_table_idx_next] - block_table[block_table_idx_cur]) * params.v_batch_stride + (block_table_offset_next - block_table_offset_cur) * params.v_row_stride;
-        }
+        tVgV.data() = tVgV.data() + (-int(kBlockN * params.v_row_stride));
+
         flash::copy</*Is_even_MN=*/true, Is_even_K>(gmem_tiled_copy_QKV, tVgV, tVsV, tKVcKV, tKVpKV);
         cute::cp_async_fence();
 
@@ -366,6 +351,12 @@ inline __device__ void compute_attn_1rowblock_splitkv(const Params &params, cons
 
     Tensor lse = softmax.template normalize_softmax_lse</*Is_dropout=*/false, Split>(acc_o, params.scale_softmax);
     // if (cute::thread0()) { print(lse); }
+
+    if (threadIdx.x == 0 && blockIdx.x == 0 && blockIdx.y == 0 && blockIdx.z == 0) {
+        PRINT("acc_o", acc_o.layout())
+        PRINT("lse", lse.layout())
+        // print_tensor(scores);
+    }
 
     Tensor sOaccum = make_tensor(make_smem_ptr(reinterpret_cast<ElementO *>(smem_)), typename Kernel_traits::SmemLayoutO{}); // (SMEM_M,SMEM_N)
     // Partition sO to match the accumulator partitioning
@@ -440,8 +431,8 @@ inline __device__ void compute_attn_1rowblock_splitkv(const Params &params, cons
     );
 
     // if (threadIdx.x == 0 && blockIdx.x == 0 && blockIdx.y == 0 && blockIdx.z == 0) {
-    //     printf("tOgOaccum: \n");
-    //     print_tensor(tOgOaccum(_,_,_0{}));
+    //     printf("gLSEaccum: \n");
+    //     print_tensor(gLSEaccum);
     // }
 }
 
@@ -463,7 +454,7 @@ inline __device__ void compute_attn(const Params &params) {
     // the attention matrix. This way, as long as we have the batch, head, and the location of
     // the 16 x 32 block within the attention matrix, we can generate the exact same dropout pattern.
 
-    flash::compute_attn_1rowblock<Kernel_traits, Is_dropout, Is_causal, Is_local, Has_alibi, Is_even_MN, Is_even_K, Is_softcap, Return_softmax>(params, bidb, bidh, m_block);
+    // flash::compute_attn_1rowblock<Kernel_traits, Is_dropout, Is_causal, Is_local, Has_alibi, Is_even_MN, Is_even_K, Is_softcap, Return_softmax>(params, bidb, bidh, m_block);
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -524,7 +515,11 @@ inline __device__ void combine_attn_seqk_parallel(const Params &params) {
 
     Tensor gLSE_unpadded = make_tensor(make_gmem_ptr(reinterpret_cast<ElementAccum *>(params.softmax_lse_ptr)), final_layout);
 
-    constexpr int kNLsePerThread = (kMaxSplits * kBlockM + kNThreads - 1) / kNThreads;
+    if (threadIdx.x == 0 && blockIdx.x == 0 && blockIdx.y == 0 && blockIdx.z == 0) {
+        PRINT(gLSE_unpadded, gLSE_unpadded.layout())
+    }
+
+    constexpr int kNLsePerThread = (kMaxSplits * kBlockM + kNThreads - 1) / kNThreads; // 4 * 4 / 128 = 1
 
     // Read the LSE values from gmem and store them in shared memory, then transpose them.
     constexpr int kRowsPerLoadLSE = kNThreads / kBlockM;

@@ -8,26 +8,25 @@ using T = float;
 using namespace cute;
 
 int main() {
-    TiledMMA mma = make_tiled_mma(SM80_16x8x16_F32F16F16F32_TN{},
-                                  Layout<Shape<_4, _1, _1>>{},
-                                  Tile<Int<16 * 4>, _16, _16>{});           // Tiler
-    // Tensor acc_s = partition_fragment_C(mma, Shape<Int<64>, Int<128>>{});  // (MMA=4, MMA_M, MMA_N)
-    print_latex(mma);
+    // TiledMMA mma = make_tiled_mma(SM80_16x8x16_F32F16F16F32_TN{},
+    //                               Layout<Shape<_1, _4, _1>>{},
+    //                               Tile<_16, _64, _16>{});           // Tiler
+    // // Tensor acc_s = partition_fragment_C(mma, Shape<Int<64>, Int<128>>{});  // (MMA=4, MMA_M, MMA_N)
+    // print_latex(mma);
 
-    // auto tSsK_shape = make_shape(_1{},_8{},_8{});
-    // print_latex(tSsK_shape);
+    // 这是未使用 Swizzle 语义的 smem layout
+    using SmemLayoutAtom = decltype(composition(
+      Swizzle<3, 3, 3>{},
+      make_layout(make_shape(Int<8>{}, Int<32>{}),
+                  make_stride(Int<32>{}, Int<1>{}))));
+    // using SmemLayoutAtom = decltype(
+    //     make_layout(make_shape(Int<8>{}, Int<32>{}),
+    //                 make_stride(Int<32>{}, Int<1>{})));
+    using SmemLayoutA = decltype(
+      tile_to_shape(SmemLayoutAtom{},
+                    make_shape(Int<8>{}, Int<32>{})));
 
-    // constexpr int tpb = 128;
-    // auto thr_layout = make_layout(make_shape(Int<tpb>{}));
-    // print_latex(thr_layout);
-
-    using g2r_copy_atom = Copy_Atom<UniversalCopy<cute::uint128_t>, T>;
-    auto G2RCopyB = make_tiled_copy(g2r_copy_atom{},
-                                 make_layout(make_shape(Int<4>{}, Int<32>{}), // Thr layout 32x4 k-major
-                                            make_stride(Int<32>{}, Int<1>{})),
-                                 make_layout(make_shape(Int<1>{}, Int<4>{}))); // Val layout 1x8
-
-    print_latex(G2RCopyB);
+    print_latex(SmemLayoutA{});
 
     return 0;
 }

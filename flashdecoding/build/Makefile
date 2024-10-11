@@ -129,12 +129,50 @@ test_single_decode/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_single_decode.dir/build.make CMakeFiles/test_single_decode.dir/build
 .PHONY : test_single_decode/fast
 
+#=============================================================================
+# Target rules for targets named bench_single_decode
+
+# Build rule for target.
+bench_single_decode: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 bench_single_decode
+.PHONY : bench_single_decode
+
+# fast build rule for target.
+bench_single_decode/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/bench_single_decode.dir/build.make CMakeFiles/bench_single_decode.dir/build
+.PHONY : bench_single_decode/fast
+
+src/bench_single_decode.o: src/bench_single_decode.cu.o
+.PHONY : src/bench_single_decode.o
+
+# target to build an object file
+src/bench_single_decode.cu.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/bench_single_decode.dir/build.make CMakeFiles/bench_single_decode.dir/src/bench_single_decode.cu.o
+.PHONY : src/bench_single_decode.cu.o
+
+src/bench_single_decode.i: src/bench_single_decode.cu.i
+.PHONY : src/bench_single_decode.i
+
+# target to preprocess a source file
+src/bench_single_decode.cu.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/bench_single_decode.dir/build.make CMakeFiles/bench_single_decode.dir/src/bench_single_decode.cu.i
+.PHONY : src/bench_single_decode.cu.i
+
+src/bench_single_decode.s: src/bench_single_decode.cu.s
+.PHONY : src/bench_single_decode.s
+
+# target to generate assembly for a file
+src/bench_single_decode.cu.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/bench_single_decode.dir/build.make CMakeFiles/bench_single_decode.dir/src/bench_single_decode.cu.s
+.PHONY : src/bench_single_decode.cu.s
+
 src/flash_fwd_hdim128_fp16_sm80.o: src/flash_fwd_hdim128_fp16_sm80.cu.o
 .PHONY : src/flash_fwd_hdim128_fp16_sm80.o
 
 # target to build an object file
 src/flash_fwd_hdim128_fp16_sm80.cu.o:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_single_decode.dir/build.make CMakeFiles/test_single_decode.dir/src/flash_fwd_hdim128_fp16_sm80.cu.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/bench_single_decode.dir/build.make CMakeFiles/bench_single_decode.dir/src/flash_fwd_hdim128_fp16_sm80.cu.o
 .PHONY : src/flash_fwd_hdim128_fp16_sm80.cu.o
 
 src/flash_fwd_hdim128_fp16_sm80.i: src/flash_fwd_hdim128_fp16_sm80.cu.i
@@ -143,6 +181,7 @@ src/flash_fwd_hdim128_fp16_sm80.i: src/flash_fwd_hdim128_fp16_sm80.cu.i
 # target to preprocess a source file
 src/flash_fwd_hdim128_fp16_sm80.cu.i:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_single_decode.dir/build.make CMakeFiles/test_single_decode.dir/src/flash_fwd_hdim128_fp16_sm80.cu.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/bench_single_decode.dir/build.make CMakeFiles/bench_single_decode.dir/src/flash_fwd_hdim128_fp16_sm80.cu.i
 .PHONY : src/flash_fwd_hdim128_fp16_sm80.cu.i
 
 src/flash_fwd_hdim128_fp16_sm80.s: src/flash_fwd_hdim128_fp16_sm80.cu.s
@@ -151,6 +190,7 @@ src/flash_fwd_hdim128_fp16_sm80.s: src/flash_fwd_hdim128_fp16_sm80.cu.s
 # target to generate assembly for a file
 src/flash_fwd_hdim128_fp16_sm80.cu.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_single_decode.dir/build.make CMakeFiles/test_single_decode.dir/src/flash_fwd_hdim128_fp16_sm80.cu.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/bench_single_decode.dir/build.make CMakeFiles/bench_single_decode.dir/src/flash_fwd_hdim128_fp16_sm80.cu.s
 .PHONY : src/flash_fwd_hdim128_fp16_sm80.cu.s
 
 src/flash_fwd_split_hdim128_fp16_sm80.o: src/flash_fwd_split_hdim128_fp16_sm80.cu.o
@@ -159,6 +199,7 @@ src/flash_fwd_split_hdim128_fp16_sm80.o: src/flash_fwd_split_hdim128_fp16_sm80.c
 # target to build an object file
 src/flash_fwd_split_hdim128_fp16_sm80.cu.o:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_single_decode.dir/build.make CMakeFiles/test_single_decode.dir/src/flash_fwd_split_hdim128_fp16_sm80.cu.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/bench_single_decode.dir/build.make CMakeFiles/bench_single_decode.dir/src/flash_fwd_split_hdim128_fp16_sm80.cu.o
 .PHONY : src/flash_fwd_split_hdim128_fp16_sm80.cu.o
 
 src/flash_fwd_split_hdim128_fp16_sm80.i: src/flash_fwd_split_hdim128_fp16_sm80.cu.i
@@ -167,6 +208,7 @@ src/flash_fwd_split_hdim128_fp16_sm80.i: src/flash_fwd_split_hdim128_fp16_sm80.c
 # target to preprocess a source file
 src/flash_fwd_split_hdim128_fp16_sm80.cu.i:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_single_decode.dir/build.make CMakeFiles/test_single_decode.dir/src/flash_fwd_split_hdim128_fp16_sm80.cu.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/bench_single_decode.dir/build.make CMakeFiles/bench_single_decode.dir/src/flash_fwd_split_hdim128_fp16_sm80.cu.i
 .PHONY : src/flash_fwd_split_hdim128_fp16_sm80.cu.i
 
 src/flash_fwd_split_hdim128_fp16_sm80.s: src/flash_fwd_split_hdim128_fp16_sm80.cu.s
@@ -175,6 +217,7 @@ src/flash_fwd_split_hdim128_fp16_sm80.s: src/flash_fwd_split_hdim128_fp16_sm80.c
 # target to generate assembly for a file
 src/flash_fwd_split_hdim128_fp16_sm80.cu.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_single_decode.dir/build.make CMakeFiles/test_single_decode.dir/src/flash_fwd_split_hdim128_fp16_sm80.cu.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/bench_single_decode.dir/build.make CMakeFiles/bench_single_decode.dir/src/flash_fwd_split_hdim128_fp16_sm80.cu.s
 .PHONY : src/flash_fwd_split_hdim128_fp16_sm80.cu.s
 
 src/test_single_decode.o: src/test_single_decode.cu.o
@@ -209,7 +252,11 @@ help:
 	@echo "... depend"
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
+	@echo "... bench_single_decode"
 	@echo "... test_single_decode"
+	@echo "... src/bench_single_decode.o"
+	@echo "... src/bench_single_decode.i"
+	@echo "... src/bench_single_decode.s"
 	@echo "... src/flash_fwd_hdim128_fp16_sm80.o"
 	@echo "... src/flash_fwd_hdim128_fp16_sm80.i"
 	@echo "... src/flash_fwd_hdim128_fp16_sm80.s"

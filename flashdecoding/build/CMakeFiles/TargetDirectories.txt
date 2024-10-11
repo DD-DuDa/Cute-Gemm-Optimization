@@ -1,3 +1,4 @@
 /home/v-dayoudu/Projects/Cute-Gemm-Optimization/flashdecoding/build/CMakeFiles/test_single_decode.dir
+/home/v-dayoudu/Projects/Cute-Gemm-Optimization/flashdecoding/build/CMakeFiles/bench_single_decode.dir
 /home/v-dayoudu/Projects/Cute-Gemm-Optimization/flashdecoding/build/CMakeFiles/edit_cache.dir
 /home/v-dayoudu/Projects/Cute-Gemm-Optimization/flashdecoding/build/CMakeFiles/rebuild_cache.dir

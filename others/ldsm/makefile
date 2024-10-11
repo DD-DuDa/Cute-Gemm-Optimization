@@ -1,0 +1,2 @@
+default:
+	nvcc -o main main.cu -O2 -arch=sm_80 -std=c++17 -I../../flashdecoding/src/cutlass/include -I../../flashdecoding/src/cutlass/tools/util/include --expt-relaxed-constexpr -cudart shared --cudadevrt none

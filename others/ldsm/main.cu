@@ -28,7 +28,7 @@ using namespace cute;
     
 
 
-template<class T, class SmemLayoutA, class G2SCopyA, class S2RCopyAtomA, class TiledMMA, int m ,int k>
+template<class T, class SmemLayoutA, class G2SCopyA, int m,int k>
 __global__ void gemm_device(const T* Aptr) {
     
     int tidx = threadIdx.x + blockDim.x * threadIdx.y;
@@ -41,19 +41,11 @@ __global__ void gemm_device(const T* Aptr) {
     __shared__ T smemA[size(SmemLayoutA{})];
     Tensor sA = make_tensor(make_smem_ptr(smemA), SmemLayoutA{});        // (BLK_M,BLK_K)
 
-    TiledMMA tiled_mma;
-    auto thr_mma = tiled_mma.get_slice(threadIdx.x);
-    Tensor tCrA = thr_mma.partition_fragment_A(gA(_, _));  // (MMA, MMA_M, MMA_K)
 
     G2SCopyA g2s_tiled_copy_a;
     auto g2s_thr_copy_a = g2s_tiled_copy_a.get_slice(threadIdx.x);
     const auto tAgA_copy = g2s_thr_copy_a.partition_S(gA);  // (CPY_M, CPY_K)
     auto tAsA_copy = g2s_thr_copy_a.partition_D(sA);  // (CPY_M, CPY_K)
-
-    auto s2r_tiled_copy_a = make_tiled_copy_A(S2RCopyAtomA{}, tiled_mma);
-    auto s2r_thr_copy_a = s2r_tiled_copy_a.get_slice(threadIdx.x);
-    auto tAsA = s2r_thr_copy_a.partition_S(sA);         // (CPY, CPY_M, CPY_K)
-    auto tCrA_view = s2r_thr_copy_a.retile_D(tCrA);     // (CPY, CPY_M, CPY_K)
 
     cute::copy(G2SCopyA{}, tAgA_copy, tAsA_copy);
 
@@ -71,14 +63,12 @@ __global__ void gemm_device(const T* Aptr) {
 
     // __syncthreads();
 
-    if (tidx == 16) {
+    if (tidx == 0) {
 
         PRINT("gA", gA.layout());
         PRINT("sA", sA.layout());
-        PRINT("tCrA", tCrA.layout());
         PRINT("tAgA_copy", tAgA_copy.layout());
         PRINT("tAsA_copy", tAsA_copy.layout());
-        PRINT("tAsA", tAsA.layout());
     
         printf("\n\n#### sA ####");
         for (int i = 0; i < sA.size(); i++) {
@@ -143,11 +133,6 @@ int main(int argc, char** argv) {
                                 make_layout(make_shape(Int<1>{}, Int<4>{}))));
 
     // shared memory to register copy
-    using s2r_copy_op = SM75_U32x4_LDSM_N;
-    using s2r_copy_traits = Copy_Traits<s2r_copy_op>;
-    using s2r_copy_atom = Copy_Atom<s2r_copy_traits, T>;
-
-    using S2RCopyAtomA = s2r_copy_atom;
 
     // 使用 Swizzle 语义的 smem layout
     using SmemLayoutAtom = decltype(composition(
@@ -165,7 +150,7 @@ int main(int argc, char** argv) {
     dim3 blockDim(size(TiledMMA{}));
 
     print(size(TiledMMA{})); printf("\n");
-    gemm_device<T, SmemLayoutA, G2SCopyA, S2RCopyAtomA, TiledMMA, M, K>
+    gemm_device<T, SmemLayoutA, G2SCopyA, M, K>
               <<<gridDim, blockDim>>>(Aptr);
     cudaDeviceSynchronize();
 

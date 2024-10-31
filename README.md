@@ -21,7 +21,7 @@ The **GEMM** implementation is optimized for performance. Below is a performance
 ![GEMM Performance](https://github.com/user-attachments/assets/bf99f0e8-944d-4cc3-9630-f21e461910f9)
 
 
-Refer to the following blog::
+Refer to the following blog:
 
 - [基于 CUTE 的 GEMM 优化【1】—— Baseline 实现](https://zhuanlan.zhihu.com/p/695063154)
 - [基于 CUTE 的 GEMM 优化【2】—— 高效 GEMM 实现，超越 Cublas 20%](https://zhuanlan.zhihu.com/p/696028389)

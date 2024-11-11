@@ -85,10 +85,51 @@ inline __device__ void compute_attn_1rowblock_splitkv(const Params &params, cons
     const BlockInfo</*Varlen=*/!Is_even_MN> binfo(params, bidb);
     if (m_block * kBlockM >= binfo.actual_seqlen_q) return;
 
-    const int n_blocks_per_split = ((params.seqlen_k + kBlockN - 1) / kBlockN + num_n_splits - 1) / num_n_splits;
+    const int n_blocks_per_split = ((binfo.actual_seqlen_k + kBlockN - 1) / kBlockN + num_n_splits - 1) / num_n_splits;
     const int n_block_min = n_split_idx * n_blocks_per_split;
     int n_block_max = std::min(cute::ceil_div(binfo.actual_seqlen_k, kBlockN), (n_split_idx + 1) * n_blocks_per_split);
 
+
+    if (n_block_min >= n_block_max) {  // This also covers the case where n_block_max <= 0
+        // We exit early and write 0 to gOaccum and -inf to gLSEaccum.
+        // Otherwise we might read OOB elements from gK and gV,
+        // or get wrong results when we combine gOaccum from different blocks.
+        const index_t row_offset_o = binfo.q_offset(params.o_batch_stride, params.o_row_stride, bidb)
+            + m_block * kBlockM * params.o_row_stride + bidh * params.o_head_stride;
+        const index_t row_offset_oaccum = (((n_split_idx * params.b + bidb) * params.h + bidh) * params.seqlen_q
+            + m_block * kBlockM) * params.d_rounded;
+        const index_t row_offset_lseaccum = ((n_split_idx * params.b + bidb) * params.h + bidh) * params.seqlen_q + m_block * kBlockM;
+        Tensor gOaccum = make_tensor(make_gmem_ptr(reinterpret_cast<ElementO *>(Split ? params.oaccum_ptr : params.o_ptr) + (Split ? row_offset_oaccum : row_offset_o)),
+                                      Shape<Int<kBlockM>, Int<kHeadDim>>{},
+                                     make_stride(Split ? kHeadDim : params.o_row_stride, _1{}));
+        Tensor gLSEaccum = make_tensor(make_gmem_ptr(reinterpret_cast<ElementAccum *>(Split ? params.softmax_lseaccum_ptr : params.softmax_lse_ptr) + row_offset_lseaccum),
+                                      Shape<Int<kBlockM>>{}, Stride<_1>{});
+
+        GmemTiledCopyO gmem_tiled_copy_Oaccum;
+        auto gmem_thr_copy_Oaccum = gmem_tiled_copy_Oaccum.get_thread_slice(tidx);
+        Tensor tOgOaccum = gmem_thr_copy_Oaccum.partition_D(gOaccum);
+        Tensor tOrOaccum = make_tensor<ElementO>(shape(tOgOaccum));
+        clear(tOrOaccum);
+        // Construct identity layout for sO
+        Tensor cO = make_identity_tensor(make_shape(size<0>(gOaccum), size<1>(gOaccum)));    // (BLK_M,BLK_K) -> (blk_m,blk_k)
+        // Repeat the partitioning with identity layouts
+        Tensor tOcO = gmem_thr_copy_Oaccum.partition_D(cO);
+        Tensor tOpO = make_tensor<bool>(make_shape(size<2>(tOgOaccum)));
+        if (!Is_even_K) {
+            #pragma unroll
+            for (int k = 0; k < size(tOpO); ++k) { tOpO(k) = get<1>(tOcO(0, 0, k)) < params.d; }
+        }
+        // Clear_OOB_K must be false since we don't want to write zeros to gmem
+        flash::copy<Is_even_MN, Is_even_K, /*Clear_OOB_MN=*/false, /*Clear_OOB_K=*/false>(
+            gmem_tiled_copy_Oaccum, tOrOaccum, tOgOaccum, tOcO, tOpO, binfo.actual_seqlen_q - m_block * kBlockM
+        );
+        #pragma unroll
+        for (int m = 0; m < size<1>(tOgOaccum); ++m) {
+            const int row = get<0>(tOcO(0, m, 0));
+            if (row < binfo.actual_seqlen_q - m_block * kBlockM && get<1>(tOcO(0, m, 0)) == 0) { gLSEaccum(row) = Split ? -INFINITY : INFINITY; }
+        }
+        return;
+    }
     // We iterate over the blocks in reverse order. This is because the last block is the only one
     // that needs masking when we read K and V from global memory. Moreover, iterating in reverse
     // might save us 1 register (we just need n_block instead of both n_block and n_block_max).
@@ -181,12 +222,54 @@ inline __device__ void compute_attn_1rowblock_splitkv(const Params &params, cons
     }
 
     // Prologue
+
+    if constexpr (Append_KV) {
+        const index_t row_offset_knew = bidb * params.knew_batch_stride 
+            + ((n_block_max - 1) * kBlockN) * params.knew_row_stride + (bidh / params.h_h_k_ratio) * params.knew_head_stride;
+        const index_t row_offset_vnew = bidb * params.vnew_batch_stride
+            + ((n_block_max - 1) * kBlockN) * params.vnew_row_stride + (bidh / params.h_h_k_ratio) * params.vnew_head_stride;
+        Tensor gKnew = make_tensor(make_gmem_ptr(reinterpret_cast<Element *>(params.knew_ptr)
+                                                + row_offset_knew - binfo.seqlen_k_cache * params.knew_row_stride),
+                                  Shape<Int<kBlockN>, Int<kHeadDim>>{},
+                                  make_stride(params.knew_row_stride, _1{}));
+        Tensor gVnew = make_tensor(make_gmem_ptr(reinterpret_cast<Element *>(params.vnew_ptr)
+                                                + row_offset_vnew - binfo.seqlen_k_cache * params.vnew_row_stride),
+                                  Shape<Int<kBlockN>, Int<kHeadDim>>{},
+                                  make_stride(params.vnew_row_stride, _1{}));
+
+        Tensor tKgKnew = gmem_thr_copy_QKV.partition_S(gKnew);  // (KCPY, KCPY_N, KCPY_K)
+        Tensor tVgVnew = gmem_thr_copy_QKV.partition_S(gVnew);  // (VCPY, VCPY_N, VCPY_K)
+
+        const int n_block_copy_min = std::max(n_block_min, binfo.seqlen_k_cache / kBlockN);
+        auto tKgK_data = tKgK.data();
+        auto tVgV_data = tVgV.data();
+
+        for (int n_block = n_block_max - 1; n_block >= n_block_copy_min; n_block--) {
+            flash::copy_w_min_idx<Is_even_K>(
+                tVgVnew, tVgV, tKVcKV, tKVpKV, binfo.actual_seqlen_k - n_block * kBlockN, binfo.seqlen_k_cache - n_block * kBlockN
+            );
+            tVgVnew.data() = tVgVnew.data() + (-int(kBlockN * params.vnew_row_stride));
+            flash::copy_w_min_idx<Is_even_K>(
+                tKgKnew, tKgK, tKVcKV, tKVpKV, binfo.actual_seqlen_k - n_block * kBlockN, binfo.seqlen_k_cache - n_block * kBlockN
+            );
+            tKgKnew.data() = tKgKnew.data() + (-int(kBlockN * params.knew_row_stride));
+            tVgV.data() = tVgV.data() + (-int(kBlockN * params.v_row_stride));
+            tKgK.data() = tKgK.data() + (-int(kBlockN * params.k_row_stride));
+        }
+
+        // Need this before we can read in K again, so that we'll see the updated K values.
+        __syncthreads();
+        tKgK.data() = tKgK_data;
+        tVgV.data() = tVgV_data;
+    }
+
+
     // Read Q from gmem to smem, optionally apply rotary embedding.
     if (!Append_KV || params.rotary_dim == 0) {
         // We don't need to clear the sQ smem tiles since we'll only write out the valid outputs
         flash::copy<Is_even_MN, Is_even_K>(gmem_tiled_copy_QKV, tQgQ, tQsQ, tQcQ, tQpQ,
                                            binfo.actual_seqlen_q - m_block * kBlockM);
-    } 
+    }
 
     int n_block = n_block_max - 1;
     // We don't need to clear the sK smem tiles since we'll mask out the scores anyway.
@@ -201,9 +284,10 @@ inline __device__ void compute_attn_1rowblock_splitkv(const Params &params, cons
     const float alibi_slope = !Has_alibi ? 0.0f : reinterpret_cast<float *>(params.alibi_slopes_ptr)[bidb * params.alibi_slopes_batch_stride + bidh] / params.scale_softmax;
     flash::Mask<Is_causal, Is_local, Has_alibi> mask(binfo.actual_seqlen_k, binfo.actual_seqlen_q, params.window_size_left, params.window_size_right, alibi_slope);
 
-    if (threadIdx.x == 0 && blockIdx.x == 0 && blockIdx.y == 0 && blockIdx.z == 0) {
+    if (threadIdx.x == 0 && blockIdx.x == 0 && blockIdx.y == 2 && blockIdx.z == 0) {
         // Print ElementKV
         // printf("ElementKV: %d \n", cute::sizeof_bits_v<ElementKV>);
+        printf("n_block_min: %d, n_block_max: %d\n", n_block_min, n_block_max);
         printf("### Q tensors ###\n");
         PRINT("gQ", gQ.shape())
         PRINT("sQ", sQ.shape())
@@ -351,12 +435,6 @@ inline __device__ void compute_attn_1rowblock_splitkv(const Params &params, cons
 
     Tensor lse = softmax.template normalize_softmax_lse</*Is_dropout=*/false, Split>(acc_o, params.scale_softmax);
     // if (cute::thread0()) { print(lse); }
-
-    if (threadIdx.x == 0 && blockIdx.x == 0 && blockIdx.y == 0 && blockIdx.z == 0) {
-        PRINT("acc_o", acc_o.layout())
-        PRINT("lse", lse.layout())
-        // print_tensor(scores);
-    }
 
     Tensor sOaccum = make_tensor(make_smem_ptr(reinterpret_cast<ElementO *>(smem_)), typename Kernel_traits::SmemLayoutO{}); // (SMEM_M,SMEM_N)
     // Partition sO to match the accumulator partitioning
@@ -514,10 +592,6 @@ inline __device__ void combine_attn_seqk_parallel(const Params &params) {
     Layout final_layout = cute::composition(remapped_layout, cute::composition(orig_layout, flat_layout));
 
     Tensor gLSE_unpadded = make_tensor(make_gmem_ptr(reinterpret_cast<ElementAccum *>(params.softmax_lse_ptr)), final_layout);
-
-    if (threadIdx.x == 0 && blockIdx.x == 0 && blockIdx.y == 0 && blockIdx.z == 0) {
-        PRINT(gLSE_unpadded, gLSE_unpadded.layout())
-    }
 
     constexpr int kNLsePerThread = (kMaxSplits * kBlockM + kNThreads - 1) / kNThreads; // 4 * 4 / 128 = 1
 

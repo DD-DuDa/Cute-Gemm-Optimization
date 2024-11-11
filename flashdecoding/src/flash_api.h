@@ -245,6 +245,9 @@ at::Tensor
 mha_fwd_kvcache(at::Tensor &q,                 // batch_size x seqlen_q x num_heads x head_size
                 const at::Tensor &kcache,            // batch_size_c x seqlen_k x num_heads_k x head_size or num_blocks x page_block_size x num_heads_k x head_size if there's a block_table.
                 const at::Tensor &vcache,            // batch_size_c x seqlen_k x num_heads_k x head_size or num_blocks x page_block_size x num_heads_k x head_size if there's a block_table.
+                c10::optional<const at::Tensor> &k_, // batch_size x seqlen_knew x num_heads_k x head_size
+                c10::optional<const at::Tensor> &v_, // batch_size x seqlen_knew x num_heads_k x head_size
+                c10::optional<const at::Tensor> &seqlens_k_, // batch_size
                 const float softmax_scale=1.0,
                 bool is_causal=false,
                 int window_size_left=-1,
@@ -262,6 +265,7 @@ mha_fwd_kvcache(at::Tensor &q,                 // batch_size x seqlen_q x num_he
 
     CHECK_DEVICE(q); CHECK_DEVICE(kcache); CHECK_DEVICE(vcache);
 
+    auto q_dtype = q.dtype();
     const auto sizes = q.sizes();
 
     const int batch_size = sizes[0];
@@ -325,8 +329,41 @@ mha_fwd_kvcache(at::Tensor &q,                 // batch_size x seqlen_q x num_he
                      softcap
                      );
 
-    at::Tensor k, v, k_padded, v_padded;
+    at::Tensor k, v;
+    if (k_.has_value()) {
+        TORCH_CHECK(v_.has_value(), "If key is supplied, value must also be passed in");
+        TORCH_CHECK(seqlens_k_.has_value(), "If key is supplied, seqlens_k must also be passed in");
 
+        k = k_.value();
+        v = v_.value();
+        int seqlen_knew = k.size(1);
+        auto seqlens_k = seqlens_k_.value();
+        
+        TORCH_CHECK(k.dtype() == q_dtype, "Key must have the same dtype as query");
+        TORCH_CHECK(v.dtype() == q_dtype, "Value must have the same dtype as query");
+        TORCH_CHECK(k.stride(-1) == 1, "Key tensor must have contiguous last dimension");
+        TORCH_CHECK(v.stride(-1) == 1, "Value tensor must have contiguous last dimension");
+        CHECK_SHAPE(k, batch_size, seqlen_knew, num_heads_k, head_size_og);
+        CHECK_SHAPE(v, batch_size, seqlen_knew, num_heads_k, head_size_og);
+        CHECK_DEVICE(k); CHECK_DEVICE(v);
+        TORCH_CHECK(seqlens_k.dtype() == torch::kInt32, "seqlens_k must have dtype int32");
+        CHECK_DEVICE(seqlens_k);
+        CHECK_CONTIGUOUS(seqlens_k);
+        CHECK_SHAPE(seqlens_k, batch_size);
+
+        params.seqlen_knew = seqlen_knew;
+        params.knew_ptr = k.data_ptr();
+        params.vnew_ptr = v.data_ptr();
+        params.knew_batch_stride = k.stride(0);
+        params.vnew_batch_stride = v.stride(0);
+        params.knew_row_stride = k.stride(-3);
+        params.vnew_row_stride = v.stride(-3);
+        params.knew_head_stride = k.stride(-2);
+        params.vnew_head_stride = v.stride(-2);
+        params.cu_seqlens_k = static_cast<int *>(seqlens_k.data_ptr());
+    }
+    params.is_seqlens_k_cumulative = !(seqlens_k_.has_value());
+    
     params.rotary_dim = 0;
 
     set_params_splitkv(params, batch_size, num_heads,

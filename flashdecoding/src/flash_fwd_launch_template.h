@@ -101,7 +101,7 @@ void run_flash_splitkv_fwd(Flash_fwd_params &params, cudaStream_t stream) {
     //     EVENK_SWITCH(is_even_K, IsEvenKConst, [&] {
     //         LOCAL_SWITCH((params.window_size_left >= 0 || params.window_size_right >= 0) && !Is_causal, Is_local, [&] {
     //             BOOL_SWITCH(params.num_splits > 1, Split, [&] {
-    //                 BOOL_SWITCH(params.knew_ptr != nullptr, Append_KV, [&] {
+                        BOOL_SWITCH(params.knew_ptr != nullptr, Append_KV, [&] {
     //                     ALIBI_SWITCH(params.alibi_slopes_ptr != nullptr, Has_alibi, [&] {
     //                         SOFTCAP_SWITCH(params.softcap > 0.0, Is_softcap, [&] {
                                 // If Append_KV, then we must have seqlen_offsets, which means cu_seqlens_k != nullptr.
@@ -111,10 +111,10 @@ void run_flash_splitkv_fwd(Flash_fwd_params &params, cudaStream_t stream) {
                                 // IsEvenKConst: 1
                                 // Is_local: 0
                                 // Split: 1
-                                // Append_KV: 0
+                                // Append_KV: 
                                 // Has_alibi: 0
                                 // Is_softcap: 0
-                                auto kernel = &flash_fwd_splitkv_kernel<Kernel_traits, Is_causal, false, false, false, true, false, true, false>;
+                                auto kernel = &flash_fwd_splitkv_kernel<Kernel_traits, Is_causal, false, false, false, true, false, true, Append_KV>;
                                 // auto kernel = &flash_fwd_splitkv_kernel<Kernel_traits, Is_causal, false, true, Split, Append_KV>;
                                 // auto kernel = &flash_fwd_splitkv_kernel<Kernel_traits, Is_causal, false, IsEvenKConst>;
                                 if (smem_size >= 48 * 1024) {
@@ -125,7 +125,7 @@ void run_flash_splitkv_fwd(Flash_fwd_params &params, cudaStream_t stream) {
                                 C10_CUDA_KERNEL_LAUNCH_CHECK();
     //                         });
     //                     });
-    //                 });
+                        });
     //             });
     //         });
     //     });

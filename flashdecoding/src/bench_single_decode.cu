@@ -14,28 +14,28 @@ double TestDecodingKernelPerformance(int seqlen_kv, int repeat) {
     torch::Tensor K_device = K_host.to(torch::kCUDA);
     torch::Tensor V_device = V_host.to(torch::kCUDA);
 
-    // Warm up
-    for (int i = 0; i < 5; ++i)
-        mha_fwd_kvcache(Q_device, K_device, V_device);
+    // // Warm up
+    // for (int i = 0; i < 5; ++i)
+    //     mha_fwd_kvcache(Q_device, K_device, V_device);
 
-    // Benchmark
-    float sm_scale;
-    cudaEvent_t start, end;
-    cudaEventCreate(&start);
-    cudaEventCreate(&end);
-    cudaEventRecord(start);
-    for (int i = 0; i < repeat; i++) {
-        sm_scale = 1 / std::sqrt(float(head_dim));
-        torch::Tensor out = mha_fwd_kvcache(Q_device, K_device, V_device, sm_scale);
-    }
-    cudaEventRecord(end);
-    cudaEventSynchronize(end);
+    // // Benchmark
+    // float sm_scale;
+    // cudaEvent_t start, end;
+    // cudaEventCreate(&start);
+    // cudaEventCreate(&end);
+    // cudaEventRecord(start);
+    // for (int i = 0; i < repeat; i++) {
+    //     sm_scale = 1 / std::sqrt(float(head_dim));
+    //     torch::Tensor out = mha_fwd_kvcache(Q_device, K_device, V_device, sm_scale);
+    // }
+    // cudaEventRecord(end);
+    // cudaEventSynchronize(end);
 
-    float msec, sec;
-    cudaEventElapsedTime(&msec, start, end);
-    msec = msec / repeat;
+    // float msec, sec;
+    // cudaEventElapsedTime(&msec, start, end);
+    // msec = msec / repeat;
 
-    return msec;
+    // return msec;
         
 }
 

@@ -58,6 +58,7 @@
         "map": "cpp",
         "iomanip": "cpp",
         "variant": "cpp",
-        "__config": "cpp"
+        "__config": "cpp",
+        "optional": "cpp"
     }
 }

@@ -142,6 +142,16 @@ struct Mask {
             static constexpr bool Col_idx_only = !(Has_alibi && !Is_causal) && !Is_local && !Causal_mask;
             const int lane_id = threadIdx.x % 32;
             const int col_idx_offset = col_idx_offset_ + (lane_id % 4) * 2;
+            // if (threadIdx.x == 0 && blockIdx.x == 0 && blockIdx.y == 1 && blockIdx.z == 0) {
+            //     PRINT("tensor", tensor.layout());
+            //     PRINTTENSOR("tensor", tensor);
+            //     printf("Col_idx_only = %d\n", Col_idx_only);
+            //     printf("col_idx_offset = %d\n", col_idx_offset);
+            //     printf("size<1, 1>(tensor) = %d\n", size<1, 1>(tensor));
+            //     printf("size<1, 0>(tensor) = %d\n", size<1, 0>(tensor));
+            //     printf("size<0>(tensor) = %d\n", size<0>(tensor));
+            //     printf("size<1>(tensor) = %d\n", size<1>(tensor));
+            // }
             if constexpr (Col_idx_only) {
                 #pragma unroll
                 for (int nj = 0; nj < size<1, 1>(tensor); ++nj) {

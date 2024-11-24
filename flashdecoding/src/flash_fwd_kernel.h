@@ -89,7 +89,6 @@ inline __device__ void compute_attn_1rowblock_splitkv(const Params &params, cons
     const int n_block_min = n_split_idx * n_blocks_per_split;
     int n_block_max = std::min(cute::ceil_div(binfo.actual_seqlen_k, kBlockN), (n_split_idx + 1) * n_blocks_per_split);
 
-
     if (n_block_min >= n_block_max) {  // This also covers the case where n_block_max <= 0
         // We exit early and write 0 to gOaccum and -inf to gLSEaccum.
         // Otherwise we might read OOB elements from gK and gV,
@@ -287,7 +286,7 @@ inline __device__ void compute_attn_1rowblock_splitkv(const Params &params, cons
     if (threadIdx.x == 0 && blockIdx.x == 0 && blockIdx.y == 2 && blockIdx.z == 0) {
         // Print ElementKV
         // printf("ElementKV: %d \n", cute::sizeof_bits_v<ElementKV>);
-        printf("n_block_min: %d, n_block_max: %d\n", n_block_min, n_block_max);
+        printf("n_block: %d, n_block_min: %d, n_block_max: %d\n", n_block, n_block_min, n_block_max);
         printf("### Q tensors ###\n");
         PRINT("gQ", gQ.shape())
         PRINT("sQ", sQ.shape())
@@ -308,6 +307,8 @@ inline __device__ void compute_attn_1rowblock_splitkv(const Params &params, cons
         PRINT("tVgV", sVt.shape())
         PRINT("tVsV", tVsV.shape())
         PRINT("tOrVt", tOrVt.shape())
+
+        PRINT("acc_o", acc_o.layout())
     }
 
 
@@ -338,10 +339,6 @@ inline __device__ void compute_attn_1rowblock_splitkv(const Params &params, cons
             smem_thr_copy_Q, smem_thr_copy_K
         );
 
-        // if (threadIdx.x == 0 && blockIdx.x == 0 && blockIdx.y == 0 && blockIdx.z == 0) {
-        //     PRINT("acc_s", acc_s.layout())
-        //     print_tensor(acc_s);
-        // }
 
         mask.template apply_mask<Is_causal, Is_even_MN>(
             acc_s, n_block * kBlockN, m_block * kBlockM + (tidx / 32) * 16 + (tidx % 32) / 4, kNWarps * 16
@@ -377,6 +374,7 @@ inline __device__ void compute_attn_1rowblock_splitkv(const Params &params, cons
             --n_block;
             break;
         }
+
     }
 
     // These are the iterations where we don't need masking on S
@@ -401,6 +399,7 @@ inline __device__ void compute_attn_1rowblock_splitkv(const Params &params, cons
 
         flash::cp_async_wait<0>();
         __syncthreads();
+
         if (n_block > n_block_min) {
             // Advance gK
             if (block_table == nullptr) {
@@ -418,9 +417,9 @@ inline __device__ void compute_attn_1rowblock_splitkv(const Params &params, cons
             cute::cp_async_fence();
         }
 
-        mask.template apply_mask</*Causal_mask=*/false>(
-            acc_s, n_block * kBlockN, m_block * kBlockM + (tidx / 32) * 16 + (tidx % 32) / 4, kNWarps * 16
-        );
+        // mask.template apply_mask</*Causal_mask=*/false>(
+        //     acc_s, n_block * kBlockN, m_block * kBlockM + (tidx / 32) * 16 + (tidx % 32) / 4, kNWarps * 16
+        // );
         softmax.template softmax_rescale_o</*Is_first=*/false, /*Check_inf=*/Is_local>(acc_s, acc_o, params.scale_softmax_log2);
 
         Tensor rP = flash::convert_type<Element>(acc_s);
@@ -429,8 +428,8 @@ inline __device__ void compute_attn_1rowblock_splitkv(const Params &params, cons
         Tensor tOrP = make_tensor(rP.data(), flash::convert_layout_acc_Aregs<Kernel_traits::TiledMma>(rP.layout()));
 
         flash::gemm_rs(acc_o, tOrP, tOrVt, tOsVt, tiled_mma, smem_tiled_copy_V, smem_thr_copy_V);
-    }
 
+    }
     // Epilogue
 
     Tensor lse = softmax.template normalize_softmax_lse</*Is_dropout=*/false, Split>(acc_o, params.scale_softmax);

@@ -203,23 +203,6 @@ __forceinline__ __device__ void gemm_rs(Tensor0 &acc, Tensor1 &tCrA, Tensor2 &tC
     CUTE_STATIC_ASSERT_V(size<1>(tCsB) == size<1>(tCrB_copy_view));            // N
     cute::copy(smem_tiled_copy_B, tCsB(_, _, _0{}), tCrB_copy_view(_, _, _0{}));
 
-    // __syncthreads();
-    // if (threadIdx.x == 0 && blockIdx.x == 0 && blockIdx.y == 0 && blockIdx.z == 0) {
-    //     // printf("tCrA_copy_view :\n");
-    //     // print_tensor(tCrA_copy_view(_, _, _0{}));
-    //     // printf("\n");
-    //     // printf("tCrA :\n");
-    //     // print_tensor(tCrA(_, _, _0{}));
-    //     // printf("\n");
-    //     printf("tCsB :\n");
-    //     print_tensor(tCsB(_, _, _0{}));
-    //     printf("tCrB_copy_view :\n");
-    //     print_tensor(tCrB_copy_view(_, _, _0{}));
-    //     printf("\n");
-    //     printf("tCrB :\n");
-    //     print_tensor(tCrB(_, _, _0{}));
-    // }
-
     #pragma unroll
     for (int i = 0; i < size<2>(tCrA); ++i) {
         if (i < size<2>(tCrA) - 1) {
@@ -227,8 +210,6 @@ __forceinline__ __device__ void gemm_rs(Tensor0 &acc, Tensor1 &tCrA, Tensor2 &tC
         }
         cute::gemm(tiled_mma, tCrA(_, _, i), tCrB(_, _, i), acc);
     }
-
-    
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////

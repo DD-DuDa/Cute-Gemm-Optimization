@@ -17,9 +17,9 @@ void TestDecodingKernelCorrectness(int seqlen_kv) {
     const int seqlen_q = 1;
 
     torch::manual_seed(42);
-    torch::Tensor Q_host = torch::randn({bs, seqlen_q, num_heads, head_dim}, torch::dtype(torch::kHalf));
-    torch::Tensor K_host = torch::rand({bs, seqlen_kv, num_heads, head_dim}, torch::dtype(torch::kHalf));
-    torch::Tensor V_host = torch::rand({bs, seqlen_kv, num_heads, head_dim}, torch::dtype(torch::kHalf));
+    torch::Tensor Q_host = torch::rand({bs, seqlen_q, num_heads, head_dim}, torch::dtype(torch::kHalf));
+    torch::Tensor K_host = torch::randn({bs, seqlen_kv, num_heads, head_dim}, torch::dtype(torch::kHalf));
+    torch::Tensor V_host = torch::randn({bs, seqlen_kv, num_heads, head_dim}, torch::dtype(torch::kHalf));
 
     torch::Tensor Q_device = Q_host.to(torch::kCUDA);
     torch::Tensor K_device = K_host.to(torch::kCUDA);
@@ -28,10 +28,10 @@ void TestDecodingKernelCorrectness(int seqlen_kv) {
     at::Tensor K_new_host, V_new_host, K_new_device, V_new_device, seqlens_k;
 
     if (new_kv) {
-        auto seqlen_new = seqlen_q;
+        auto seqlen_new = 33;
         seqlens_k = torch::full({bs}, seqlen_kv, torch::dtype(torch::kInt32).device(torch::kCUDA));
-        K_new_host = torch::rand({bs, seqlen_new, num_heads, head_dim}, torch::dtype(torch::kHalf));
-        V_new_host = torch::rand({bs, seqlen_new, num_heads, head_dim}, torch::dtype(torch::kHalf));
+        K_new_host = torch::randn({bs, seqlen_new, num_heads, head_dim}, torch::dtype(torch::kHalf));
+        V_new_host = torch::randn({bs, seqlen_new, num_heads, head_dim}, torch::dtype(torch::kHalf));
         K_new_device = K_new_host.to(torch::kCUDA);
         V_new_device = V_new_host.to(torch::kCUDA);
     }
@@ -77,6 +77,11 @@ void TestDecodingKernelCorrectness(int seqlen_kv) {
         printf("%.6f ", static_cast<float>(out_ref_accessor[i]));
     }
     printf("\n");
+
+    // auto sliced_output = out_cpu.index({0, 0, torch::indexing::Slice(), torch::indexing::Slice(0, 2)});
+    // std::cout << "Sliced output (first 8 values across heads 0 1):\n" << sliced_output << std::endl;
+    // auto sliced_ref = out_ref.index({0, 0, torch::indexing::Slice(), torch::indexing::Slice(0, 2)});
+    // std::cout << "Sliced reference (first 8 values across heads 0 1):\n" << sliced_ref << std::endl;
         
 }
 

@@ -6,3 +6,6 @@
 *.fatbin
 *.log
 # **/gemm
+
+/build
+/cutlass

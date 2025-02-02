@@ -59,6 +59,9 @@
         "iomanip": "cpp",
         "variant": "cpp",
         "__config": "cpp",
-        "optional": "cpp"
+        "optional": "cpp",
+        "condition_variable": "cpp",
+        "mutex": "cpp",
+        "__tuple": "cpp"
     }
 }

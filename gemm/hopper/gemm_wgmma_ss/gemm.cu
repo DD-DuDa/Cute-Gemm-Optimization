@@ -13,7 +13,7 @@ using namespace cute;
 #define OFFSET(row, col, ld) ((row) * (ld) + (col))
 #define OFFSETCOL(row, col, ld) ((col) * (ld) + (row))
 #define DEBUG 0
-#define BENCHMARK 0
+#define BENCHMARK 1
 
 template <typename T>
 void cpuF16F16Gemm(T *a, T *b, T *c, int M, int N, int K) {
@@ -142,7 +142,7 @@ void gemm_wgmma(T *a, T *b, T *c, int M, int N, int K) {
     using SmemLayoutB = decltype(tile_to_shape(GMMA::Layout_K_SW128_Atom<T>{}, make_shape(BN,BK)));
 
     // mma
-    // using TiledMMA = decltype(make_tiled_mma(SM90_64x8x16_F16F16F16_SS<GMMA::Major::K,GMMA::Major::K>{}));
+    // using TiledMMA = decltype(make_tiled_mma(SM90_64x64x16_F16F16F16_SS<GMMA::Major::K,GMMA::Major::K>{}));
     using TileShape_MNK = decltype(make_shape(BM, BN, BK));
     using TiledMMA = decltype(make_tiled_mma(cute::GMMA::ss_op_selector<T, T, T, TileShape_MNK>()));
 
@@ -295,7 +295,7 @@ int main() {
 
     printf("\nalgo = wgmma_ss\n");
 
-    const int M = 1024, N = 1024, K = 1024;
+    const int M = 256, N = 256, K = 256;
     float max_error = testF16F16GemmMaxError<T>(
         gemm_wgmma, M, N, K);
     printf("Max Error = %f\n", max_error);
